@@ -1,0 +1,8 @@
+## Interface: 80300
+## Author: elvUI-Team, myzb
+## Version: 1.0
+## Title: oUF_WidgetXPBar
+## Notes: Widget XP Bar support for oUF layouts.
+## RequiredDeps: oUF
+
+oUF_WidgetXPBar.lua

@@ -1,0 +1,16 @@
+## Interface: 80300
+## Author: myzb
+## Version: @project-version@
+## Title: oUF_Nine
+## Notes: A simplistic oUF layout
+## X-Category: UnitFrame
+
+## X-WoWI-ID: 0
+## X-Curse-Project-ID: 0
+
+libs\_libs.xml
+media\media.lua
+config\_config.xml
+core\_core.xml
+elements\_elements.xml
+units\_units.xml

@@ -1,0 +1,10 @@
+# IDE
+.idea
+
+# external libraries
+libs/oUF
+libs/oUF_MovableFrames
+libs/oUF_Experience
+libs/oUF_Reputation
+libs/oUF_ArtifactPower
+libs/LibPlayerSpells-1.0
