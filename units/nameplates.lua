@@ -350,7 +350,6 @@ local function createStyle(self, unit)
 	health:SetPoint('BOTTOM', self, 'BOTTOM', 0, layout.spacer.height)
 	health:SetStatusBarTexture(layout.texture or m.textures.status_texture)
 	health:GetStatusBarTexture():SetHorizTile(false)
-	health.frequentUpdates = layout.health.frequentUpdates
 	if (layout.health.colorThreat) then
 		health.PostUpdate = Health_PostUpdate
 	end

@@ -161,7 +161,6 @@ function base:CreateHealthPredict(self, width, height, texture)
 		overAbsorb = overAbsorb,
 		overHealAbsorb = overHealAbsorb,
 		maxOverflow = 1.00,
-		frequentUpdates = self.frequentUpdates,
 		PostUpdate = HealthPredict_PostUpdate
 	}
 	return healthPredict
@@ -201,7 +200,6 @@ function base:CreateLayout(self, layout)
 	health:SetStatusBarTexture(l.texture or m.textures.status_texture)
 	health:SetAlpha(config.frame.alpha)
 	health:GetStatusBarTexture():SetHorizTile(false)
-	health.frequentUpdates = l.health.frequentUpdates
 
 	-- hp background (under our own control, not to be confused with oUFs bg)
 	health.Background = health:CreateTexture(nil, 'BACKGROUND')

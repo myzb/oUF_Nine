@@ -71,8 +71,7 @@ config.layout = {
 		health = {
 			colorCustom = true,
 			colorClass = true,
-			colorReaction = true,
-			frequentUpdates = false
+			colorReaction = true
 		},
 		spacer = {
 			height = 4
@@ -91,8 +90,7 @@ config.layout = {
 		health = {
 			colorCustom = true,
 			colorClass = true,
-			colorReaction = true,
-			frequentUpdates = false
+			colorReaction = true
 		},
 		spacer = {
 			height = 4
@@ -113,8 +111,7 @@ config.layout = {
 			colorCustom = true,
 			colorClass = true,
 			colorReaction = false,
-			colorOnAura = true,
-			frequentUpdates = false
+			colorOnAura = true
 		},
 		spacer = {
 			height = 0,
@@ -122,8 +119,7 @@ config.layout = {
 		power = {
 			height = 4,
 			colorClass = false,
-			displayAltPower = true,
-			frequentUpdates = false
+			displayAltPower = true
 		}
 	},
 
@@ -136,8 +132,7 @@ config.layout = {
 			colorCustom = true,
 			colorClass = true,
 			colorReaction = false,
-			colorOnAura = true,
-			frequentUpdates = false
+			colorOnAura = true
 		}
 	}
 }
@@ -235,8 +230,7 @@ config.units = {
 			health = {
 				colorCustom = true,
 				colorClass = true,
-				colorReaction = true,
-				frequentUpdates = false
+				colorReaction = true
 			},
 		}
 	},
@@ -263,8 +257,7 @@ config.units = {
 			shadows = true,
 			health = {
 				colorCustom = true,
-				colorReaction = true,
-				frequentUpdates = false
+				colorReaction = true
 			},
 			spacer = {
 				height = 1
@@ -368,8 +361,7 @@ config.units = {
 				colorClass = true,
 				colorThreat = true,
 				colorClassText = false,
-				colorReaction = true,
-				frequentUpdates = false
+				colorReaction = true
 			},
 			spacer = {
 				height = 17 -- empty space, shrinks health height
