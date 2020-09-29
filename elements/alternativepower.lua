@@ -10,8 +10,8 @@ local font_num = m.fonts.asap
 
 -- AltPower PostUpdate
 local function AltPowerPostUpdate(self, unit, cur, min, max)
-	if (not self.barType) then
-		-- barType is nil when no alt power info
+	if (not self.__barInfo) then
+		-- barInfo is nil when no alt power info
 		return
 	end
 
