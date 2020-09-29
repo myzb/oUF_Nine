@@ -79,10 +79,10 @@ local function HealthPredict_PostUpdate(self, unit, ...)
 	if (self.absorbBar and self.absorbBar.overlay) then
 		local overlay = self.absorbBar.overlay
 		if (absorb > 0 and health < maxHealth) then
-			local health = self.__owner.Health
-			local width = health:GetWidth() / maxHealth * absorb -- absorb value to texture width
+			local frame = self.__owner.Health
+			local width = frame:GetWidth() / maxHealth * absorb -- absorb value to texture width
 			overlay:SetWidth(width)
-			overlay:SetTexCoord(0, width / overlay.tileSize, 0, health:GetHeight() / overlay.tileSize)
+			overlay:SetTexCoord(0, width / overlay.tileSize, 0, frame:GetHeight() / overlay.tileSize)
 			overlay:Show()
 		else
 			overlay:Hide()
