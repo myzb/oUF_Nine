@@ -76,11 +76,8 @@ function core:CreateCastbar(self, width, height, texture, latency)
 	-- Interrupt / status display
 	castbar.timeToHold = 0.12
 	castbar.PostCastStart = Castbar_Update
-	castbar.PostChannelStart = Castbar_Update
-	castbar.PostCastNotInterruptible = Castbar_Update
 	castbar.PostCastInterruptible = Castbar_Update
-	castbar.PostCastInterrupted = PostCast_Failed
-	castbar.PostCastFailed = PostCast_Failed
+	castbar.PostCastFail = PostCast_Failed
 
 	-- Add safezone
 	if(latency and latency.show) then

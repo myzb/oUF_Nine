@@ -213,11 +213,8 @@ local function createCastbar(self, width, height, texture, iconSep, iconSize)
 	-- castbar interrupt / status display
 	castbar.timeToHold = 0.5
 	castbar.PostCastStart = Castbar_Update
-	castbar.PostChannelStart = Castbar_Update
-	castbar.PostCastNotInterruptible = Castbar_Update
 	castbar.PostCastInterruptible = Castbar_Update
-	castbar.PostCastInterrupted = PostCast_Failed
-	castbar.PostCastFailed = PostCast_Failed
+	castbar.PostCastFail = PostCast_Failed
 
 	return castbar
 end
