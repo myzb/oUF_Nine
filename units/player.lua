@@ -485,7 +485,7 @@ local function createStyle(self)
 	if (uframe.castbar and uframe.castbar.show) then
 		local cfg = uframe.castbar
 		local castbar = core:CreateCastbar(self, cfg.width, cfg.height, nil, cfg.latency)
-		local xoffset = cfg.pos.x + cfg.height
+		local xoffset = cfg.pos.x + floor(cfg.height/2 + 0.5)
 		castbar:SetPoint(cfg.pos.a1, cfg.pos.af, cfg.pos.a2, xoffset, cfg.pos.y)
 		self.Castbar = castbar
 	end
