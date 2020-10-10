@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local oUF, config = ns.oUF, ns.config
+local oUF = ns.oUF
 
 -- ------------------------------------------------------------------------
 -- > OUF OVERRIDES
@@ -10,25 +10,33 @@ local oUF, config = ns.oUF, ns.config
 -- > COLORS
 -- -----------------------------------
 
-oUF.colors.power = {
-	['ENERGY'] = { 255/255, 238/255, 88/255 },
-	['FOCUS'] = { 255/255, 192/255, 0/255 },
-	['MANA'] = { 1/255, 121/255, 228/255 },
-	['RAGE'] = { 255/255, 26/255, 48/255 },
-	['FURY'] = { 255/255, 50/255, 50/255 },
-	['MAELSTROM'] = { 0/255, 200/255, 255/255 },
-	['INSANITY'] = { 137/255, 76/255, 219/255 },
-	['LUNAR_POWER'] = { 134/255, 143/255, 254/255 },
-	['RUNIC_POWER'] = { 134/255, 239/255, 254/255 },
-	['RUNES'] = { 0/255, 200/255, 255/255 },
-	['FUEL'] = { 0, 0.55, 0.5},
-	['AMMOSLOT'] = { 1, 0.60, 0 },
-	['POWER_TYPE_STEAM'] = { 0.55, 0.57, 0.61 },
-	['POWER_TYPE_PYRITE'] = { 0.60, 0.09, 0.17 },
-	['POWER_TYPE_HEAT'] = { 0.55, 0.57, 0.61 },
-	['POWER_TYPE_OOZE'] = { 0.76, 1, 0 },
-	['POWER_TYPE_BLOOD_POWER'] = { 0.7, 0, 1 },
-}
+-- partially modify oUF power colors
+oUF.colors.power.MANA = { 1/255, 121/255, 228/255 }
+oUF.colors.power[0] = oUF.colors.power.MANA
+oUF.colors.power.RAGE = { 255/255, 26/255, 48/255 }
+oUF.colors.power[1] = oUF.colors.power.RAGE
+oUF.colors.power.FOCUS = { 255/255, 192/255, 0/255 }
+oUF.colors.power[2] = oUF.colors.power.FOCUS
+oUF.colors.power.ENERGY = { 255/255, 238/255, 88/255 }
+oUF.colors.power[3] = oUF.colors.power.ENERGY
+--oUF.colors.power[4] = oUF.colors.power.COMBO_POINTS
+oUF.colors.power.RUNES = { 0/255, 200/255, 255/255 }
+oUF.colors.power[5] = oUF.colors.power.RUNES
+oUF.colors.power.RUNIC_POWER = { 134/255, 239/255, 254/255 }
+oUF.colors.power[6] = oUF.colors.power.RUNIC_POWER
+--oUF.colors.power[7] = oUF.colors.power.SOUL_SHARDS
+oUF.colors.power.LUNAR_POWER = { 134/255, 143/255, 254/255 }
+oUF.colors.power[8] = oUF.colors.power.LUNAR_POWER
+--oUF.colors.power[9] = oUF.colors.power.HOLY_POWER
+oUF.colors.power.MAELSTROM = { 0/255, 200/255, 255/255 }
+oUF.colors.power[11] = oUF.colors.power.MAELSTROM
+--oUF.colors.power[12] = oUF.colors.power.CHI
+oUF.colors.power.INSANITY = { 137/255, 76/255, 219/255 }
+oUF.colors.power[13] = oUF.colors.power.INSANITY
+--oUF.colors.power[16] = oUF.colors.power.ARCANE_CHARGES
+oUF.colors.power.FURY = { 255/255, 50/255, 50/255 }
+oUF.colors.power[17] = oUF.colors.power.FURY
+--oUF.colors.power[18] = oUF.colors.power.PAIN
 
 oUF.colors.runes = {
 	[1] = { 225/255, 75/255, 75/255 },   -- Blood
@@ -48,13 +56,10 @@ oUF.colors.reaction = {
 	[9] = { 0/255, 110/255, 255/255 }, -- Paragon (Reputation)
 }
 
-oUF.colors.threat = {
-	[1] = { 255/255, 0/255, 127/255 },   -- off-tank tanking (violet-red)
-	[2] = { 255/255, 153/255, 153/255 }, -- insecurely tanking (light-red)
-	[3] = { 0/255, 255/255, 255/255 },   -- securely tanking (cyan)
-	[4] = { 255/255, 0/255, 127/255 },   -- off-tank tanking (violet-red)
-	[5] = { 153/255, 51/255, 255/255 },  -- non-tank aggro (blue-violet)
-}
+-- partially modify/extend oUF threat colors
+oUF.colors.threat[2] = { 255/255, 153/255, 153/255 } -- insecurely tanking (light-red)
+oUF.colors.threat[3] = { 0/255, 255/255, 255/255 }   -- securely tanking (cyan)
+oUF.colors.threat[4] = { 179/255, 136/255, 255/255 } -- off-tank tanking (purple)
 
 oUF.colors.castbar = {
 	['CAST'] = { 209/255, 157/255, 21/255 },   -- orange/brown

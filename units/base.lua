@@ -171,7 +171,9 @@ end
 -- -----------------------------------
 
 -- Health color override for inverted color mode
-local function Health_UpdateColor(element, unit, cur, max)
+local function Health_UpdateColor(self, event, unit)
+	if(not unit or self.unit ~= unit) then return end
+	local element = self.Health
 	local color = config.frame.colors
 
 	if (element.disconnected) then

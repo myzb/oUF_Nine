@@ -128,23 +128,23 @@ local function GroupThreatSituation(group, unit)
 end
 
 -- Threat Based Nameplate Coloring
-local function Health_PostUpdate(element, unit)
+local function Health_PostUpdateColor(element, unit)
 	local group = roles.Group['TANK']
 
-	local status, threat = UnitThreatSituation('player', unit), nil
-	if (status == 3) then
-		threat = 3 -- secure tanking
-	elseif (status == 2) then
-		threat = 2 -- insecure tanking
+	local status, num = UnitThreatSituation('player', unit), nil
+	if (status == 2) then
+		num = 2 -- insecure tanking
+	elseif (status == 3) then
+		num = 3 -- secure tanking
 	elseif (GroupThreatSituation(group, unit)) then
-		threat = 1 -- off-tank tanking
+		num = 4 -- off-tank tanking
 	end
 
-	if (not threat or UnitPlayerControlled(unit) or UnitIsTapDenied(unit)) then
+	if (not num or UnitPlayerControlled(unit) or UnitIsTapDenied(unit)) then
 		return
 	end
 	local t, r, g, b
-	t = oUF.colors.threat[threat]
+	t = oUF.colors.threat[num]
 
 	if (t) then
 		r, g, b = t[1], t[2], t[3]
@@ -152,13 +152,6 @@ local function Health_PostUpdate(element, unit)
 	if (b) then
 		element:SetStatusBarColor(r, g, b)
 	end
-end
-
-local function NamePlate_UpdateColor(self, event, unit)
-	if (not unit or self.unit ~= unit) then
-		return
-	end
-	self.Health:ForceUpdate()
 end
 
 -- -----------------------------------
@@ -351,7 +344,7 @@ local function createStyle(self, unit)
 	health:SetStatusBarTexture(layout.texture or m.textures.status_texture)
 	health:GetStatusBarTexture():SetHorizTile(false)
 	if (layout.health.colorThreat) then
-		health.PostUpdate = Health_PostUpdate
+		health.PostUpdateColor = Health_PostUpdateColor
 	end
 
 	-- background (under our own control, not to be confused with oUFs bg)
@@ -454,9 +447,6 @@ local function createStyle(self, unit)
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', NamePlate_Update, true)
 	self:RegisterEvent('NAME_PLATE_UNIT_ADDED', NamePlate_Update, true)
 	self:RegisterEvent('NAME_PLATE_UNIT_REMOVED', NamePlate_Update, true)
-	if (layout.health.colorThreat) then
-		self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', NamePlate_UpdateColor, true)
-	end
 end
 
 -- -----------------------------------

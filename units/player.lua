@@ -187,11 +187,9 @@ local function RuneBar_Create(self, width, height, texture)
 end
 
 -- Additional Power (Mana, ...)
-local function AddPower_PostUpdate(self, unit, cur, max)
-	if (unit ~= 'player') then return end
-
+local function AddPower_PostUpdate(self, cur, max)
 	-- Hide bar if full
-	if (cur == max or UnitPowerType(unit) == 0) then
+	if (cur == max or UnitPowerType('player') == 0) then
 		self:Hide()
 	else
 		self:Show()
@@ -208,6 +206,7 @@ local function AddPower_Create(self, width, height, texture)
 	addpower:GetStatusBarTexture():SetHorizTile(false)
 	addpower:SetSize(width, height)
 	addpower.colorPower = true
+	addpower.frequentUpdates = true
 
 	local background = addpower:CreateTexture(nil, 'BACKGROUND')
 	background:SetAllPoints()
