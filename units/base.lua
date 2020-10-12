@@ -1,17 +1,15 @@
 local _, ns = ...
 
-local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF or oUF
-
-local base = CreateFrame('Frame')
+local base, core, config, m, oUF = {}, ns.core, ns.config, ns.m, ns.oUF
 ns.base = base
 
 -- Import API functions
 local GetCVar = GetCVar
-local string_match = string.match
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitIsDead = UnitIsDead
 local UnitIsGhost = UnitIsGhost
+local string_match = string.match
 
 -- ------------------------------------------------------------------------
 -- > BASE FRAME STYLE TEMPLATE
