@@ -56,8 +56,8 @@ end
 -- -----------------------------------
 
 -- Class Power Bars (Combo Points...)
-local function ClassPower_PostUpdate(element, cur, max, diff, powerType)
-	if (diff) then
+local function ClassPower_PostUpdate(element, cur, max, maxChanged, powerType)
+	if (maxChanged) then
 		local maxWidth = element.__owner:GetWidth()
 		local gap = 6
 		local barWidth = (maxWidth / max) - (((max-1) * gap) / max)
@@ -75,49 +75,22 @@ local function ClassPower_PostUpdate(element, cur, max, diff, powerType)
 
 	-- Colorize the last bar
 	local lastBarColor = {
-		DRUID = { 255/255, 26/255, 48/255 },
-		MAGE = { 238/255, 48/255, 83/255 },
-		MONK = { 0/255, 143/255, 247/255 },
-		PALADIN = { 255/255, 26/255, 48/255 },
-		ROGUE = { 255/255, 26/255, 48/255 },
-		WARLOCK = { 255/255, 26/255, 48/255 }
+		COMBO_POINTS = { 255/255, 26/255, 48/255 },
+		ARCANE_CHARGES = { 238/255, 48/255, 83/255 },
+		CHI = { 0/255, 143/255, 247/255 },
+		HOLY_POWER = { 255/255, 26/255, 48/255 },
+		SOUL_SHARDS = { 255/255, 26/255, 48/255 }
 	}
 
 	if (max) then
 		local lastBar = element[max]
-		lastBar:SetStatusBarColor(unpack(lastBarColor[PLAYER_CLASS]))
+		lastBar:SetStatusBarColor(unpack(lastBarColor[powerType]))
 	end
 
 	-- update other bars positions
 	element.isShown = element.isEnabled
 	AddPower_PositionUpdate(element)
 	TotemBar_PositionUpdate(element)
-end
-
-local function ClassPower_UpdateColor(element)
-	-- Default color
-	local r, g, b = 102/255, 221/255, 255/255
-
-	if (not UnitHasVehicleUI('player')) then
-		if (PLAYER_CLASS == 'ROGUE') then
-			r, g, b = 255/255, 238/255, 88/255
-		elseif (PLAYER_CLASS == 'DRUID') then
-			r, g, b = 255/255, 255/255, 102/255
-		elseif (PLAYER_CLASS == 'MONK') then
-			r, g, b = 0, 204/255, 153/255
-		elseif (PLAYER_CLASS == 'WARLOCK') then
-			r, g, b = 161/255, 92/255, 255/255
-		elseif (PLAYER_CLASS == 'PALADIN') then
-			r, g, b = 255/255, 255/255, 125/255
-		elseif (PLAYER_CLASS == 'MAGE') then
-			r, g, b = 169/255, 80/255, 202/255
-		end
-	end
-
-	for index = 1, #element do
-		local bar = element[index]
-		bar:SetStatusBarColor(r, g, b)
-	end
 end
 
 local function ClassPower_Create(self, width, height, texture)
@@ -149,7 +122,6 @@ local function ClassPower_Create(self, width, height, texture)
 	end
 
 	-- Class Power Callbacks
-	classpower.UpdateColor = ClassPower_UpdateColor
 	classpower.PostUpdate = ClassPower_PostUpdate
 
 	return classpower
