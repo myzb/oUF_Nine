@@ -164,13 +164,13 @@ function auras:GetDebuffPrio(dispellable, ...)
 	elseif (Auras_IsPriorityDebuff(...)) then
 		prio = auras.DEBUFF_PRIO
 	elseif (flags and special and bor(special, SC.CROWD_CTRL)) then
-		if bor(flags, SC.STUN) ~= 0 then
+		if (bor(flags, SC.STUN) ~= 0) then
 			prio = auras.DEBUFF_STUN
-		elseif bor(flags, SC.ROOT) ~= 0 then
+		elseif (bor(flags, SC.ROOT) ~= 0) then
 			prio = auras.DEBUFF_ROOT
-		elseif bor(flags, SC.INCAPACITATE) ~= 0 then
+		elseif (bor(flags, SC.INCAPACITATE) ~= 0) then
 			prio = auras.DEBUFF_INCAPACITATE
-		elseif bor(flags, SC.DISORIENT) ~= 0 then
+		elseif (bor(flags, SC.DISORIENT) ~= 0) then
 			prio = auras.DEBUFF_DISORIENT
 		end
 		warn = true

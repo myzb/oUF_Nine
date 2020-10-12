@@ -2,4 +2,8 @@
 	<Script file='core.lua' />
 	<Script file='utils.lua' />
 	<Script file='tags.lua' />
+	<Script file='alternativepower.lua' />
+	<Script file='auras.lua' />
+	<Script file='castbar.lua' />
+	<Script file='blizzard.lua' />
 </Ui>
