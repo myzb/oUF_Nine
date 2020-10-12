@@ -1,9 +1,9 @@
 local _, ns = ...
 
-local auras = CreateFrame('Frame')
+local core, config, m, filters, oUF = ns.core, ns.config, ns.m, ns.filters, ns.oUF
+local auras = {}
 ns.auras = auras
 
-local core, config, m, filters, oUF = ns.core, ns.config, ns.m, ns.filters, ns.oUF
 local font_num = m.fonts.arial
 
 -- Import API functions
@@ -15,9 +15,8 @@ local table_insert = table.insert
 local GetSpecializationRole = GetSpecializationRole
 local GetSpecialization = GetSpecialization
 local UnitIsFriend = UnitIsFriend
-
-local Auras_IsPriorityDebuff = CompactUnitFrame_Util_IsPriorityDebuff       -- FrameXML/CompactUnitFrame.lua
-local Auras_IsBossAura = CompactUnitFrame_Util_IsBossAura                   -- FrameXML/CompactUnitFrame.lua
+local Auras_IsPrioDebuff = CompactUnitFrame_Util_IsPriorityDebuff  -- FrameXML/CompactUnitFrame.lua
+local Auras_IsBossAura = CompactUnitFrame_Util_IsBossAura          -- FrameXML/CompactUnitFrame.lua
 
 local PLAYER_CLASS = select(2, UnitClass('player'))
 
@@ -66,23 +65,14 @@ end
 -- > BUFF/DEBUFF PRIORITY
 -- -----------------------------------
 
-auras.cache = {}
-local function Auras_WipeCache(self, event, unit)
-	if (unit == 'player') then
-		wipe(auras.cache)
-	end
-end
-
-auras:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
-auras:SetScript('OnEvent', Auras_WipeCache)
-
--- LibPlayerSpell constants
+-- LibPlayerSpell Constants
 local SC = lps.constants
-local SURVIVAL_COOLDOWN = bor(SC.SURVIVAL, SC.COOLDOWN)
-local BURST_COOLDOWN = bor(SC.BURST, SC.COOLDOWN)
-local PERSONAL_AURA_COOLDOWN = bor(SC.PERSONAL, SC.AURA, SC.COOLDOWN)
 
--- Auras constants
+local COOLDOWN_SURVIVAL = bor(SC.COOLDOWN, SC.SURVIVAL)
+local COOLDOWN_BURST = bor(SC.COOLDOWN, SC.BURST)
+local COOLDOWN_PERSONAL_AURA = bor(SC.COOLDOWN, SC.PERSONAL, SC.AURA)
+
+-- Auras Priorities
 auras.BUFF_DEFENSIVE = 6
 auras.BUFF_OFFENSIVE = 5
 auras.BUFF_PERSONAL = 4
@@ -100,68 +90,68 @@ auras.DEBUFF_PLAYER = 3
 auras.DEBUFF_DISPEL = 2
 auras.DEBUFF_MISC = 1
 
--- Buff priority calculation
+auras.cache = {}
+
+-- Buff Priority Calculation
 function auras:GetBuffPrio(...)
 	local spellId = select(10, ...)
-	local cache = auras.cache
-	if (cache[spellId]) then
-		return unpack(cache[spellId])
-	end
-	local duration = select(5, ...)
-	local caster = select(7, ...)
-	local casterIsUs = (caster == 'player' or caster == 'vehicle')
-	local prio, warn = auras.BUFF_MISC, false
 
+	if (auras.cache[spellId]) then
+		return unpack(auras.cache[spellId])
+	end
+
+	local prio, warn = auras.BUFF_MISC, false
 	local flags = lps:GetSpellInfo(spellId)
+
 	if (not flags) then
-		-- Auras not know by the lib, cache and return
-		cache[spellId] = { prio, warn }
+		-- aura not know by the lib, cache and return
+		auras.cache[spellId] = { prio, warn }
 		return prio, warn
 	end
 
-	-- prio: cds (survival > burst > utility) > non-cd helpful > rest
-	if (band(flags, SURVIVAL_COOLDOWN) == SURVIVAL_COOLDOWN) then
+	local duration = select(5, ...)
+	local caster = select(7, ...)
+	local casterIsUs = (caster == 'player' or caster == 'vehicle')
+
+	if (band(flags, COOLDOWN_SURVIVAL) == COOLDOWN_SURVIVAL) then
 		prio = auras.BUFF_DEFENSIVE
 		if (not casterIsUs and (duration > 6)) then
 			-- big survival cds are usually > 6 sec
 			warn = true
 		end
-	elseif (band(flags, BURST_COOLDOWN) == BURST_COOLDOWN) then
+	elseif (band(flags, COOLDOWN_BURST) == COOLDOWN_BURST) then
 		prio = auras.BUFF_OFFENSIVE
-	elseif (band(flags, PERSONAL_AURA_COOLDOWN) == PERSONAL_AURA_COOLDOWN) then
+	elseif (band(flags, COOLDOWN_PERSONAL_AURA) == COOLDOWN_PERSONAL_AURA) then
 		prio = auras.BUFF_PERSONAL
 	elseif (band(flags, SC.HELPFUL) ~= 0 and casterIsUs) then
 		prio = auras.BUFF_OWN_HELPFUL
 	else
-		-- Other known class auras (excludes procs, azerite traits, etc.)
 		prio = auras.BUFF_CLASS
 	end
 
 	-- cache result
-	cache[spellId] = { prio, warn }
+	auras.cache[spellId] = { prio, warn }
 	return prio, warn
 end
 
--- Debuff priority calculation
+-- Debuff Priority Calculation
 function auras:GetDebuffPrio(dispellable, ...)
 	local spellId = select(10, ...)
-	local cache = auras.cache
-	if (cache[spellId]) then
-		return unpack(cache[spellId])
+
+	if (auras.cache[spellId]) then
+		return unpack(auras.cache[spellId])
 	end
 
-	local casterIsPlayer = select(13, ...)
+	local casterIsHuman = select(13, ...)
 	local flags, _, _, special = lps:GetSpellInfo(spellId)
 	local prio, warn = auras.DEBUFF_MISC, false
 
-	-- set debuff priority
-	-- undispellable boss > dispellable boss > pvp-cc (stun > root > incap > disorient) > other dispellable > other
 	if (Auras_IsBossAura(...)) then
 		prio = auras.DEBUFF_BOSS
 		if (dispellable) then
 			warn = true
 		end
-	elseif (Auras_IsPriorityDebuff(...)) then
+	elseif (Auras_IsPrioDebuff(...)) then
 		prio = auras.DEBUFF_PRIO
 	elseif (flags and special and bor(special, SC.CROWD_CTRL)) then
 		if (bor(flags, SC.STUN) ~= 0) then
@@ -176,14 +166,28 @@ function auras:GetDebuffPrio(dispellable, ...)
 		warn = true
 	elseif (dispellable) then
 		prio = auras.DEBUFF_DISPEL
-		if (not casterIsPlayer) then
+		if (not casterIsHuman) then
 			warn = true
 		end
 	end
 
 	-- cache result
-	cache[spellId] = { prio, warn }
+	auras.cache[spellId] = { prio, warn }
 	return prio, warn
+end
+
+-- Aura Cache Wiper
+local function Auras_WipeCache(self, event, unit)
+	if (unit == 'player') then
+		wipe(self.data)
+	end
+end
+
+do
+	local cache = CreateFrame('Frame')
+	cache:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+	cache:SetScript('OnEvent', Auras_WipeCache)
+	cache.data = auras.cache
 end
 
 -- -----------------------------------
