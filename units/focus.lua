@@ -89,13 +89,13 @@ local function createStyle(self)
 	-- text strings
 	local health = CreateFrame('Frame', nil, self.Health)
 	health:SetAllPoints()
-	health.level = core:createFontstring(health, font, config.fontsize -2, nil, 'LEFT')
+	health.level = core:CreateFontstring(health, font, config.fontsize -2, nil, 'LEFT')
 	health.level:SetShadowColor(0, 0, 0, 1)
 	health.level:SetShadowOffset(1, -1)
 	health.level:SetPoint('TOPLEFT', 1, -2)
 	self:Tag(health.level, '[n:difficultycolor][level]')
 
-	health.unitname = core:createFontstring(health, font, config.fontsize -2, nil, 'LEFT')
+	health.unitname = core:CreateFontstring(health, font, config.fontsize -2, nil, 'LEFT')
 	health.unitname:SetShadowColor(0, 0, 0, 1)
 	health.unitname:SetShadowOffset(1, -1)
 	health.unitname:SetPoint('LEFT', health.level, 'RIGHT', 1, 0)
@@ -106,7 +106,7 @@ local function createStyle(self)
 		self:Tag(health.unitname, '[n:name]')
 	end
 
-	health.hpperc = core:createFontstring(health, font_num, config.fontsize +1, nil, 'CENTER')
+	health.hpperc = core:CreateFontstring(health, font_num, config.fontsize +1, nil, 'CENTER')
 	health.hpperc:SetPoint('CENTER', 0, 0)
 	if (layout.health.colorCustom) then
 		self:Tag(health.hpperc, '[n:reactioncolor][n:perhp_status]')
@@ -133,7 +133,7 @@ local function createStyle(self)
 	self.RaidTargetIndicator = raidIcon
 
 	-- quest icon
-	local QuestIcon = core:createFontstring(self, font, 26, 'THINOUTLINE', 'CENTER')
+	local QuestIcon = core:CreateFontstring(self, font, 26, 'THINOUTLINE', 'CENTER')
 	QuestIcon:SetPoint('LEFT', self.Health, 'RIGHT', 0, -2)
 	QuestIcon:SetText('!')
 	QuestIcon:SetTextColor(238/255, 217/255, 43/255)

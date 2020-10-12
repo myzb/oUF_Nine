@@ -16,7 +16,7 @@ local table_insert = table.insert
 -- -----------------------------------
 
 -- Convert color to HEX
-function core:toHex(r, g, b)
+function core:ToHex(r, g, b)
 	if (r) then
 		if (type(r) == 'table') then
 			if (r.r) then
@@ -30,7 +30,7 @@ function core:toHex(r, g, b)
 end
 
 -- Shortens Numbers
-function core:shortNumber(v)
+function core:ShortNumber(v)
 	if (v > 1E10) then
 		return (floor(v/1E9))..'|cffbbbbbbb|r'
 	elseif (v > 1E9) then
@@ -52,7 +52,7 @@ function core:NumberToPerc(v1, v2)
 	return floor(v1 / v2 * 100 + 0.5)
 end
 
-function core:formatTime(s)
+function core:FormatTime(s)
 	local day, hour, minute = 86400, 3600, 60
 
 	if (s >= day) then

@@ -27,15 +27,15 @@ local function AltPowerPostUpdate(self, unit, cur, min, max)
 
 	if (cur < max) then
 		if (self.isMouseOver) then
-			self.Text:SetFormattedText('%s / %s - %d%%', core:shortNumber(cur), core:shortNumber(max), core:NumberToPerc(cur, max))
+			self.Text:SetFormattedText('%s / %s - %d%%', core:ShortNumber(cur), core:ShortNumber(max), core:NumberToPerc(cur, max))
 		elseif (cur > 0) then
-			self.Text:SetFormattedText('%s', core:shortNumber(cur))
+			self.Text:SetFormattedText('%s', core:ShortNumber(cur))
 		else
 			self.Text:SetText(nil)
 		end
 	else
 		if (self.isMouseOver) then
-			self.Text:SetFormattedText('%s', core:shortNumber(cur))
+			self.Text:SetFormattedText('%s', core:ShortNumber(cur))
 		else
 			self.Text:SetText(nil)
 		end
@@ -65,7 +65,7 @@ function core:CreateAltPower(self, width, height, texture)
 	altpower:SetStatusBarTexture(texture or m.textures.status_texture)
 	altpower:SetSize(width, height)
 
-	altpower.Text = core:createFontstring(altpower, font_num, config.fontsize - 1, nil, 'CENTER')
+	altpower.Text = core:CreateFontstring(altpower, font_num, config.fontsize - 1, nil, 'CENTER')
 	altpower.Text:SetShadowColor(0, 0, 0, 1)
 	altpower.Text:SetShadowOffset(1, -1)
 	altpower.Text:SetAllPoints()

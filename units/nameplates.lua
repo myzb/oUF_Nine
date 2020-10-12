@@ -186,7 +186,7 @@ local function createCastbar(self, width, height, texture, iconSep, iconSize)
 	background:SetVertexColor(0, 0, 0, 0.9)
 
 	-- spell name
-	castbar.Text = core:createFontstring(castbar, font, font_size - 1, nil, 'CENTER')
+	castbar.Text = core:CreateFontstring(castbar, font, font_size - 1, nil, 'CENTER')
 	castbar.Text:SetShadowColor(0, 0, 0, 1)
 	castbar.Text:SetShadowOffset(1, -1)
 	castbar.Text:SetPoint('TOP', castbar, 'BOTTOM', 0, -1)
@@ -229,13 +229,13 @@ local function Create_WidgetXPBar(self, width, height, texture)
 	background:SetVertexColor(0, 0, 0, 0.9)
 
 	-- rank text
-	widgetxp.Rank = core:createFontstring(widgetxp, font_num, font_size - 1, nil, 'LEFT')
+	widgetxp.Rank = core:CreateFontstring(widgetxp, font_num, font_size - 1, nil, 'LEFT')
 	widgetxp.Rank:SetShadowColor(0, 0, 0, 1)
 	widgetxp.Rank:SetShadowOffset(1, -1)
 	widgetxp.Rank:SetPoint('RIGHT', widgetxp, 'LEFT', -5, 0)
 
 	-- progress text
-	widgetxp.ProgressText = core:createFontstring(widgetxp, font_num, font_size - 1, nil, 'CENTER')
+	widgetxp.ProgressText = core:CreateFontstring(widgetxp, font_num, font_size - 1, nil, 'CENTER')
 	widgetxp.ProgressText:SetShadowColor(0, 0, 0, 1)
 	widgetxp.ProgressText:SetShadowOffset(1, -1)
 	widgetxp.ProgressText:SetPoint('CENTER')
@@ -361,8 +361,8 @@ local function createStyle(self, unit)
 	health.colorTapping = true
 
 	-- hp glow and shadows
-	health.Glow = core:createGlowBorder(health, 4, 4, 0)
-	health.Shadow = core:createDropShadow(health, 4, 4, 0, config.frame.shadows)
+	health.Glow = core:CreateGlowBorder(health, 4, 4, 0)
+	health.Shadow = core:CreateDropShadow(health, 4, 4, 0, config.frame.shadows)
 	self.Health = health
 
 	-- hp prediction
@@ -381,7 +381,7 @@ local function createStyle(self, unit)
 	self.RaidTargetIndicator = RaidIcon
 
 	-- name string
-	local name = core:createFontstring(self.Health, font, font_size, nil, 'CENTER')
+	local name = core:CreateFontstring(self.Health, font, font_size, nil, 'CENTER')
 	name:SetShadowColor(0, 0, 0, 1)
 	name:SetShadowOffset(1, -1)
 	name:SetSize(2 * layout.width, font_size)

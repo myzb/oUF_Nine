@@ -28,7 +28,7 @@ local function createStyle(self)
 	-- Text Strings
 	local health = CreateFrame('Frame', nil, self.Health)
 	health:SetAllPoints()
-	health.unitname = core:createFontstring(health, font, config.fontsize - 2, nil, 'CENTER')
+	health.unitname = core:CreateFontstring(health, font, config.fontsize - 2, nil, 'CENTER')
 	health.unitname:SetShadowColor(0, 0, 0, 1)
 	health.unitname:SetShadowOffset(1, -1)
 	health.unitname:SetPoint('CENTER', 0 , 0)

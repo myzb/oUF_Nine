@@ -108,7 +108,7 @@ local function ClassPower_Create(self, width, height, texture)
 		background:SetTexture([[Interface\ChatFrame\ChatFrameBackground]])
 		background:SetVertexColor(unpack(config.frame.colors.bg))
 
-		core:createDropShadow(bar, 5, 5, 0, config.frame.shadows)
+		core:CreateDropShadow(bar, 5, 5, 0, config.frame.shadows)
 
 		if (index > 1) then
 			bar:SetPoint('LEFT', classpower[index - 1], 'RIGHT', 6, 0)
@@ -143,7 +143,7 @@ local function RuneBar_Create(self, width, height, texture)
 		background:SetTexture([[Interface\ChatFrame\ChatFrameBackground]])
 		background:SetVertexColor(unpack(config.frame.colors.bg))
 
-		core:createDropShadow(rune, 5, 5, 0, config.frame.shadows)
+		core:CreateDropShadow(rune, 5, 5, 0, config.frame.shadows)
 
 		if (index > 1) then
 			rune:SetPoint('LEFT', runes[index - 1], 'RIGHT', gap, 0)
@@ -186,13 +186,13 @@ local function AddPower_Create(self, width, height, texture)
 	background:SetVertexColor(0, 0, 0, 0.9)
 
 	-- Value
-	local value = core:createFontstring(addpower, font_num, config.fontsize - 1, nil, 'RIGHT')
+	local value = core:CreateFontstring(addpower, font_num, config.fontsize - 1, nil, 'RIGHT')
 	value:SetShadowColor(0, 0, 0, 1)
 	value:SetShadowOffset(1, -1)
 	value:SetPoint('RIGHT', -4, 0)
 	self:Tag(value, '[n:addpower]')
 
-	core:createDropShadow(addpower, 5, 5, 0, config.frame.shadows)
+	core:CreateDropShadow(addpower, 5, 5, 0, config.frame.shadows)
 
 	-- Add Power Callbacks
 	addpower.PostUpdate = AddPower_PostUpdate
@@ -386,13 +386,13 @@ local function createStyle(self)
 	-- text strings
 	local health = CreateFrame('Frame', nil, self.Health)
 	health:SetAllPoints()
-	health.level = core:createFontstring(health, font, config.fontsize -2, nil, 'LEFT')
+	health.level = core:CreateFontstring(health, font, config.fontsize -2, nil, 'LEFT')
 	health.level:SetShadowColor(0, 0, 0, 1)
 	health.level:SetShadowOffset(1, -1)
 	health.level:SetPoint('TOPLEFT', 1, -2)
 	self:Tag(health.level, '[n:difficultycolor][level]')
 
-	health.unitname = core:createFontstring(health, font, config.fontsize -2, nil, 'LEFT')
+	health.unitname = core:CreateFontstring(health, font, config.fontsize -2, nil, 'LEFT')
 	health.unitname:SetShadowColor(0, 0, 0, 1)
 	health.unitname:SetShadowOffset(1, -1)
 	health.unitname:SetPoint('LEFT', health.level, 'RIGHT', 1, 0)
@@ -403,12 +403,12 @@ local function createStyle(self)
 		self:Tag(health.unitname, '[n:name]')
 	end
 
-	health.hpvalue = core:createFontstring(health, font_num, config.fontsize +1, nil, 'RIGHT')
+	health.hpvalue = core:CreateFontstring(health, font_num, config.fontsize +1, nil, 'RIGHT')
 	health.hpvalue:SetShadowColor(0, 0, 0, 1)
 	health.hpvalue:SetShadowOffset(1, -1)
 	health.hpvalue:SetPoint('RIGHT', -4, 0)
 	self:Tag(health.hpvalue, '[n:hpvalue]')
-	health.hpperc = core:createFontstring(health, font_num, config.fontsize +1, nil, 'CENTER')
+	health.hpperc = core:CreateFontstring(health, font_num, config.fontsize +1, nil, 'CENTER')
 	health.hpperc:SetPoint('CENTER', 0, 0)
 	if (layout.health.colorCustom) then
 		self:Tag(health.hpperc, '[n:reactioncolor][n:perhp_status]')
@@ -418,7 +418,7 @@ local function createStyle(self)
 
 	local power = CreateFrame('Frame', nil, self.Power)
 	power:SetAllPoints()
-	power.value = core:createFontstring(power, font_num, config.fontsize +1, nil, 'RIGHT')
+	power.value = core:CreateFontstring(power, font_num, config.fontsize +1, nil, 'RIGHT')
 	power.value:SetShadowColor(0, 0, 0, 1)
 	power.value:SetShadowOffset(1, -1)
 	power.value:SetPoint('RIGHT', -4, 0)

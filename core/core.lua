@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local core, config, m, oUF = CreateFrame('Frame'), ns.config, ns.m, ns.oUF
+local core, m, oUF = {}, ns.m, ns.oUF
 ns.core = core
 
 -- ------------------------------------------------------------------------
@@ -12,7 +12,7 @@ ns.core = core
 -- -----------------------------------
 
 -- Set the Backdrop
-function core:setBackdrop(self, inset_l, inset_r, inset_t, inset_b, color)
+function core:SetBackdrop(self, inset_l, inset_r, inset_t, inset_b, color)
 	self.backdropInfo = {
 		bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
 		tile = false,
@@ -29,7 +29,7 @@ function core:setBackdrop(self, inset_l, inset_r, inset_t, inset_b, color)
 end
 
 -- Fontstring Function
-function core:createFontstring(self, font, size, outline, justify)
+function core:CreateFontstring(self, font, size, outline, justify)
 	local fs = self:CreateFontString(nil, 'ARTWORK')
 	fs:SetFont(font, size, outline)
 	fs:SetJustifyH(justify or 'LEFT')
@@ -37,7 +37,7 @@ function core:createFontstring(self, font, size, outline, justify)
 end
 
 -- Create Standard Border
-function core:createBorder(self, point, e_size, f_level, texture)
+function core:CreateBorder(self, point, e_size, f_level, texture)
 	local parent = (self:GetObjectType() == 'Frame') and self or self:GetParent()
 	local border = CreateFrame('Frame', nil, parent, 'BackdropTemplate')
 	border:SetPoint('TOPLEFT', self, 'TOPLEFT', -point, point)
@@ -49,7 +49,7 @@ function core:createBorder(self, point, e_size, f_level, texture)
 end
 
 -- Create Frame Shadow Border
-function core:createDropShadow(self, point, edge, f_level, color)
+function core:CreateDropShadow(self, point, edge, f_level, color)
 	local shadow = CreateFrame('Frame', nil, self, 'BackdropTemplate')
 	shadow:SetFrameLevel(f_level)
 	shadow:SetPoint('TOPLEFT', self, 'TOPLEFT', -point, point)
@@ -74,7 +74,7 @@ function core:createDropShadow(self, point, edge, f_level, color)
 end
 
 -- Create Frame Glow Border
-function core:createGlowBorder(self, point, edge, f_level, color)
+function core:CreateGlowBorder(self, point, edge, f_level, color)
 	local glow = CreateFrame('Frame', nil, self, 'BackdropTemplate')
 	glow:SetFrameLevel(f_level)
 	glow:SetPoint('TOPLEFT', self, 'TOPLEFT', -point, point)
@@ -114,7 +114,7 @@ end
 
 -- Create Target Border
 function core:CreateTargetBorder(self, f_level)
-	local border = core:createBorder(self, 2, 2, f_level, [[Interface\ChatFrame\ChatFrameBackground]])
+	local border = core:CreateBorder(self, 2, 2, f_level, [[Interface\ChatFrame\ChatFrameBackground]])
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', ChangedTarget, true)
 	self:RegisterEvent('GROUP_ROSTER_UPDATE', ChangedTarget)
 	self.TargetBorder = border
@@ -144,7 +144,7 @@ end
 
 -- Create Party / Raid Threat Status Border
 function core:CreateThreatBorder(self, f_level)
-	local border = core:createGlowBorder(self, 6, 6, f_level)
+	local border = core:CreateGlowBorder(self, 6, 6, f_level)
 	self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', UpdateThreat)
 	self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
 	self.ThreatBorder = border

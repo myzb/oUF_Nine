@@ -53,7 +53,7 @@ local function createStyle(self)
 	-- text strings
 	local health = CreateFrame('Frame', nil, self.Health)
 	health:SetAllPoints()
-	health.unitname = core:createFontstring(health, font, config.fontsize -1, nil, 'CENTER')
+	health.unitname = core:CreateFontstring(health, font, config.fontsize -1, nil, 'CENTER')
 	health.unitname:SetShadowColor(0, 0, 0, 1)
 	health.unitname:SetShadowOffset(1, -1)
 	health.unitname:SetPoint('TOPLEFT', 2, -2)
@@ -64,7 +64,7 @@ local function createStyle(self)
 		self:Tag(health.unitname, '[n:name]')
 	end
 
-	health.hpperc = core:createFontstring(health, font_num, config.fontsize + 6, nil, 'CENTER')
+	health.hpperc = core:CreateFontstring(health, font_num, config.fontsize + 6, nil, 'CENTER')
 	health.hpperc:SetPoint('CENTER', 0, -2)
 	health.hpperc:SetSize(layout.width - 10, config.fontsize + 1)
 	if (layout.health.colorCustom) then
@@ -75,7 +75,7 @@ local function createStyle(self)
 
 	local power = CreateFrame('Frame', nil, self.Power)
 	power:SetAllPoints()
-	power.value = core:createFontstring(power, font_num, config.fontsize + 1, nil, 'CENTER')
+	power.value = core:CreateFontstring(power, font_num, config.fontsize + 1, nil, 'CENTER')
 	power.value:SetShadowColor(0, 0, 0, 1)
 	power.value:SetShadowOffset(1, -1)
 	power.value:SetPoint('CENTER')

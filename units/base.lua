@@ -229,7 +229,7 @@ function base:CreateLayout(self, layout)
 	end
 
 	if (l.shadows) then
-		health.Shadow = core:createDropShadow(health, 5, 5, 0, config.frame.shadows)
+		health.Shadow = core:CreateDropShadow(health, 5, 5, 0, config.frame.shadows)
 	end
 
 	-- power bar
@@ -268,7 +268,7 @@ function base:CreateLayout(self, layout)
 		power.altPowerColor = { 202/255, 202/255, 202/255 }
 
 		if (l.shadows) then
-			power.Shadow = core:createDropShadow(power, 5, 5, 0, config.frame.shadows)
+			power.Shadow = core:CreateDropShadow(power, 5, 5, 0, config.frame.shadows)
 		end
 		self.Power = power
 	end

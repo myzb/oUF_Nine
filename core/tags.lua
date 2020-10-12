@@ -51,7 +51,7 @@ tags['n:hpvalue'] = function(unit)
 	if (min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit)) then
 		return ''
 	end
-	return core:shortNumber(min)
+	return core:ShortNumber(min)
 end
 events['n:hpvalue'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_NAME_UPDATE'
 
@@ -110,13 +110,13 @@ tags['n:powervalue'] = function(unit)
 
 	local _, ptype = UnitPowerType(unit)
 	if (ptype == 'MANA') then
-		return core:shortNumber(min)
+		return core:ShortNumber(min)
 	elseif (ptype == 'RAGE' or ptype == 'RUNIC_POWER' or ptype == 'LUNAR_POWER') then
 		return floor(min / 10)  -- don't round up!
 	elseif (ptype == 'INSANITY') then
 		return floor(min / 100) -- don't round up!
 	else
-		return core:shortNumber(min)
+		return core:ShortNumber(min)
 	end
 end
 events['n:powervalue'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE'
@@ -126,7 +126,7 @@ tags['n:addpower'] = function(unit)
 	local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
 
 	if (UnitPowerType(unit) ~= 0 and min ~= max) then -- If Power Type is not Mana(it's Energy or Rage) and Mana is not at Maximum
-		return core:shortNumber(min)
+		return core:ShortNumber(min)
 	end
 end
 events['n:addpower'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE'
@@ -139,14 +139,14 @@ tags['n:unitcolor'] = function(unit)
 
 	if (isPlayer) then
 		if (class) then
-			color = core:toHex(oUF.colors.class[class])
+			color = core:ToHex(oUF.colors.class[class])
 		else
 			local id = unit:match('arena(%d)$')
 			if (id) then
 				local specID = GetArenaOpponentSpec(tonumber(id))
 				if (specID and specID > 0) then
 					_, _, _, _, _, class = GetSpecializationInfoByID(specID)
-					color = core:toHex(oUF.colors.class[class])
+					color = core:ToHex(oUF.colors.class[class])
 				end
 			end
 		end
@@ -166,10 +166,10 @@ tags['n:reactioncolor'] = function(unit)
 	end
 	local color = ''
 	if (UnitIsTapDenied(unit)) then
-		color = core:toHex(oUF.colors.tapped)
+		color = core:ToHex(oUF.colors.tapped)
 	elseif (reaction and reaction > 4) then
 		-- only friendlies
-		color = core:toHex(oUF.colors.reaction[reaction])
+		color = core:ToHex(oUF.colors.reaction[reaction])
 	end
 	return color
 end
