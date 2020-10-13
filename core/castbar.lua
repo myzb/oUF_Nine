@@ -72,6 +72,7 @@ function core:CreateCastbar(self, width, height, texture, latency)
 	castbar.Spark = castbar:CreateTexture(nil, 'OVERLAY')
 	castbar.Spark:SetSize(20, 2.2*height)
 	castbar.Spark:SetBlendMode('ADD')
+	castbar.Spark:SetPoint("CENTER", castbar:GetStatusBarTexture(), "RIGHT", 0, 0)
 
 	-- Interrupt / status display
 	castbar.timeToHold = 0.12
