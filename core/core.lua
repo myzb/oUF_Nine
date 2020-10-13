@@ -121,7 +121,7 @@ end
 
 -- Raid Frames Target Highlight Border
 local function ChangedTarget(self, event, unit)
-	if (UnitIsUnit('target', self.unit)) then
+	if (UnitInParty('target') and UnitIsUnit('target', self.unit)) then
 		self.TargetBorder:SetBackdropBorderColor(0.8, 0.8, 0.8, 1)
 		self.TargetBorder:Show()
 	else
@@ -134,6 +134,7 @@ function core:CreateTargetBorder(self, f_level)
 	local border = core:CreateBorder(self, 2, 2, f_level, [[Interface\ChatFrame\ChatFrameBackground]])
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', ChangedTarget, true)
 	self:RegisterEvent('GROUP_ROSTER_UPDATE', ChangedTarget)
+	self:RegisterEvent('RAID_TARGET_UPDATE', ChangedTarget) -- player join/leave trigger
 	self.TargetBorder = border
 
 	-- trigger update
@@ -142,12 +143,10 @@ end
 
 -- Party / Raid Frames Threat Highlight
 local function UpdateThreat(self, event, unit)
-	if (self.unit ~= unit) then
+	if (event ~= 'RAID_TARGET_UPDATE' and self.unit ~= unit) then
 		return
 	end
-
-	local status = UnitThreatSituation(unit)
-	unit = unit or self.unit
+	local status = UnitThreatSituation(self.unit)
 
 	if (status and status > 1) then
 		local r, g, b = GetThreatStatusColor(status)
@@ -164,6 +163,7 @@ function core:CreateThreatBorder(self, f_level)
 	local border = core:CreateGlowBorder(self, 6, 6, f_level)
 	self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', UpdateThreat)
 	self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
+	self:RegisterEvent('RAID_TARGET_UPDATE', UpdateThreat) -- player join/leave trigger
 	self.ThreatBorder = border
 
 	-- trigger update
