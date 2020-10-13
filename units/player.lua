@@ -530,8 +530,8 @@ local function createStyle(self)
 		local combat = self.Power:CreateTexture(nil, 'OVERLAY')
 		combat:SetSize(22, 22)
 		combat:SetPoint('CENTER', self.Power, 'BOTTOMLEFT', 0 ,0)
-		combat.PostUpdate = function(self, inCombat)
-			self.__owner.RestingIndicator:SetAlpha((inCombat and 0) or 1)
+		combat.PostUpdate = function(element, inCombat)
+			element.__owner.RestingIndicator:SetAlpha((inCombat and 0) or 1)
 		end
 		self.CombatIndicator = combat
 	end
