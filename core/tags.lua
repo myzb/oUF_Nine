@@ -121,7 +121,7 @@ tags['n:powervalue'] = function(unit)
 end
 events['n:powervalue'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE'
 
--- Additional Power Percent
+-- Additional Power
 tags['n:addpower'] = function(unit)
 	local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
 
@@ -130,6 +130,14 @@ tags['n:addpower'] = function(unit)
 	end
 end
 events['n:addpower'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE'
+
+-- Stagger
+tags['n:stagger'] = function(unit)
+	local min, max = UnitStagger(unit), UnitHealthMax(unit)
+	return core:ShortNumber(min)
+end
+
+events['n:stagger'] = 'UNIT_AURA UNIT_DISPLAYPOWER PLAYER_TALENT_UPDATE'
 
 -- Unit color
 tags['n:unitcolor'] = function(unit)

@@ -14,7 +14,7 @@ local PLAYER_CLASS = select(2, UnitClass('player'))
 -- ------------------------------------------------------------------------
 
 -- -----------------------------------
--- > DYNAMIC RESOURCE BAR ANCHORING
+-- > DYNAMIC TOTEM BAR ANCHORING
 -- -----------------------------------
 
 local function TotemBar_PositionUpdate(self)
@@ -22,32 +22,20 @@ local function TotemBar_PositionUpdate(self)
 	local anchor = parent
 
 	-- update anchor based on what is currently being displayed
-	if (parent.AdditionalPower.isShown) then
+	if (parent.AdditionalPower and parent.AdditionalPower.isShown) then
 		anchor = parent.AdditionalPower
-	end
-	if (parent.ClassPower and parent.ClassPower.isShown) then
+	elseif (parent.ClassPower and parent.ClassPower.isShown) then
 		anchor = parent.ClassPower[1]
+	elseif (parent.Runes and parent.Runes.isShown) then
+		anchor = parent.Runes[1]
+	elseif (parent.Stagger and parent.Stagger.isShown) then
+		anchor = parent.Stagger
 	end
+
 	-- update anchor
 	if (parent.Totems.anchor ~= anchor) then
 		parent.Totems[1]:SetPoint('TOPLEFT', anchor, 'BOTTOMLEFT', 0, -8)
 		parent.Totems.anchor = anchor
-	end
-end
-
-local function AddPower_PositionUpdate(self)
-	local parent = self.__owner
-	local anchor = parent
-
-	-- update anchor based on what is currently being displayed
-	if (parent.ClassPower and parent.ClassPower.isShown) then
-		anchor = parent.ClassPower[1]
-	end
-
-	-- updat anchor
-	if (parent.AdditionalPower.anchor ~= anchor) then
-		parent.AdditionalPower:SetPoint('TOPLEFT', anchor, 'BOTTOMLEFT', 0, -10)
-		parent.AdditionalPower.anchor = anchor
 	end
 end
 
@@ -87,9 +75,7 @@ local function ClassPower_PostUpdate(element, cur, max, maxChanged, powerType)
 		lastBar:SetStatusBarColor(unpack(lastBarColor[powerType]))
 	end
 
-	-- update other bars positions
-	element.isShown = element.isEnabled
-	AddPower_PositionUpdate(element)
+	element.isShown = element[1]:IsShown()
 	TotemBar_PositionUpdate(element)
 end
 
@@ -128,6 +114,11 @@ local function ClassPower_Create(self, width, height, texture)
 end
 
 -- Death Knight Runebar
+local function RuneBar_PostUpdate(element)
+	element.isShown = element[1]:IsShown()
+	TotemBar_PositionUpdate(element)
+end
+
 local function RuneBar_Create(self, width, height, texture)
 	local numRunes, maxWidth, gap = 6, width, 6
 	local runeWidth = (maxWidth / numRunes) - (((numRunes-1) * gap) / numRunes)
@@ -154,6 +145,7 @@ local function RuneBar_Create(self, width, height, texture)
 
 	runes.sortOrder = 'asc'
 	runes.colorSpec = true -- color runes by spec
+	runes.PostUpdate = RuneBar_PostUpdate
 
 	return runes
 end
@@ -166,7 +158,6 @@ local function AddPower_PostUpdate(self, cur, max)
 	else
 		self:Show()
 	end
-
 	self.isShown = self:IsShown()
 	TotemBar_PositionUpdate(self)
 end
@@ -198,6 +189,45 @@ local function AddPower_Create(self, width, height, texture)
 	addpower.PostUpdate = AddPower_PostUpdate
 
 	return addpower
+end
+
+-- Monk StaggerBar
+local function StaggerBar_PostUpdate(self, cur, max)
+	-- Hide bar if full
+	if (cur == 0 or UnitPowerType('player') == 0) then
+		self:Hide()
+	else
+		self:Show()
+	end
+	self.isShown = self:IsShown()
+	TotemBar_PositionUpdate(self)
+end
+
+local function StaggerBar_Create(self, width, height, texture)
+	local stagger = CreateFrame('StatusBar', nil, self)
+	stagger:SetAlpha(config.frame.alpha)
+	stagger:SetStatusBarTexture(texture or m.textures.status_texture)
+	stagger:GetStatusBarTexture():SetHorizTile(false)
+	stagger:SetSize(width, height)
+
+	local background = stagger:CreateTexture(nil, 'BACKGROUND')
+	background:SetAllPoints()
+	background:SetTexture([[Interface\ChatFrame\ChatFrameBackground]])
+	background:SetVertexColor(0, 0, 0, 0.9)
+
+	-- Value
+	local value = core:CreateFontstring(stagger, font_num, config.fontsize - 1, nil, 'RIGHT')
+	value:SetShadowColor(0, 0, 0, 1)
+	value:SetShadowOffset(1, -1)
+	value:SetPoint('RIGHT', -4, 0)
+	self:Tag(value, '[n:stagger]')
+
+	core:CreateDropShadow(stagger, 5, 5, 0, config.frame.shadows)
+
+	-- Add Power Callbacks
+	stagger.PostUpdate = StaggerBar_PostUpdate
+
+	return stagger
 end
 
 -- TotemBar (Shadowfiend, Gargoyle, ...)
@@ -424,25 +454,29 @@ local function createStyle(self)
 	power.value:SetPoint('RIGHT', -4, 0)
 	self:Tag(power.value, '[n:powervalue]')
 
-	-- class power (combo points, etc...)
+	-- class resources
 	if (uframe.classpower.show) then
-		local classpower = ClassPower_Create(self, layout.width, layout.power.height, layout.texture)
+		local width, height = layout.width, layout.power.height
+
+		--  combo points, chi, soul shards, etc ...
+		local classpower = ClassPower_Create(self, width, height, layout.texture)
 		classpower[1]:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -8)
 		self.ClassPower = classpower
-	end
 
-	-- death knight runes
-	if (uframe.classpower.show and PLAYER_CLASS == 'DEATHKNIGHT') then
-		local runes = RuneBar_Create(self, layout.width, layout.power.height, layout.texture)
-		runes[1]:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -8)
-		self.Runes = runes
-	end
-
-	-- additional power bar (mana bar)
-	do
-		local addpower = AddPower_Create(self, layout.width, 3, layout.texture)
-		addpower:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
-		self.AdditionalPower = addpower
+		-- stagger, runes, additional power bar (mana)
+		if (PLAYER_CLASS == 'DEATHKNIGHT') then
+			local runes = RuneBar_Create(self, width, height, layout.texture)
+			runes[1]:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -8)
+			self.Runes = runes
+		elseif (PLAYER_CLASS == 'MONK') then
+			local stagger = StaggerBar_Create(self, width, 3, layout.texture)
+			stagger:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
+			self.Stagger = stagger
+		else
+			local addpower = AddPower_Create(self, width, 3, layout.texture)
+			addpower:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
+			self.AdditionalPower = addpower
+		end
 	end
 
 	-- totembar (shadowfiend, gargoyle, ...)
