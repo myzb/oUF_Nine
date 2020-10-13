@@ -1,15 +1,14 @@
 local _, ns = ...
 
-local core, oUF = ns.core, ns.oUF
+local core, util, oUF = ns.core, ns.util, ns.oUF
+local tags, events = oUF.Tags.Methods, oUF.Tags.Events
 
--- ------------------------------------------------------------------------
--- > Custom Tags
--- ------------------------------------------------------------------------
-
-local tags = oUF.Tags.Methods or oUF.Tags
-local events = oUF.TagEvents or oUF.Tags.Events
-
+-- Import API Functions
 local floor = floor
+
+-- ------------------------------------------------------------------------
+-- > CUSTOM TAGS
+-- ------------------------------------------------------------------------
 
 -- Name (creature family for player owned units if possible)
 tags['n:name'] = function(unit, rolf)
@@ -51,7 +50,7 @@ tags['n:hpvalue'] = function(unit)
 	if (min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit)) then
 		return ''
 	end
-	return core:ShortNumber(min)
+	return util:ShortNumber(min)
 end
 events['n:hpvalue'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_NAME_UPDATE'
 
@@ -110,13 +109,13 @@ tags['n:powervalue'] = function(unit)
 
 	local _, ptype = UnitPowerType(unit)
 	if (ptype == 'MANA') then
-		return core:ShortNumber(min)
+		return util:ShortNumber(min)
 	elseif (ptype == 'RAGE' or ptype == 'RUNIC_POWER' or ptype == 'LUNAR_POWER') then
 		return floor(min / 10)  -- don't round up!
 	elseif (ptype == 'INSANITY') then
 		return floor(min / 100) -- don't round up!
 	else
-		return core:ShortNumber(min)
+		return util:ShortNumber(min)
 	end
 end
 events['n:powervalue'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE'
@@ -126,7 +125,7 @@ tags['n:addpower'] = function(unit)
 	local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
 
 	if (UnitPowerType(unit) ~= 0 and min ~= max) then -- If Power Type is not Mana(it's Energy or Rage) and Mana is not at Maximum
-		return core:ShortNumber(min)
+		return util:ShortNumber(min)
 	end
 end
 events['n:addpower'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE'
@@ -134,7 +133,7 @@ events['n:addpower'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE'
 -- Stagger
 tags['n:stagger'] = function(unit)
 	local min, max = UnitStagger(unit), UnitHealthMax(unit)
-	return core:ShortNumber(min)
+	return util:ShortNumber(min)
 end
 
 events['n:stagger'] = 'UNIT_AURA UNIT_DISPLAYPOWER PLAYER_TALENT_UPDATE'
@@ -147,14 +146,14 @@ tags['n:unitcolor'] = function(unit)
 
 	if (isPlayer) then
 		if (class) then
-			color = core:ToHex(oUF.colors.class[class])
+			color = util:ToHex(oUF.colors.class[class])
 		else
 			local id = unit:match('arena(%d)$')
 			if (id) then
 				local specID = GetArenaOpponentSpec(tonumber(id))
 				if (specID and specID > 0) then
 					_, _, _, _, _, class = GetSpecializationInfoByID(specID)
-					color = core:ToHex(oUF.colors.class[class])
+					color = util:ToHex(oUF.colors.class[class])
 				end
 			end
 		end
@@ -174,10 +173,10 @@ tags['n:reactioncolor'] = function(unit)
 	end
 	local color = ''
 	if (UnitIsTapDenied(unit)) then
-		color = core:ToHex(oUF.colors.tapped)
+		color = util:ToHex(oUF.colors.tapped)
 	elseif (reaction and reaction > 4) then
 		-- only friendlies
-		color = core:ToHex(oUF.colors.reaction[reaction])
+		color = util:ToHex(oUF.colors.reaction[reaction])
 	end
 	return color
 end

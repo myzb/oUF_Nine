@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
+local core, util, config, m, oUF = ns.core, ns.util, ns.config, ns.m, ns.oUF
 
 local font_num = m.fonts.asap
 
@@ -27,15 +27,15 @@ local function AltPowerPostUpdate(self, unit, cur, min, max)
 
 	if (cur < max) then
 		if (self.isMouseOver) then
-			self.Text:SetFormattedText('%s / %s - %d%%', core:ShortNumber(cur), core:ShortNumber(max), core:NumberToPerc(cur, max))
+			self.Text:SetFormattedText('%s / %s - %d%%', util:ShortNumber(cur), util:ShortNumber(max), util:NumberToPerc(cur, max))
 		elseif (cur > 0) then
-			self.Text:SetFormattedText('%s', core:ShortNumber(cur))
+			self.Text:SetFormattedText('%s', util:ShortNumber(cur))
 		else
 			self.Text:SetText(nil)
 		end
 	else
 		if (self.isMouseOver) then
-			self.Text:SetFormattedText('%s', core:ShortNumber(cur))
+			self.Text:SetFormattedText('%s', util:ShortNumber(cur))
 		else
 			self.Text:SetText(nil)
 		end

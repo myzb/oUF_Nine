@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local base, core, config, m, oUF = ns.base, ns.core, ns.config, ns.m, ns.oUF
+local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
 local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.frizq
@@ -11,6 +11,7 @@ local frame_name = 'raid'
 
 -- Import API functions
 local math_floor = math.floor
+local table_insert = table.insert
 local Auras_ShouldDisplayDebuff = CompactUnitFrame_Util_ShouldDisplayDebuff -- FrameXML/CompactUnitFrame.lua
 local Auras_ShouldDisplayBuff = CompactUnitFrame_UtilShouldDisplayBuff      -- FrameXML/CompactUnitFrame.lua
 
@@ -130,11 +131,11 @@ local function createStyle(self, unit, ...)
 	local uframe = config.units[frame_name][num]
 	local layout = uframe.layout
 
-	base:CreateLayout(self, layout)
+	core:CreateLayout(self, layout)
 
 	-- mouse events
 	local clickthrough = uframe.misc and uframe.misc.rightClickthrough
-	base:RegisterMouse(self, clickthrough)
+	core:RegisterMouse(self, clickthrough)
 
 	-- power show/hide for non-healers
 	if (self.Power and uframe.misc and uframe.misc.hidePower == 'NON_HEALER') then
@@ -273,11 +274,11 @@ local function createSubStyle(self, unit)
 	local uframe = config.units[frame_name][num] -- inherited from 'num' profile style
 	local layout = uframe.layout
 
-	base:CreateLayout(self, layout)
+	core:CreateLayout(self, layout)
 
 	-- mouse events
 	local clickthrough = uframe.misc and uframe.misc.rightClickthrough
-	base:RegisterMouse(self, clickthrough)
+	core:RegisterMouse(self, clickthrough)
 
 	-- disable power
 	self.Power:Hide()
@@ -327,6 +328,17 @@ end
 -- -----------------------------------
 -- > HELPERS TO CONFIG HEADERS
 -- -----------------------------------
+
+
+local function table_merge(...)
+	local res = {}
+	for _,tbl in ipairs({...}) do
+		for _,val in ipairs(tbl) do
+			table_insert(res, val)
+		end
+	end
+	return res
+end
 
 local function gen_visibility(v)
 	if (not v) then
@@ -397,9 +409,9 @@ local function gen_options(i, grid, sort, grow, width, height)
 		self:SetHeight(h)
 		self:SetScale(s)
 		self:SetAttribute('oUF_NineRaidProfile', num)
-		]]):format(i, width or element_width(grid), height or element_height(grid), base:GetPixelScale())
+		]]):format(i, width or element_width(grid), height or element_height(grid), core:GetPixelScale())
 	}
-	return core:table_merge(attr.general, attr.grid[grow], attr.order[sort], attr.frame)
+	return table_merge(attr.general, attr.grid[grow], attr.order[sort], attr.frame)
 end
 
 local function gen_pet_options(i, grid, sort, grow, num)

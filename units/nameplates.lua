@@ -1,7 +1,7 @@
 local A, ns = ...
 
 local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
-local auras, filters, base = ns.auras, ns.filters, ns.base
+local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.frizq
 local font_num = m.fonts.asap
@@ -334,7 +334,7 @@ local function createStyle(self, unit)
 	-- size and position
 	self:SetSize(layout.width, layout.height)
 	self:SetPoint(uframe.pos.a1, uframe.pos.x, uframe.pos.y)
-	self:SetScale(base:GetPixelScale(self))
+	self:SetScale(core:GetPixelScale(self))
 
 	-- hp bar
 	local health = CreateFrame('StatusBar', nil, self)
@@ -366,7 +366,7 @@ local function createStyle(self, unit)
 	self.Health = health
 
 	-- hp prediction
-	self.HealthPrediction = base:CreateHealthPredict(self.Health, layout.width, self.Health:GetHeight())
+	self.HealthPrediction = core:CreateHealthPredict(self.Health, layout.width, self.Health:GetHeight())
 
 	-- elite icon
 	local EliteIcon = self:CreateTexture(nil, 'OVERLAY')

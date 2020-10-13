@@ -1,7 +1,6 @@
 local _, ns = ...
 
-local core, config, m, filters, oUF = ns.core, ns.config, ns.m, ns.filters, ns.oUF
-local auras = {}
+local auras, m, filters, oUF = {}, ns.m, ns.filters, ns.oUF
 ns.auras = auras
 
 local font_num = m.fonts.arial

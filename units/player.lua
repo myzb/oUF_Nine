@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local base, core, config, m, oUF = ns.base, ns.core, ns.config, ns.m, ns.oUF
+local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
 local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.frizq
@@ -408,10 +408,10 @@ local function createStyle(self)
 	-- root frame
 	self:SetSize(layout.width, layout.height)
 	self:SetPoint(uframe.pos.a1, uframe.pos.af, uframe.pos.a2, uframe.pos.x, uframe.pos.y)
-	base:CreateLayout(self, layout)
+	core:CreateLayout(self, layout)
 
 	-- mouse events
-	base:RegisterMouse(self)
+	core:RegisterMouse(self)
 
 	-- text strings
 	local health = CreateFrame('Frame', nil, self.Health)
