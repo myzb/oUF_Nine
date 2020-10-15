@@ -12,12 +12,64 @@ local frame_name = 'raid'
 -- Import API functions
 local math_floor = math.floor
 local table_insert = table.insert
+local UnitIsUnit = UnitIsUnit
+local UnitThreatSituation = UnitThreatSituation
+local GetThreatStatusColor = GetThreatStatusColor
 local Auras_ShouldDisplayDebuff = CompactUnitFrame_Util_ShouldDisplayDebuff -- FrameXML/CompactUnitFrame.lua
 local Auras_ShouldDisplayBuff = CompactUnitFrame_UtilShouldDisplayBuff      -- FrameXML/CompactUnitFrame.lua
 
 -- ------------------------------------------------------------------------
 -- > RAID UNIT SPECIFIC FUNCTIONS
 -- ------------------------------------------------------------------------
+
+-- Raid Frames Target Highlight Border
+local function ChangedTarget(self, event, unit)
+	if (UnitIsUnit('target', self.unit)) then
+		self.TargetBorder:Show()
+	else
+		self.TargetBorder:Hide()
+	end
+end
+
+-- Create Target Border
+local function TargetBorder_Create(self, f_level)
+	local border = core:CreateBorder(self, 2, 2, f_level, [[Interface\ChatFrame\ChatFrameBackground]])
+	border:SetBackdropBorderColor(0.8, 0.8, 0.8, 1)
+	self:RegisterEvent('PLAYER_TARGET_CHANGED', ChangedTarget, true)
+	self:RegisterEvent('GROUP_ROSTER_UPDATE', ChangedTarget, true)
+	self:RegisterEvent('RAID_TARGET_UPDATE', ChangedTarget) -- player join/leave
+	self.TargetBorder = border
+	ChangedTarget(self)
+end
+
+-- Party / Raid Frames Threat Highlight
+local function UpdateThreat(self, event, unit)
+	if (unit and not UnitIsUnit(unit, self.unit)) then
+		return
+	end
+	local status = UnitThreatSituation(self.unit)
+	if (status and status > 1) then
+		local r, g, b = GetThreatStatusColor(status)
+		self.ThreatBorder:Show()
+		self.ThreatBorder:SetBackdropBorderColor(r, g, b, 1)
+	else
+		self.ThreatBorder:Hide()
+	end
+end
+
+-- Create Party / Raid Threat Status Border
+local function ThreatBorder_Create(self, f_level)
+	local border = core:CreateGlowBorder(self, 6, 6, f_level)
+	self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
+	self:RegisterEvent('GROUP_ROSTER_UPDATE', UpdateThreat, true)
+	self:RegisterEvent('RAID_TARGET_UPDATE', UpdateThreat) -- player join/leave
+	self.ThreatBorder = border
+	UpdateThreat(self)
+end
+
+-- -----------------------------------
+-- > RAID AURAS
+-- -----------------------------------
 
 local function RaidAuras_PreUpdate(element, unit)
 	element.hasWarn = false
@@ -172,9 +224,9 @@ local function createStyle(self, unit, ...)
 	end
 	self:Tag(health.hpperc, statustag)
 
-	-- threat warning border
-	core:CreateThreatBorder(self, self.Health:GetFrameLevel() + 1)
-	core:CreateTargetBorder(self, self.Health:GetFrameLevel() + 1)
+	-- target / threat warning borders
+	ThreatBorder_Create(self, self:GetFrameLevel() + 1)
+	TargetBorder_Create(self, self:GetFrameLevel() + 1)
 
 	-- icons frame (ready check, raid icons, role, ...)
 	local icons = CreateFrame('Frame', nil, self.Health)
@@ -299,9 +351,9 @@ local function createSubStyle(self, unit)
 		self:Tag(health.unitname, '[n:name]')
 	end
 
-	-- threat warning border
-	core:CreateThreatBorder(self, self.Health:GetFrameLevel() + 1)
-	core:CreateTargetBorder(self, self.Health:GetFrameLevel() + 1)
+	-- target / threat warning borders
+	ThreatBorder_Create(self, self:GetFrameLevel() + 1)
+	TargetBorder_Create(self, self:GetFrameLevel() + 1)
 
 	-- icons frame (ready check, raid icons, role, ...)
 	local icons = CreateFrame('Frame', nil, self.Health)
