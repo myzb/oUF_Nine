@@ -49,7 +49,6 @@ local function NamePlate_Update(self, event, unit)
 	if (not self) then
 		return
 	end
-	unit = unit or self.unit
 
 	-- nameplate border glow / shadow update
 	local isTarget = UnitIsUnit('target', self.unit)
@@ -129,8 +128,11 @@ end
 
 -- Threat Based Nameplate Coloring
 local function Health_PostUpdateColor(element, unit)
-	local group = roles.Group['TANK']
+	if (UnitPlayerControlled(unit) or UnitIsTapDenied(unit)) then
+		return
+	end
 
+	local group = roles.Group['TANK']
 	local status, num = UnitThreatSituation('player', unit), nil
 	if (status == 2) then
 		num = 2 -- insecure tanking
@@ -140,18 +142,24 @@ local function Health_PostUpdateColor(element, unit)
 		num = 4 -- off-tank tanking
 	end
 
-	if (not num or UnitPlayerControlled(unit) or UnitIsTapDenied(unit)) then
+	if (num) then
+		local t, r, g, b
+		t = oUF.colors.threat[num]
+
+		if (t) then
+			r, g, b = t[1], t[2], t[3]
+		end
+		if (b) then
+			element:SetStatusBarColor(r, g, b)
+		end
+	end
+end
+
+local function Health_UpdateColor(self, event, unit)
+	if (not unit or self.unit ~= unit) then
 		return
 	end
-	local t, r, g, b
-	t = oUF.colors.threat[num]
-
-	if (t) then
-		r, g, b = t[1], t[2], t[3]
-	end
-	if (b) then
-		element:SetStatusBarColor(r, g, b)
-	end
+	self.Health:ForceUpdate()
 end
 
 -- -----------------------------------
@@ -344,9 +352,6 @@ local function createStyle(self, unit)
 	health:SetPoint('BOTTOM', self, 'BOTTOM', 0, layout.spacer.height)
 	health:SetStatusBarTexture(layout.texture or m.textures.status_texture)
 	health:GetStatusBarTexture():SetHorizTile(false)
-	if (layout.health.colorThreat) then
-		health.PostUpdateColor = Health_PostUpdateColor
-	end
 
 	-- background (under our own control, not to be confused with oUFs bg)
 	local background = health:CreateTexture(nil, 'BACKGROUND')
@@ -355,6 +360,10 @@ local function createStyle(self, unit)
 	background:SetVertexColor(0, 0, 0, 0.9)
 
 	-- hp bar colors
+	if (layout.health.colorThreat) then
+		health.PostUpdateColor = Health_PostUpdateColor
+		self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', Health_UpdateColor)
+	end
 	health.colorClass = layout.health.colorClass
 	health.colorReaction = layout.health.colorReaction
 	health.colorHealth = true
