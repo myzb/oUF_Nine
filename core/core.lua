@@ -6,6 +6,7 @@ ns.core = core
 -- Import API functions
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
+local UnitIsConnected = UnitIsConnected
 local UnitIsDead = UnitIsDead
 local UnitIsGhost = UnitIsGhost
 local GetCVar = GetCVar
@@ -259,14 +260,14 @@ end
 
 -- Health color override for inverted color mode
 local function Health_UpdateColor(self, event, unit)
-	if(not unit or self.unit ~= unit) then return end
+	if (not unit or self.unit ~= unit) then return end
 	local element = self.Health
 	local color = config.frame.colors
 
-	if (element.disconnected) then
-		element:SetStatusBarColor(unpack(color.away.fg))
-	else
+	if (UnitIsConnected(unit)) then
 		element:SetStatusBarColor(unpack(color.base.fg))
+	else
+		element:SetStatusBarColor(unpack(color.away.fg))
 	end
 
 	if (UnitIsDead(unit) or UnitIsGhost(unit)) then
@@ -307,6 +308,7 @@ function core:CreateLayout(self, layout)
 	-- hp color and Shadows
 	if (l.health.colorCustom) then
 		health.UpdateColor = Health_UpdateColor
+		self:RegisterEvent('UNIT_CONNECTION', Health_UpdateColor)
 	else
 		health.colorClass = l.health.colorClass
 		health.colorReaction = l.health.colorReaction
