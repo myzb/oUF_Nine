@@ -370,9 +370,10 @@ local function createStyle(self, unit)
 	health.colorDisconnected = true
 	health.colorTapping = true
 
-	-- hp glow and shadows
+	-- hp glow and shadows (targeting)
 	health.Glow = core:CreateGlowBorder(health, 4, 4, 0)
 	health.Shadow = core:CreateDropShadow(health, 4, 4, 0, config.frame.shadows)
+	self:RegisterEvent('PLAYER_TARGET_CHANGED', NamePlate_Update, true)
 	self.Health = health
 
 	-- hp prediction
@@ -452,11 +453,6 @@ local function createStyle(self, unit)
 		widgetxp:SetPoint('TOP', self.Health, 'BOTTOM', 0, -14)
 		self.WidgetXPBar = widgetxp
 	end
-
-	-- register nameplate events
-	self:RegisterEvent('PLAYER_TARGET_CHANGED', NamePlate_Update, true)
-	self:RegisterEvent('NAME_PLATE_UNIT_ADDED', NamePlate_Update, true)
-	self:RegisterEvent('NAME_PLATE_UNIT_REMOVED', NamePlate_Update, true)
 end
 
 -- -----------------------------------
