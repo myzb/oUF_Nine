@@ -246,19 +246,12 @@ local function TotemBar_Create(self, width)
 		icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 
 		local cooldown = CreateFrame('Cooldown', nil, totem, 'CooldownFrameTemplate')
-		cooldown.text = cooldown:GetRegions()
-		cooldown.text:SetFont(font, config.fontsize - 2, 'OUTLINE')
+		cooldown:SetHideCountdownNumbers(true)
 		cooldown:SetReverse(true)
 		cooldown:SetAllPoints()
 
-		local overlay = totem:CreateTexture(nil, 'OVERLAY')
-		overlay:SetTexture(m.textures.border_dark)
-		overlay:SetAllPoints()
-		overlay:SetTexCoord(0, 1, 0, 1)
-		overlay:SetVertexColor(0.8, 0.8, 0.8)
-		overlay:Show()
+		core:CreateDropShadow(totem, 5, 5, 0, config.frame.shadows)
 
-		totem.overlay = overlay
 		totem.Icon = icon
 		totem.Cooldown = cooldown
 
