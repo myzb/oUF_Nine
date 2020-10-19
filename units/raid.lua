@@ -79,8 +79,11 @@ end
 local function Buffs_CustomFilter(element, unit, button, isDispellable, ...)
 	local spellId = select(10, ...)
 
-	-- hide blacklisted buffs
-	if (filters.raid['blacklist'][spellId]) then
+	-- auras white-/blacklist
+	if (filters[frame_name]['whitelist'][spellId]) then
+		return auras.BUFF_WHITELIST
+	end
+	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
 	end
 
@@ -106,10 +109,14 @@ end
 local function Debuffs_CustomFilter(element, unit, button, isDispellable, ...)
 	local spellId = select(10, ...)
 
-	-- hide blacklisted debuffs
-	if (filters.raid['blacklist'][spellId]) then
+	-- auras white-/blacklist
+	if (filters[frame_name]['whitelist'][spellId]) then
+		return auras.DEBUFF_WHITELIST
+	end
+	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
 	end
+
 	-- blizzard raid-frames filtering function
 	if (not Auras_ShouldDisplayDebuff(...)) then
 		return false
@@ -309,7 +316,7 @@ local function createStyle(self, unit, ...)
 
 		raidDebuffs.CustomFilter = Debuffs_CustomFilter
 		raidDebuffs.SetGroupPosition = RaidAuras_SetGroupPosition
-		raidDebuffs.group = { [9] = { size = size + 8 } } -- boss aura group
+		raidDebuffs.group = { [auras.DEBUFF_BOSS] = { size = size + 8 } } -- boss aura group
 
 		self.RaidDebuffs = raidDebuffs
 	end

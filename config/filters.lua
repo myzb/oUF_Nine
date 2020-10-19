@@ -26,6 +26,11 @@ filters.focus = {
 	whitelist = {}
 }
 
+filters.boss = {
+	blacklist = {},
+	whitelist = {}
+}
+
 filters.nameplate = {
 	blacklist = {},
 	whitelist = {}

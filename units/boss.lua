@@ -28,10 +28,14 @@ local function Debuffs_CustomFilter(element, unit, button, ...)
 	local spellId = select(10, ...)
 	local showAll = select(14, ...)
 
-	-- hide blacklisted debuffs
-	if (filters.debuffs['blacklist'][spellId]) then
+	-- auras white-/blacklist
+	if (filters[frame_name]['whitelist'][spellId]) then
+		return true
+	end
+	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
 	end
+
 	-- blizzard's nameplate filtering function
 	return button.isPlayer and Auras_ShouldDisplayDebuff(nil, name, caster, showSelf, showAll, duration)
 end

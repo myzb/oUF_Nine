@@ -28,8 +28,11 @@ end
 local function Buffs_CustomFilter(element, unit, button, isDispellable, ...)
 	local spellId = select(10, ...)
 
-	-- hide blacklisted buffs
-	if (filters.raid['blacklist'][spellId]) then
+	-- buffs white-/blacklist
+	if (filters[frame_name]['whitelist'][spellId]) then
+		return auras.BUFF_WHITELIST
+	end
+	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
 	end
 
@@ -55,10 +58,14 @@ end
 local function Debuffs_CustomFilter(element, unit, button, isDispellable, ...)
 	local spellId = select(10, ...)
 
-	-- hide blacklisted debuffs
+	-- auras white-/blacklist
+	if (filters.raid['whitelist'][spellId]) then
+		return auras.DEBUFF_WHITELIST
+	end
 	if (filters.raid['blacklist'][spellId]) then
 		return false
 	end
+
 	-- blizzard raid-frames filtering function
 	if (not Auras_ShouldDisplayDebuff(...)) then
 		return false

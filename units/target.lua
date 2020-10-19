@@ -38,10 +38,14 @@ end
 local function Buffs_CustomFilter(element, unit, button, ...)
 	local spellId = select(10, ...)
 
-	-- hide blacklisted buffs
-	if (filters.buffs['blacklist'][spellId]) then
+	-- auras white-/blacklist
+	if (filters[frame_name]['whitelist'][spellId]) then
+		return true
+	end
+	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
 	end
+
 	-- get buff priority and warn level
 	button.prio = auras:GetBuffPrio(...)
 	-- show all buffs
@@ -56,10 +60,14 @@ local function Debuffs_CustomFilter(element, unit, button, ...)
 	local casterIsPlayer = select(13, ...)
 	local nameplateShowAll = select(14, ...)
 
-	-- hide blacklisted debuffs
-	if (filters.debuffs['blacklist'][spellId]) then
+	-- auras white-/blacklist
+	if (filters[frame_name]['whitelist'][spellId]) then
+		return true
+	end
+	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
 	end
+
 	-- blizzard target-/focus frame filtering function
 	return Auras_ShouldDisplayDebuff(unit, caster, nameplateShowAll, casterIsPlayer)
 end

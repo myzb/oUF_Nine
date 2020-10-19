@@ -276,10 +276,14 @@ local function Buffs_CustomFilter(element, unit, button, isDispellable, ...)
 	local spellId = select(10, ...)
 	local casterIsPlayer = select(13, ...)
 
-	-- show whitelisted buffs
-	if (filters.nameplate['whitelist'][spellId]) then
-		return true
+	-- auras white-/blacklist
+	if (filters[frame_name]['whitelist'][spellId]) then
+		return auras.BUFF_WHITELIST
 	end
+	if (filters[frame_name]['blacklist'][spellId]) then
+		return false
+	end
+
 	-- only show stealable / purgeable buffs
 	if (isStealable and ((duration > 0 and duration < 30) or not casterIsPlayer)) then
 		return 1
@@ -318,10 +322,14 @@ local function Debuffs_CustomFilter(element, unit, button, isDispellable, ...)
 	local spellId = select(10, ...)
 	local showAll = select(14, ...)
 
-	-- hide blacklisted debuffs
-	if (filters.nameplate['blacklist'][spellId]) then
+	-- auras white-/blacklist
+	if (filters[frame_name]['whitelist'][spellId]) then
+		return auras.DEBUFF_WHITELIST
+	end
+	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
 	end
+
 	-- blizzard's nameplate filtering function
 	if (Auras_ShouldDisplayDebuff(nil, name, caster, showSelf, showAll, duration)) then
 		return 1
