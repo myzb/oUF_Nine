@@ -372,12 +372,10 @@ local function createSubStyle(self, unit)
 	self.RaidTargetIndicator = raidIcon
 
 	-- raid buffs (only used for health color toggle)
-	do
+	if (layout.health.colorOnAura) then
 		local raidBuffs = CreateFrame('Frame', nil, self)
 		raidBuffs.num = 3
-		if (layout.health.colorOnAura) then
-			auras:EnableColorToggle(raidBuffs, self.Health)
-		end
+		auras:EnableColorToggle(raidBuffs, self.Health)
 		self.RaidBuffs = raidBuffs
 	end
 
