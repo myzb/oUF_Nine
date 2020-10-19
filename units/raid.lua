@@ -308,7 +308,7 @@ local function createStyle(self, unit, ...)
 		raidDebuffs['growth-y'] = 'UP'
 		raidDebuffs.showDebuffType = true
 		raidDebuffs.special:SetPoint('CENTER', self.Health, 'CENTER', 0, 0)
-		raidDebuffs.showSpecial = uframe.auras.warn
+		raidDebuffs.showSpecial = uframe.auras and uframe.auras.warn
 
 		raidDebuffs.dispelIcon = CreateFrame('Button', nil, raidDebuffs)
 		raidDebuffs.dispelIcon:SetPoint('TOPRIGHT', self.Health)
