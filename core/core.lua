@@ -351,10 +351,7 @@ function core:CreateLayout(self, layout)
 		power.colorPower = not l.power.colorClass
 		power.colorTapping = true
 		power.colorDisconnected = true
-		power.colorHappiness = false
-
 		power.displayAltPower = l.power.displayAltPower
-		power.altPowerColor = { 202/255, 202/255, 202/255 }
 
 		if (l.shadows) then
 			power.Shadow = core:CreateDropShadow(power, 5, 5, 0, config.frame.shadows)

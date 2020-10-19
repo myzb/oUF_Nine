@@ -157,7 +157,7 @@ config.units = {
 			height = 17,
 			latency = {
 				show = false,
-				color = {1, 0, 0, 0.5}
+				color = { 1, 0, 0, 0.5 }
 			}
 		},
 		altpower = { -- boss encounter resources i.e sanity (n'zoth)
@@ -360,7 +360,6 @@ config.units = {
 			health = {
 				colorClass = true,
 				colorThreat = true,
-				colorClassText = false,
 				colorReaction = true
 			},
 			spacer = {
