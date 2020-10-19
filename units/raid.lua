@@ -381,7 +381,6 @@ end
 -- > HELPERS TO CONFIG HEADERS
 -- -----------------------------------
 
-
 local function table_merge(...)
 	local res = {}
 	for _,tbl in ipairs({...}) do
@@ -392,12 +391,11 @@ local function table_merge(...)
 	return res
 end
 
-local function gen_visibility(v)
-	if (not v) then
+local function gen_visibility(role, from, to)
+	if (not to) then
 		return 'hide'
 	end
 
-	local role, from, to = v.role, v.from, v.to
 	local spec
 	for i = 1, GetNumSpecializations() do
 		local isRole = role:match(GetSpecializationRole(i))
@@ -483,12 +481,13 @@ end
 local RaidHeader = CreateFrame('Frame')
 
 function RaidHeader:SpawnAll()
+	local header = {}
 	for i, cfg in ipairs(config.units[frame_name]) do
 		local options = gen_options(i, cfg.grid, cfg.sort, cfg.grow)
 
 		oUF:SetActiveStyle(A.. frame_name:gsub('^%l', string.upper))
-		RaidHeader[i] = oUF:SpawnHeader('oUF_NineRaid'..i, nil, nil, unpack(options))
-		RaidHeader[i]:SetPoint(cfg.pos.a1, cfg.pos.af, cfg.pos.a2, cfg.pos.x, cfg.pos.y)
+		header[i] = oUF:SpawnHeader('oUF_NineRaid'..i, nil, nil, unpack(options))
+		header[i]:SetPoint(cfg.pos.a1, cfg.pos.af, cfg.pos.a2, cfg.pos.x, cfg.pos.y)
 
 		if (cfg.pets and cfg.pets.show) then
 			local xoff = (cfg.pets.anchor == 'TOPRIGHT') and cfg.grid.sep or 0
@@ -496,17 +495,18 @@ function RaidHeader:SpawnAll()
 			options = gen_pet_options(i, cfg.grid, cfg.sort, cfg.grow, cfg.pets.num)
 
 			oUF:SetActiveStyle(A.. frame_name:gsub('^%l', string.upper)..'Pets')
-			RaidHeader[i].pets = oUF:SpawnHeader('oUF_NineRaidPets'..i, 'SecureGroupPetHeaderTemplate', nil, unpack(options))
-			RaidHeader[i].pets:SetPoint('TOPLEFT', 'oUF_NineRaid'..i, cfg.pets.anchor or 'TOPRIGHT', xoff, yoff)
+			header[i].pets = oUF:SpawnHeader('oUF_NineRaidPets'..i, 'SecureGroupPetHeaderTemplate', nil, unpack(options))
+			header[i].pets:SetPoint('TOPLEFT', 'oUF_NineRaid'..i, cfg.pets.anchor or 'TOPRIGHT', xoff, yoff)
 		end
 	end
+	self.header = header
 end
 
 -- add visibility option later, since we use spec information which is not available at header creation
 local function RaidHeader_OnEvent(self, event)
-	for i, header in ipairs(RaidHeader) do
-		local cfg = config.units[frame_name][i]
-		header.visibility = gen_visibility(cfg.visibility)
+	for i, header in ipairs(self.header) do
+		local v = config.units[frame_name][i].visibility
+		header.visibility = v and gen_visibility(v.role, v.from, v.to)
 		RegisterAttributeDriver(header, 'state-visibility', header.visibility)
 		if (header.pets) then
 			RegisterAttributeDriver(header.pets, 'state-visibility', header.visibility)
