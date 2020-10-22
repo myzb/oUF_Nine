@@ -373,6 +373,7 @@ config.units = {
 		},
 		debuffs = {
 			show = true,
+			warn = false,
 			size = 24,
 			cols = 4
 		},

@@ -331,9 +331,15 @@ local function Debuffs_CustomFilter(element, unit, button, isDispellable, ...)
 	end
 
 	-- blizzard's nameplate filtering function
-	if (Auras_ShouldDisplayDebuff(nil, name, caster, showSelf, showAll, duration)) then
-		return 1
+	if (not Auras_ShouldDisplayDebuff(nil, name, caster, showSelf, showAll, duration)) then
+		return false
 	end
+
+	-- get debuff priority and warn level
+	local prio, warn = auras:GetDebuffPrio(isDispellable, ...)
+	button.prio = prio
+
+	return (element.showSpecial and warn and 'S') or prio
 end
 
 -- -----------------------------------
@@ -439,7 +445,7 @@ local function createStyle(self, unit)
 		local cfg = uframe.debuffs
 		local cols = cfg.cols or 4
 		local size = cfg.size or math_floor(self:GetWidth() / (2 * (cols + 0.25)))
-		local raidDebuffs = auras:CreateRaidAuras(self, size, cols, cols + 0.5, 2)
+		local raidDebuffs = auras:CreateRaidAuras(self, size, cols, cols + 0.5, 2, size + 8)
 		raidDebuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 20)
 		raidDebuffs.initialAnchor = 'BOTTOMLEFT'
 		raidDebuffs['growth-x'] = 'RIGHT'
@@ -449,6 +455,9 @@ local function createStyle(self, unit)
 		raidDebuffs.PostCreateIcon = Auras_PostCreateIcon
 		raidDebuffs.PreUpdate = Debuffs_PreUpdate
 		raidDebuffs.CustomFilter = Debuffs_CustomFilter
+
+		raidDebuffs.special:SetPoint('BOTTOM', self, 'TOP', 0, 20)
+		raidDebuffs.showSpecial = uframe.debuffs and uframe.debuffs.warn
 
 		self.RaidDebuffs = raidDebuffs
 	end
