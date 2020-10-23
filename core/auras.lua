@@ -341,9 +341,13 @@ local function RaidAuras_UpdateSpecial(element, groups, idx)
 		end
 		if (not groups[button.prio]) then
 			groups[button.prio] = {}
+			if type(button.prio) == 'number' then
+				table_insert(groups.used, button.prio)
+			end
 		end
 		table_insert(groups[button.prio], button)
 	end
+	table_sort(groups.used, function(a, b) return a > b end)
 end
 
 local function RaidAuras_PreSetPosition(element, groups)
