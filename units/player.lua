@@ -415,45 +415,38 @@ local function createStyle(self)
 	core:RegisterMouse(self)
 
 	-- text strings
-	local health = CreateFrame('Frame', nil, self.Health)
-	health:SetAllPoints()
-	health.level = core:CreateFontstring(health, font, config.fontsize -2, nil, 'LEFT')
-	health.level:SetShadowColor(0, 0, 0, 1)
-	health.level:SetShadowOffset(1, -1)
-	health.level:SetPoint('TOPLEFT', 1, -2)
-	self:Tag(health.level, '[n:difficultycolor][level]')
-
-	health.unitname = core:CreateFontstring(health, font, config.fontsize -2, nil, 'LEFT')
-	health.unitname:SetShadowColor(0, 0, 0, 1)
-	health.unitname:SetShadowOffset(1, -1)
-	health.unitname:SetPoint('LEFT', health.level, 'RIGHT', 1, 0)
-	health.unitname:SetSize(0.46 * layout.width, config.fontsize + 2)
+	local text = CreateFrame('Frame', nil, self.Health)
+	text:SetAllPoints(self)
+	text.unit = core:CreateFontstring(text, font, config.fontsize -2, nil, 'LEFT')
+	text.unit:SetShadowColor(0, 0, 0, 1)
+	text.unit:SetShadowOffset(1, -1)
+	text.unit:SetPoint('TOPLEFT', self.Health, 'TOPLEFT', 1, -2)
 	if (layout.health.colorCustom) then
-		self:Tag(health.unitname, '[raidcolor][n:name]')
+		self:Tag(text.unit, '[n:difficultycolor][level]|r [raidcolor][n:name]')
 	else
-		self:Tag(health.unitname, '[n:name]')
+		self:Tag(text.unit, '[n:difficultycolor][level]|r [n:name]')
 	end
 
-	health.hpvalue = core:CreateFontstring(health, font_num, config.fontsize +1, nil, 'RIGHT')
-	health.hpvalue:SetShadowColor(0, 0, 0, 1)
-	health.hpvalue:SetShadowOffset(1, -1)
-	health.hpvalue:SetPoint('RIGHT', -4, 0)
-	self:Tag(health.hpvalue, '[n:hpvalue]')
-	health.hpperc = core:CreateFontstring(health, font_num, config.fontsize +1, nil, 'CENTER')
-	health.hpperc:SetPoint('CENTER', 0, 0)
+	text.health = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'RIGHT')
+	text.health:SetShadowColor(0, 0, 0, 1)
+	text.health:SetShadowOffset(1, -1)
+	text.health:SetPoint('RIGHT', self.Health, 'RIGHT', -4, 0)
+	self:Tag(text.health, '[n:curhp]')
+
+	text.status = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'CENTER')
+	text.status:SetPoint('CENTER', self.Health, 'CENTER', 0, 0)
 	if (layout.health.colorCustom) then
-		self:Tag(health.hpperc, '[n:reactioncolor][n:perhp_status]')
+		self:Tag(text.status, '[n:reactioncolor][n:perhp_status]')
 	else
-		self:Tag(health.hpperc, '[n:perhp_status]')
+		self:Tag(text.status, '[n:perhp_status]')
 	end
 
-	local power = CreateFrame('Frame', nil, self.Power)
-	power:SetAllPoints()
-	power.value = core:CreateFontstring(power, font_num, config.fontsize +1, nil, 'RIGHT')
-	power.value:SetShadowColor(0, 0, 0, 1)
-	power.value:SetShadowOffset(1, -1)
-	power.value:SetPoint('RIGHT', -4, 0)
-	self:Tag(power.value, '[n:powervalue]')
+	text.power = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'RIGHT')
+	text.power:SetShadowColor(0, 0, 0, 1)
+	text.power:SetShadowOffset(1, -1)
+	text.power:SetPoint('RIGHT', self.Power, 'RIGHT', -4, 0)
+	self:Tag(text.power, '[n:curpp]')
+	self.Text = text
 
 	-- class resources
 	if (uframe.classpower.show) then

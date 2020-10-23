@@ -202,34 +202,36 @@ local function createStyle(self, unit, ...)
 		self.Power.PostUpdate = Power_PostUpdate
 	end
 
-	-- info frame (on top of health)
-	local health = CreateFrame('Frame', nil, self.Health)
-	health:SetAllPoints()
-	health.unitname = core:CreateFontstring(health, font, font_size - 2, nil, 'LEFT')
-	health.unitname:SetPoint('TOPRIGHT', -2, 0)
-	health.unitname:SetShadowColor(0, 0, 0, 1)
-	health.unitname:SetShadowOffset(1, -1)
-	health.unitname:SetSize(self:GetWidth() - 15, font_size + 1)
-	local nametag = '[n:name]'
+	-- text strings (on top of health)
+	local text = CreateFrame('Frame', nil, self.Health)
+	text:SetAllPoints()
+	text.unit = core:CreateFontstring(text, font, font_size - 2, nil, 'LEFT')
+	text.unit:SetPoint('TOPRIGHT', -2, 0)
+	text.unit:SetShadowColor(0, 0, 0, 1)
+	text.unit:SetShadowOffset(1, -1)
+	text.unit:SetSize(self:GetWidth() - 15, font_size + 1)
 	if (layout.health.colorCustom) then
-		nametag = '[n:unitcolor]'..nametag
-	end
-	self:Tag(health.unitname, nametag)
-
-	health.hpperc = core:CreateFontstring(health, font_num, font_size + 2, nil, 'CENTER')
-	health.hpperc:SetPoint('LEFT')
-	health.hpperc:SetPoint('RIGHT')
-	health.hpperc:SetSize(self:GetWidth(), font_size + 13)
-	local statustag = ''
-	if (layout.health.colorCustom) then
-		statustag = '[n:reactioncolor]'..statustag
-	end
-	if (uframe.misc and uframe.misc.hideHPPerc) then
-		statustag = statustag..'[n:status]'
+		self:Tag(text.unit, '[n:unitcolor][n:name]')
 	else
-		statustag = statustag..'[n:perhp_status]'
+		self:Tag(text.unit, '[n:name]')
 	end
-	self:Tag(health.hpperc, statustag)
+
+	text.status = core:CreateFontstring(text, font_num, font_size + 2, nil, 'CENTER')
+	text.status:SetPoint('LEFT')
+	text.status:SetPoint('RIGHT')
+	text.status:SetSize(self:GetWidth(), font_size + 13)
+	local statustag
+	if (uframe.misc and uframe.misc.hideHPPerc) then
+		statustag = '[n:status]'
+	else
+		statustag = '[n:perhp_status]'
+	end
+	if (layout.health.colorCustom) then
+		self:Tag(text.status, '[n:reactioncolor]'..statustag)
+	else
+		self:Tag(text.status, statustag)
+	end
+	self.Text = text
 
 	-- target / threat warning borders
 	ThreatBorder_Create(self, self:GetFrameLevel() + 1)
@@ -344,19 +346,20 @@ local function createSubStyle(self, unit)
 	self.Power:ClearAllPoints()
 	self.Health:SetAllPoints()
 
-	-- texts
-	local health = CreateFrame('Frame', nil, self.Health)
-	health:SetAllPoints()
-	health.unitname = core:CreateFontstring(health, font, font_size - 2, nil, 'LEFT')
-	health.unitname:SetPoint('LEFT', 6, 0)
-	health.unitname:SetShadowColor(0, 0, 0, 1)
-	health.unitname:SetShadowOffset(1, -1)
-	health.unitname:SetSize(self:GetWidth() - 12, font_size + 1)
+	-- text strings (on top of health)
+	local text = CreateFrame('Frame', nil, self.Health)
+	text:SetAllPoints()
+	text.unit = core:CreateFontstring(text, font, font_size - 2, nil, 'LEFT')
+	text.unit:SetPoint('LEFT', 6, 0)
+	text.unit:SetShadowColor(0, 0, 0, 1)
+	text.unit:SetShadowOffset(1, -1)
+	text.unit:SetSize(self:GetWidth() - 12, font_size + 1)
 	if (layout.health.colorCustom) then
-		self:Tag(health.unitname, '[n:unitcolor][n:name]')
+		self:Tag(text.unit, '[n:unitcolor][n:name]')
 	else
-		self:Tag(health.unitname, '[n:name]')
+		self:Tag(text.unit, '[n:name]')
 	end
+	self.Text = text
 
 	-- target / threat warning borders
 	ThreatBorder_Create(self, self:GetFrameLevel() + 1)

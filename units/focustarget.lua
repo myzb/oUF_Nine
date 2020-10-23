@@ -26,18 +26,19 @@ local function createStyle(self)
 	core:RegisterMouse(self)
 
 	-- Text Strings
-	local health = CreateFrame('Frame', nil, self.Health)
-	health:SetAllPoints()
-	health.unitname = core:CreateFontstring(health, font, config.fontsize - 2, nil, 'CENTER')
-	health.unitname:SetShadowColor(0, 0, 0, 1)
-	health.unitname:SetShadowOffset(1, -1)
-	health.unitname:SetPoint('CENTER', 0 , 0)
-	health.unitname:SetSize(layout.width - 4, config.fontsize)
+	local text = CreateFrame('Frame', nil, self.Health)
+	text:SetAllPoints()
+	text.name = core:CreateFontstring(text, font, config.fontsize - 2, nil, 'CENTER')
+	text.name:SetShadowColor(0, 0, 0, 1)
+	text.name:SetShadowOffset(1, -1)
+	text.name:SetPoint('CENTER', 0 , 0)
+	text.name:SetSize(layout.width - 4, config.fontsize)
 	if (layout.health.colorCustom) then
-		self:Tag(health.unitname, '[n:unitcolor][n:abbrev_name]')
+		self:Tag(text.name, '[n:unitcolor][n:abbrev_name]')
 	else
-		self:Tag(health.unitname, '[n:abbrev_name]')
+		self:Tag(text.name, '[n:abbrev_name]')
 	end
+	self.Text = text
 end
 
 -- -----------------------------------

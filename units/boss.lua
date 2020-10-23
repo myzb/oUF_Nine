@@ -55,36 +55,35 @@ local function createStyle(self)
 	core:RegisterMouse(self)
 
 	-- text strings
-	local health = CreateFrame('Frame', nil, self.Health)
-	health:SetAllPoints()
-	health.unitname = core:CreateFontstring(health, font, config.fontsize -1, nil, 'CENTER')
-	health.unitname:SetShadowColor(0, 0, 0, 1)
-	health.unitname:SetShadowOffset(1, -1)
-	health.unitname:SetPoint('TOPLEFT', 2, -2)
-	health.unitname:SetSize(layout.width - 10, config.fontsize + 1)
+	local text = CreateFrame('Frame', nil, self.Health)
+	text:SetAllPoints(self)
+	text.unit = core:CreateFontstring(text, font, config.fontsize -1, nil, 'CENTER')
+	text.unit:SetShadowColor(0, 0, 0, 1)
+	text.unit:SetShadowOffset(1, -1)
+	text.unit:SetPoint('TOPLEFT', self.Health, 'TOPLEFT', 2, -2)
+	text.unit:SetSize(layout.width - 10, config.fontsize + 1)
 	if (layout.health.colorCustom) then
-		self:Tag(health.unitname, '[n:unitcolor][n:name]')
+		self:Tag(text.unit, '[n:unitcolor][n:name]')
 	else
-		self:Tag(health.unitname, '[n:name]')
+		self:Tag(text.unit, '[n:name]')
 	end
 
-	health.hpperc = core:CreateFontstring(health, font_num, config.fontsize + 6, nil, 'CENTER')
-	health.hpperc:SetPoint('CENTER', 0, -2)
-	health.hpperc:SetSize(layout.width - 10, config.fontsize + 1)
+	text.status = core:CreateFontstring(text, font_num, config.fontsize + 6, nil, 'CENTER')
+	text.status:SetPoint('CENTER', self.Health, 'CENTER', 0, -2)
+	text.status:SetSize(layout.width - 10, config.fontsize + 1)
 	if (layout.health.colorCustom) then
-		self:Tag(health.hpperc, '[n:reactioncolor][n:perhp_status]')
+		self:Tag(text.status, '[n:reactioncolor][n:perhp_status]')
 	else
-		self:Tag(health.hpperc, '[n:perhp_status]')
+		self:Tag(text.status, '[n:perhp_status]')
 	end
 
-	local power = CreateFrame('Frame', nil, self.Power)
-	power:SetAllPoints()
-	power.value = core:CreateFontstring(power, font_num, config.fontsize + 1, nil, 'CENTER')
-	power.value:SetShadowColor(0, 0, 0, 1)
-	power.value:SetShadowOffset(1, -1)
-	power.value:SetPoint('CENTER')
-	power.value:SetSize(layout.width - 10, config.fontsize + 1)
-	self:Tag(power.value, '[n:powervalue]')
+	text.power = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'CENTER')
+	text.power:SetShadowColor(0, 0, 0, 1)
+	text.power:SetShadowOffset(1, -1)
+	text.power:SetPoint('CENTER', self.Power, 'CENTER', 0, 0)
+	text.power:SetSize(layout.width - 10, config.fontsize + 1)
+	self:Tag(text.power, '[n:curpp]')
+	self.Text = text
 
 	-- castbar
 	if (uframe.castbar and uframe.castbar.show) then

@@ -45,45 +45,14 @@ tags['n:difficultycolor'] = function(unit)
 end
 
 -- Health Value
-tags['n:hpvalue'] = function(unit)
+tags['n:curhp'] = function(unit)
 	local min = UnitHealth(unit)
 	if (min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit)) then
-		return ''
+		return
 	end
 	return util:ShortNumber(min)
 end
-events['n:hpvalue'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_NAME_UPDATE'
-
--- Health Percent
-tags['n:perhp'] = function(unit)
-	local min, max = UnitHealth(unit), UnitHealthMax(unit)
-	if (min and max) then
-		return floor((min / max) * 100 + 0.5)..'%'
-	else
-		return ''
-	end
-end
-events['n:perhp'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE'
-
--- Health Percent with Status
-tags['n:perhp_status'] = function(unit)
-	if (UnitIsDead(unit)) then
-		return 'Dead'
-	elseif (UnitIsGhost(unit)) then
-		return 'Ghost'
-	elseif (not UnitIsConnected(unit)) then
-		return 'Offline'
-	else
-		-- Get perhp
-		local m = UnitHealthMax(unit)
-		if (m == 0) then
-			return 0
-		else
-			return math.floor(UnitHealth(unit) / m * 100 + 0.5)..'%'
-		end
-	end
-end
-events['n:perhp_status'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE UNIT_CONNECTION PLAYER_FLAGS_CHANGED'
+events['n:curhp'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_NAME_UPDATE'
 
 -- Player Status
 tags['n:status'] = function(unit)
@@ -93,18 +62,22 @@ tags['n:status'] = function(unit)
 		return 'Ghost'
 	elseif (not UnitIsConnected(unit)) then
 		return 'Offline'
-	else
-		return ''
 	end
 end
 events['n:status'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE UNIT_CONNECTION PLAYER_FLAGS_CHANGED'
 
--- Power value
-tags['n:powervalue'] = function(unit)
+-- Health Percent with Status
+tags['n:perhp_status'] = function(unit)
+	return tags['n:status'](unit) or tags['perhp'](unit)..'%'
+end
+events['n:perhp_status'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE UNIT_CONNECTION PLAYER_FLAGS_CHANGED'
+
+-- Power Value
+tags['n:curpp'] = function(unit)
 	-- Hide it if DC, Ghost or Dead!
 	local min, max = UnitPower(unit, UnitPowerType(unit)), UnitPowerMax(unit, UnitPowerType(unit))
 	if (min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit)) then
-		return ''
+		return
 	end
 
 	local _, ptype = UnitPowerType(unit)
@@ -118,19 +91,20 @@ tags['n:powervalue'] = function(unit)
 		return util:ShortNumber(min)
 	end
 end
-events['n:powervalue'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE'
+events['n:curpp'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE'
 
 -- Additional Power
 tags['n:addpower'] = function(unit)
 	local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
 
-	if (UnitPowerType(unit) ~= 0 and min ~= max) then -- If Power Type is not Mana(it's Energy or Rage) and Mana is not at Maximum
+	-- hide if the units main power type is already mana (0) or power is full
+	if (UnitPowerType(unit) ~= 0 and min ~= max) then
 		return util:ShortNumber(min)
 	end
 end
 events['n:addpower'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE'
 
--- Stagger
+-- Stagger Value
 tags['n:stagger'] = function(unit)
 	local min, max = UnitStagger(unit), UnitHealthMax(unit)
 	return util:ShortNumber(min)
@@ -138,7 +112,7 @@ end
 
 events['n:stagger'] = 'UNIT_AURA UNIT_DISPLAYPOWER PLAYER_TALENT_UPDATE'
 
--- Unit color
+-- Unit Color
 tags['n:unitcolor'] = function(unit)
 	local _, class = UnitClass(unit)
 	local isPlayer, isPet = UnitIsPlayer(unit), UnitPlayerControlled(unit)
@@ -163,7 +137,7 @@ tags['n:unitcolor'] = function(unit)
 	return color
 end
 
--- Status color
+-- Reaction Color
 tags['n:reactioncolor'] = function(unit)
 	local isPlayerControlled = UnitPlayerControlled(unit)
 	local reaction = UnitReaction(unit, 'player')

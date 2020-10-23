@@ -94,32 +94,26 @@ local function createStyle(self)
 	core:RegisterMouse(self)
 
 	-- text strings
-	local health = CreateFrame('Frame', nil, self.Health)
-	health:SetAllPoints()
-	health.level = core:CreateFontstring(health, font, config.fontsize -2, nil, 'LEFT')
-	health.level:SetShadowColor(0, 0, 0, 1)
-	health.level:SetShadowOffset(1, -1)
-	health.level:SetPoint('TOPLEFT', 1, -2)
-	self:Tag(health.level, '[n:difficultycolor][level]')
-
-	health.unitname = core:CreateFontstring(health, font, config.fontsize -2, nil, 'LEFT')
-	health.unitname:SetShadowColor(0, 0, 0, 1)
-	health.unitname:SetShadowOffset(1, -1)
-	health.unitname:SetPoint('LEFT', health.level, 'RIGHT', 1, 0)
-	health.unitname:SetSize(0.8 * layout.width, config.fontsize + 2)
+	local text = CreateFrame('Frame', nil, self.Health)
+	text:SetAllPoints()
+	text.unit = core:CreateFontstring(text, font, config.fontsize -2, nil, 'LEFT')
+	text.unit:SetShadowColor(0, 0, 0, 1)
+	text.unit:SetShadowOffset(1, -1)
+	text.unit:SetPoint('TOPLEFT', 1, -2)
 	if (layout.health.colorCustom) then
-		self:Tag(health.unitname, '[n:unitcolor][n:name]')
+		self:Tag(text.unit, '[n:difficultycolor][level]|r [n:unitcolor][n:name]')
 	else
-		self:Tag(health.unitname, '[n:name]')
+		self:Tag(text.unit, '[n:difficultycolor][level]|r [n:name]')
 	end
 
-	health.hpperc = core:CreateFontstring(health, font_num, config.fontsize +1, nil, 'CENTER')
-	health.hpperc:SetPoint('CENTER', 0, 0)
+	text.status = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'CENTER')
+	text.status:SetPoint('CENTER', 0, 0)
 	if (layout.health.colorCustom) then
-		self:Tag(health.hpperc, '[n:reactioncolor][n:perhp_status]')
+		self:Tag(text.status, '[n:reactioncolor][n:perhp_status]')
 	else
-		self:Tag(health.hpperc, '[n:perhp_status]')
+		self:Tag(text.status, '[n:perhp_status]')
 	end
+	self.Text = text
 
 	-- castbar
 	if (uframe.castbar and uframe.castbar.show) then
