@@ -292,7 +292,8 @@ config.units = {
 			grow = 'DOWNLEFT',
 			layout = config.layout['group'],
 			auras = { warn = true, rows = 1 },
-			pets = { show = true, anchor = 'BOTTOMLEFT', num = 4 },
+			misc = { hideHPPerc = false },
+			pets = { show = true, anchor = 'BOTTOMLEFT', num = 4 }
 		},
 		{ -- Raid 6-10man healer
 			visibility = { role = 'HEALER', from = 6, to = 10 },
@@ -301,7 +302,8 @@ config.units = {
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
 			layout = config.layout['raid'],
-			auras = { rows = 1 }
+			auras = { rows = 1 },
+			misc = { hideHPPerc = false }
 		},
 		{ -- Raid 11-25man healer
 			visibility = { role = 'HEALER', from = 11, to = 25 },
@@ -310,7 +312,8 @@ config.units = {
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
 			layout = config.layout['raid'],
-			auras = { rows = 1 }
+			auras = { rows = 1 },
+			misc = { hideHPPerc = false }
 		},
 		{ -- Raid 26-40man healer
 			visibility = { role = 'HEALER', from = 26, to = 40 },
@@ -319,7 +322,8 @@ config.units = {
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
 			layout = config.layout['raid'],
-			auras = { cols = 2, rows = 1 }
+			auras = { cols = 2, rows = 1 },
+			misc = { hideHPPerc = false }
 		},
 		{ -- Raid 6-20man tank/dps
 			visibility = { role = 'TANK,DAMAGER', from = 6, to = 20 },
@@ -328,7 +332,8 @@ config.units = {
 			sort = 'GROUP',
 			grow = 'DOWNLEFT',
 			layout = config.layout['raid'],
-			auras = { rows = 1 }
+			auras = { rows = 1 },
+			misc = { hideHPPerc = false }
 		},
 		{ -- Raid 21-40man tank/dps
 			visibility = { role = 'TANK,DAMAGER', from = 21, to = 40 },
@@ -337,7 +342,8 @@ config.units = {
 			sort = 'GROUP',
 			grow = 'DOWNLEFT',
 			layout = config.layout['raid'],
-			auras = { cols = 2, rows = 1 }
+			auras = { cols = 2, rows = 1 },
+			misc = { hideHPPerc = false }
 		},
 		{ -- Debug
 			--visibility = { role = 'HEALER,TANK,DAMAGER', from = 0, to = 40 },
@@ -345,7 +351,8 @@ config.units = {
 			grid = { cols = 5, rows = 5, sep = 2, width = 540, height = 250 },
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
-			layout = config.layout['raid']
+			layout = config.layout['raid'],
+			misc = { hideHPPerc = false }
 		},
 	},
 
