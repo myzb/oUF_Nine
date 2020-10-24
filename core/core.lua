@@ -67,52 +67,52 @@ function core:CreateBorder(self, point, e_size, f_level, texture)
 end
 
 -- Create Frame Shadow Border
-function core:CreateDropShadow(self, point, edge, f_level, color)
+function core:CreateDropShadow(self, point, e_size, f_level, color)
 	local shadow = CreateFrame('Frame', nil, self, 'BackdropTemplate')
-	shadow:SetFrameLevel(f_level)
 	shadow:SetPoint('TOPLEFT', self, 'TOPLEFT', -point, point)
 	shadow:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', point, -point)
 	shadow.backdropInfo = {
-		bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],
+		bgFile = nil,
 		edgeFile = m.textures.glow_texture,
 		tile = false,
 		tileSize = 32,
-		edgeSize = edge,
+		edgeSize = e_size,
 		insets = {
-			left = -edge,
-			right = -edge,
-			top = -edge,
-			bottom = -edge
+			left = -e_size,
+			right = -e_size,
+			top = -e_size,
+			bottom = -e_size
 		}
 	}
 	shadow:ApplyBackdrop()
 	shadow:SetBackdropColor(0, 0, 0, 0)
 	shadow:SetBackdropBorderColor(unpack(color or { 0, 0, 0, 1 }))
+	shadow:SetFrameLevel(f_level)
 	return shadow
 end
 
 -- Create Frame Glow Border
-function core:CreateGlowBorder(self, point, edge, f_level, color)
+function core:CreateGlowBorder(self, point, e_size, f_level, color)
 	local glow = CreateFrame('Frame', nil, self, 'BackdropTemplate')
-	glow:SetFrameLevel(f_level)
 	glow:SetPoint('TOPLEFT', self, 'TOPLEFT', -point, point)
 	glow:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', point, -point)
 	glow.backdropInfo = {
-		bgFile = m.textures.white_square,
+		bgFile = nil,
 		edgeFile = m.textures.glow_texture,
 		tile = false,
 		tileSize = 32,
-		edgeSize = edge,
+		edgeSize = e_size,
 		insets = {
-			left = -edge,
-			right = -edge,
-			top = -edge,
-			bottom = -edge
+			left = -e_size,
+			right = -e_size,
+			top = -e_size,
+			bottom = -e_size
 		}
 	}
 	glow:ApplyBackdrop()
 	glow:SetBackdropColor(0, 0, 0, 0)
 	glow:SetBackdropBorderColor(unpack(color or { 1, 1, 1, 1 }))
+	glow:SetFrameLevel(f_level)
 	return glow
 end
 
