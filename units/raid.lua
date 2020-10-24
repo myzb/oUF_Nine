@@ -32,8 +32,8 @@ local function ChangedTarget(self, event, unit)
 end
 
 -- Create Target Border
-local function TargetBorder_Create(self, f_level)
-	local border = core:CreateBorder(self, 2, 2, f_level, [[Interface\ChatFrame\ChatFrameBackground]])
+local function TargetBorder_Create(self)
+	local border = core:CreateBorder(self, 2, 2, self:GetFrameLevel() + 1, [[Interface\ChatFrame\ChatFrameBackground]])
 	border:SetBackdropBorderColor(0.8, 0.8, 0.8, 1)
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', ChangedTarget, true)
 	self:RegisterEvent('GROUP_ROSTER_UPDATE', ChangedTarget, true)
@@ -58,8 +58,8 @@ local function UpdateThreat(self, event, unit)
 end
 
 -- Create Party / Raid Threat Status Border
-local function ThreatBorder_Create(self, f_level)
-	local border = core:CreateGlowBorder(self, 6, 6, f_level)
+local function ThreatBorder_Create(self)
+	local border = core:CreateGlowBorder(self, 6, 6, self:GetFrameLevel() + 1)
 	self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
 	self:RegisterEvent('GROUP_ROSTER_UPDATE', UpdateThreat, true)
 	self:RegisterEvent('RAID_TARGET_UPDATE', UpdateThreat) -- player join/leave
@@ -234,8 +234,8 @@ local function createStyle(self, unit, ...)
 	self.Text = text
 
 	-- target / threat warning borders
-	ThreatBorder_Create(self, self:GetFrameLevel() + 1)
-	TargetBorder_Create(self, self:GetFrameLevel() + 1)
+	ThreatBorder_Create(self)
+	TargetBorder_Create(self)
 
 	-- icons frame (ready check, raid icons, role, ...)
 	local icons = CreateFrame('Frame', nil, self.Health)
@@ -362,8 +362,8 @@ local function createSubStyle(self, unit)
 	self.Text = text
 
 	-- target / threat warning borders
-	ThreatBorder_Create(self, self:GetFrameLevel() + 1)
-	TargetBorder_Create(self, self:GetFrameLevel() + 1)
+	ThreatBorder_Create(self)
+	TargetBorder_Create(self)
 
 	-- icons frame (ready check, raid icons, role, ...)
 	local icons = CreateFrame('Frame', nil, self.Health)
