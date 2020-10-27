@@ -23,7 +23,7 @@ local Auras_ShouldDisplayBuff = CompactUnitFrame_UtilShouldDisplayBuff      -- F
 -- ------------------------------------------------------------------------
 
 -- Raid Frames Target Highlight Border
-local function ChangedTarget(self, event, unit)
+local function UpdateTarget(self, event, unit)
 	if (UnitIsUnit('target', self.unit)) then
 		self.TargetBorder:Show()
 	else
@@ -35,11 +35,10 @@ end
 local function TargetBorder_Create(self)
 	local border = core:CreateBorder(self, 2, 2, self:GetFrameLevel() + 1, [[Interface\ChatFrame\ChatFrameBackground]])
 	border:SetBackdropBorderColor(0.8, 0.8, 0.8, 1)
-	self:RegisterEvent('PLAYER_TARGET_CHANGED', ChangedTarget, true)
-	self:RegisterEvent('GROUP_ROSTER_UPDATE', ChangedTarget, true)
-	self:RegisterEvent('RAID_TARGET_UPDATE', ChangedTarget) -- player join/leave
+	border:Hide()
+	self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateTarget, true)
+	self:RegisterEvent('GROUP_ROSTER_UPDATE', UpdateTarget, true)
 	self.TargetBorder = border
-	ChangedTarget(self)
 end
 
 -- Party / Raid Frames Threat Highlight
@@ -59,12 +58,18 @@ end
 
 -- Create Party / Raid Threat Status Border
 local function ThreatBorder_Create(self)
-	local border = core:CreateGlowBorder(self, 6, 6, self:GetFrameLevel() + 1)
+	local border = core:CreateGlowBorder(self, 6, 6, 0)
+	border:Hide()
 	self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
 	self:RegisterEvent('GROUP_ROSTER_UPDATE', UpdateThreat, true)
-	self:RegisterEvent('RAID_TARGET_UPDATE', UpdateThreat) -- player join/leave
 	self.ThreatBorder = border
-	UpdateThreat(self)
+end
+
+local function RaidFrame_PostUpdate(self, event)
+	if (event == 'OnShow') then
+		UpdateTarget(self)
+		UpdateThreat(self)
+	end
 end
 
 -- -----------------------------------
@@ -233,10 +238,6 @@ local function createStyle(self, unit, ...)
 	end
 	self.Text = text
 
-	-- target / threat warning borders
-	ThreatBorder_Create(self)
-	TargetBorder_Create(self)
-
 	-- icons frame (ready check, raid icons, role, ...)
 	local icons = CreateFrame('Frame', nil, self.Health)
 	icons:SetAllPoints()
@@ -324,6 +325,12 @@ local function createStyle(self, unit, ...)
 	end
 
 	self.Range = config.frame.range
+
+	-- target / threat warning borders
+	ThreatBorder_Create(self)
+	TargetBorder_Create(self)
+
+	self.PostUpdate = RaidFrame_PostUpdate
 end
 
 -- -----------------------------------
@@ -361,10 +368,6 @@ local function createSubStyle(self, unit)
 	end
 	self.Text = text
 
-	-- target / threat warning borders
-	ThreatBorder_Create(self)
-	TargetBorder_Create(self)
-
 	-- icons frame (ready check, raid icons, role, ...)
 	local icons = CreateFrame('Frame', nil, self.Health)
 	icons:SetAllPoints()
@@ -383,6 +386,12 @@ local function createSubStyle(self, unit)
 	end
 
 	self.Range = config.frame.range
+
+	-- target / threat warning borders
+	ThreatBorder_Create(self)
+	TargetBorder_Create(self)
+
+	self.PostUpdate = RaidFrame_PostUpdate
 end
 
 -- -----------------------------------
