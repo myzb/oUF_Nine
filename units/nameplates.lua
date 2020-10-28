@@ -395,8 +395,8 @@ local function createStyle(self, unit)
 	health.colorDisconnected = true
 	health.colorTapping = true
 
-	-- health border glow (targeting) and shadows
-	health.Border = core:CreateGlowBorder(health, 4, 4, 0)
+	-- health border white glow (targeting) / shadows
+	health.Border = core:CreateDropShadow(health, 4, 4, 0, {1, 1, 1, 1}) -- white glow
 	health.dropShadows = layout.shadows
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', HealthBorder_Update, true)
 

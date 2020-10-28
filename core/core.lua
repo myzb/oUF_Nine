@@ -91,31 +91,6 @@ function core:CreateDropShadow(self, point, e_size, f_level, color)
 	return shadow
 end
 
--- Create Frame Glow Border
-function core:CreateGlowBorder(self, point, e_size, f_level, color)
-	local glow = CreateFrame('Frame', nil, self, 'BackdropTemplate')
-	glow:SetPoint('TOPLEFT', self, 'TOPLEFT', -point, point)
-	glow:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', point, -point)
-	glow.backdropInfo = {
-		bgFile = nil,
-		edgeFile = m.textures.glow_texture,
-		tile = false,
-		tileSize = 32,
-		edgeSize = e_size,
-		insets = {
-			left = -e_size,
-			right = -e_size,
-			top = -e_size,
-			bottom = -e_size
-		}
-	}
-	glow:ApplyBackdrop()
-	glow:SetBackdropColor(0, 0, 0, 0)
-	glow:SetBackdropBorderColor(unpack(color or { 1, 1, 1, 1 }))
-	glow:SetFrameLevel(f_level)
-	return glow
-end
-
 -- -----------------------------------
 -- > MOUSE EVENTS
 -- -----------------------------------

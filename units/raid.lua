@@ -58,7 +58,7 @@ end
 
 -- Create Party / Raid Threat Status Border
 local function ThreatBorder_Create(self)
-	local border = core:CreateGlowBorder(self, 6, 6, 0)
+	local border = core:CreateDropShadow(self, 6, 6, 0)
 	border:Hide()
 	self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
 	self:RegisterEvent('GROUP_ROSTER_UPDATE', UpdateThreat, true)
