@@ -45,17 +45,28 @@ local cvars = {
 	nameplateMaxDistance = 60,
 }
 
-local function NamePlate_Update(self, event, unit)
+local function HealthBorder_Update(self, event, unit)
 	if (not self) then
 		return
 	end
 
-	-- nameplate border glow / shadow update
-	local isTarget = UnitIsUnit('target', self.unit)
-	self.Health.Glow:SetAlpha(isTarget and 1 or 0)
-	if (self.Health.Shadow) then
-		self.Health.Shadow:SetAlpha(isTarget and 0 or 1)
+	-- health border target glow / shadows / hide
+	local health = self.Health
+	if (UnitIsUnit('target', self.unit)) then
+		health.Border:SetBackdropBorderColor(1, 1, 1, 1)
+	elseif (health.dropShadows) then
+		health.Border:SetBackdropBorderColor(unpack(config.frame.shadows))
+	else
+		health.Border:SetBackdropBorderColor(1, 1, 1, 0)
 	end
+end
+
+local function NamePlate_Callback(self, event, unit)
+	if (not self or event ~= 'NAME_PLATE_UNIT_ADDED') then
+		return
+	end
+
+	HealthBorder_Update(self)
 
 	--elite icon
 	local class = UnitClassification(self.unit)
@@ -384,10 +395,11 @@ local function createStyle(self, unit)
 	health.colorDisconnected = true
 	health.colorTapping = true
 
-	-- hp glow and shadows (targeting)
-	health.Glow = core:CreateGlowBorder(health, 4, 4, 0)
-	health.Shadow = core:CreateDropShadow(health, 4, 4, 0, config.frame.shadows)
-	self:RegisterEvent('PLAYER_TARGET_CHANGED', NamePlate_Update, true)
+	-- health border glow (targeting) and shadows
+	health.Border = core:CreateGlowBorder(health, 4, 4, 0)
+	health.dropShadows = layout.shadows
+	self:RegisterEvent('PLAYER_TARGET_CHANGED', HealthBorder_Update, true)
+
 	self.Health = health
 
 	-- hp prediction
@@ -479,6 +491,6 @@ end
 if (config.units[frame_name].show) then
 	oUF:RegisterStyle(A.. frame_name:gsub('^%l', string.upper), createStyle)
 	oUF:SetActiveStyle(A.. frame_name:gsub('^%l', string.upper))
-	oUF:SpawnNamePlates(A.. frame_name:gsub('^%l', string.upper), NamePlate_Update, cvars)
+	oUF:SpawnNamePlates(A.. frame_name:gsub('^%l', string.upper), NamePlate_Callback, cvars)
 	roles:EnableUpdates()
 end
