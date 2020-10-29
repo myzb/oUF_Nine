@@ -12,11 +12,11 @@ local floor = floor
 
 -- Name (creature family for player owned units if possible)
 tags['n:name'] = function(unit, rolf)
-	return (UnitPlayerControlled(unit) and UnitCreatureFamily(unit)) or UnitName(rolf or unit)
+	return (UnitPlayerControlled(unit) and UnitCreatureFamily(unit)) or tags['name'](unit, rolf)
 end
 events['n:name'] = 'UNIT_NAME_UPDATE UNIT_CONNECTION UNIT_ENTERING_VEHICLE UNIT_EXITING_VEHICLE'
 
--- Name abbreviated
+-- Name Abbreviated
 local function abbreviateName(text)
 	return string.sub(text, 1, 1) .. '.'
 end
@@ -29,12 +29,12 @@ local abbrevCache = setmetatable({}, {
 	end})
 
 tags['n:abbrev_name'] = function(unit, rolf)
-	local name = (UnitPlayerControlled(unit) and UnitCreatureFamily(unit)) or UnitName(rolf or unit)
-	return string.len(name) > 10 and abbrevCache[name] or name
+	local name = tags['n:name'](unit, rolf)
+	return (string.len(name) > 10) and abbrevCache[name] or name
 end
 events['n:abbrev_name'] = 'UNIT_NAME_UPDATE UNIT_CONNECTION UNIT_ENTERING_VEHICLE UNIT_EXITING_VEHICLE'
 
--- Unit difficulty color
+-- Unit Difficulty Color
 tags['n:difficultycolor'] = function(unit)
 	local c = UnitClassification(unit)
 	if (c == 'rare' or c == 'rareelite') then
@@ -75,7 +75,7 @@ events['n:perhp_status'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE UNIT_CON
 -- Power Value
 tags['n:curpp'] = function(unit)
 	-- Hide it if DC, Ghost or Dead!
-	local min, max = UnitPower(unit, UnitPowerType(unit)), UnitPowerMax(unit, UnitPowerType(unit))
+	local min = UnitPower(unit, UnitPowerType(unit))
 	if (min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit)) then
 		return
 	end
@@ -106,53 +106,32 @@ events['n:addpower'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE'
 
 -- Stagger Value
 tags['n:stagger'] = function(unit)
-	local min, max = UnitStagger(unit), UnitHealthMax(unit)
-	return util:ShortNumber(min)
+	return util:ShortNumber(UnitStagger(unit))
 end
 
 events['n:stagger'] = 'UNIT_AURA UNIT_DISPLAYPOWER PLAYER_TALENT_UPDATE'
 
 -- Unit Color
 tags['n:unitcolor'] = function(unit)
-	local _, class = UnitClass(unit)
-	local isPlayer, isPet = UnitIsPlayer(unit), UnitPlayerControlled(unit)
-	local color = ''
-
-	if (isPlayer) then
-		if (class) then
-			color = util:ToHex(oUF.colors.class[class])
-		else
-			local id = unit:match('arena(%d)$')
-			if (id) then
-				local specID = GetArenaOpponentSpec(tonumber(id))
-				if (specID and specID > 0) then
-					_, _, _, _, _, class = GetSpecializationInfoByID(specID)
-					color = util:ToHex(oUF.colors.class[class])
-				end
-			end
-		end
+	if (UnitIsPlayer(unit)) then
+		return tags['raidcolor'](unit)
 	else
-		color = '|cffbbbbbb'
+		return '|cffbbbbbb'
 	end
-	return color
 end
 
 -- Reaction Color
 tags['n:reactioncolor'] = function(unit)
-	local isPlayerControlled = UnitPlayerControlled(unit)
-	local reaction = UnitReaction(unit, 'player')
-
-	if (isPlayerControlled) then
-		return ''
+	if (UnitPlayerControlled(unit)) then
+		return
 	end
-	local color = ''
+	local reaction = UnitReaction(unit, 'player')
 	if (UnitIsTapDenied(unit)) then
-		color = util:ToHex(oUF.colors.tapped)
+		return util:ToHex(oUF.colors.tapped)
 	elseif (reaction and reaction > 4) then
 		-- only friendlies
-		color = util:ToHex(oUF.colors.reaction[reaction])
+		return util:ToHex(oUF.colors.reaction[reaction])
 	end
-	return color
 end
 
 -- Raid Group Number

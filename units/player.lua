@@ -446,7 +446,7 @@ local function createStyle(self)
 	text.group:SetAlpha(0)
 	self:HookScript('OnEnter', function(s) s.Text.group:SetAlpha(1) end)
 	self:HookScript('OnLeave', function(s) s.Text.group:SetAlpha(0) end)
-	self:Tag(text.group, '[Group $>group]')
+	self:Tag(text.group, '[Group $>n:raidgroup]')
 
 	text.power = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'RIGHT')
 	text.power:SetShadowColor(0, 0, 0, 1)
