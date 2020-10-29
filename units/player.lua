@@ -441,6 +441,13 @@ local function createStyle(self)
 		self:Tag(text.status, '[n:perhp_status]')
 	end
 
+	text.group = core:CreateFontstring(text, font, config.fontsize -4, nil, 'LEFT')
+	text.group:SetPoint('BOTTOMLEFT', self.Health, 'BOTTOMLEFT', 1, 2)
+	text.group:SetAlpha(0)
+	self:HookScript('OnEnter', function(s) s.Text.group:SetAlpha(1) end)
+	self:HookScript('OnLeave', function(s) s.Text.group:SetAlpha(0) end)
+	self:Tag(text.group, '[Group $>group]')
+
 	text.power = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'RIGHT')
 	text.power:SetShadowColor(0, 0, 0, 1)
 	text.power:SetShadowOffset(1, -1)

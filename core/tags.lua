@@ -154,3 +154,9 @@ tags['n:reactioncolor'] = function(unit)
 	end
 	return color
 end
+
+-- Raid Group Number
+tags['n:raidgroup'] = function(unit)
+	return IsInRaid() and tags['group'](unit)
+end
+events['n:raidgroup'] = 'GROUP_ROSTER_UPDATE'
