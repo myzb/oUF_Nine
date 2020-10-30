@@ -18,24 +18,23 @@ local PLAYER_CLASS = select(2, UnitClass('player'))
 -- -----------------------------------
 
 local function TotemBar_PositionUpdate(self)
-	local parent = self.__owner
-	local anchor = parent
+	local anchor = self
 
 	-- update anchor based on what is currently being displayed
-	if (parent.AdditionalPower and parent.AdditionalPower.isShown) then
-		anchor = parent.AdditionalPower
-	elseif (parent.ClassPower and parent.ClassPower.isShown) then
-		anchor = parent.ClassPower[1]
-	elseif (parent.Runes and parent.Runes.isShown) then
-		anchor = parent.Runes[1]
-	elseif (parent.Stagger and parent.Stagger.isShown) then
-		anchor = parent.Stagger
+	if (self.AdditionalPower and self.AdditionalPower.isShown) then
+		anchor = self.AdditionalPower
+	elseif (self.ClassPower and self.ClassPower.isShown) then
+		anchor = self.ClassPower[1]
+	elseif (self.Runes and self.Runes.isShown) then
+		anchor = self.Runes[1]
+	elseif (self.Stagger and self.Stagger.isShown) then
+		anchor = self.Stagger
 	end
 
 	-- update anchor
-	if (parent.Totems.anchor ~= anchor) then
-		parent.Totems[1]:SetPoint('TOPLEFT', anchor, 'BOTTOMLEFT', 0, -8)
-		parent.Totems.anchor = anchor
+	if (self.Totems.anchor ~= anchor) then
+		self.Totems[1]:SetPoint('TOPLEFT', anchor, 'BOTTOMLEFT', 0, -8)
+		self.Totems.anchor = anchor
 	end
 end
 
@@ -62,7 +61,7 @@ local function ClassPower_PostUpdate(element, cur, max, maxChanged)
 	end
 
 	element.isShown = element[1]:IsShown()
-	TotemBar_PositionUpdate(element)
+	TotemBar_PositionUpdate(element.__owner)
 end
 
 local function ClassPower_Create(self, width, height, texture)
@@ -97,7 +96,7 @@ end
 -- Death Knight Runebar
 local function RuneBar_PostUpdate(element)
 	element.isShown = element[1]:IsShown()
-	TotemBar_PositionUpdate(element)
+	TotemBar_PositionUpdate(element.__owner)
 end
 
 local function RuneBar_Create(self, width, height, texture)
@@ -132,15 +131,15 @@ local function RuneBar_Create(self, width, height, texture)
 end
 
 -- Additional Power (Mana, ...)
-local function AddPower_PostUpdate(self, cur, max)
+local function AddPower_PostUpdate(element, cur, max)
 	-- Hide bar if full
 	if (cur == max or UnitPowerType('player') == 0) then
-		self:Hide()
+		element:Hide()
 	else
-		self:Show()
+		element:Show()
 	end
-	self.isShown = self:IsShown()
-	TotemBar_PositionUpdate(self)
+	element.isShown = element:IsShown()
+	TotemBar_PositionUpdate(element.__owner)
 end
 
 local function AddPower_Create(self, width, height, texture)
@@ -173,15 +172,15 @@ local function AddPower_Create(self, width, height, texture)
 end
 
 -- Monk StaggerBar
-local function StaggerBar_PostUpdate(self, cur, max)
+local function StaggerBar_PostUpdate(element, cur, max)
 	-- Hide bar if full
 	if (cur == 0 or UnitPowerType('player') == 0) then
-		self:Hide()
+		element:Hide()
 	else
-		self:Show()
+		element:Show()
 	end
-	self.isShown = self:IsShown()
-	TotemBar_PositionUpdate(self)
+	element.isShown = element:IsShown()
+	TotemBar_PositionUpdate(element.__owner)
 end
 
 local function StaggerBar_Create(self, width, height, texture)
@@ -217,7 +216,7 @@ local function TotemBar_Create(self, width)
 	local totemWidth = (width / numTotems) - (((numTotems - 1) * gap) / numTotems)
 	local totems = {}
 
-	for index = 1, 5 do
+	for index = 1, numTotems do
 		-- Position and size of the totem indicator
 		local totem = CreateFrame('Button', nil, self)
 		totem:SetSize(totemWidth, totemWidth)
