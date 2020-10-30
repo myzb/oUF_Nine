@@ -352,6 +352,7 @@ config.units = {
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
 			layout = config.layout['raid'],
+			auras = true,
 			misc = { hideHPPerc = false }
 		},
 	},

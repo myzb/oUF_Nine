@@ -281,11 +281,11 @@ local function createStyle(self, unit, ...)
 	self.GroupRoleIndicator = roleIcon
 
 	-- raid auras
-	do
+	if (uframe.auras) then
 		-- calc dimensions, prevent them from overflowing the frame
-		local cols = (uframe.auras and uframe.auras.cols) or 3
-		local size = (uframe.auras and uframe.auras.size) or math_floor(self:GetWidth() / (2 * (cols + 0.25)))
-		local rows = (uframe.auras and uframe.auras.rows) or math_floor(2 * self:GetHeight() / (3 * size))
+		local cols = uframe.auras.cols or 3
+		local size = uframe.auras.size or math_floor(self:GetWidth() / (2 * (cols + 0.25)))
+		local rows = uframe.auras.rows or math_floor(2 * self:GetHeight() / (3 * size))
 
 		local raidBuffs = auras:CreateRaidAuras(icons, size, cols, cols + 0.5, rows, size - 6)
 		raidBuffs:SetPoint('BOTTOMRIGHT', self.Health, 'BOTTOMRIGHT', -2, 2)
@@ -311,7 +311,7 @@ local function createStyle(self, unit, ...)
 		raidDebuffs['growth-y'] = 'UP'
 		raidDebuffs.showDebuffType = true
 		raidDebuffs.special:SetPoint('CENTER', self.Health, 'CENTER', 0, 0)
-		raidDebuffs.showSpecial = uframe.auras and uframe.auras.warn
+		raidDebuffs.showSpecial = uframe.auras.warn
 
 		raidDebuffs.dispelIcon = CreateFrame('Button', nil, raidDebuffs)
 		raidDebuffs.dispelIcon:SetPoint('TOPRIGHT', self.Health)
@@ -378,7 +378,7 @@ local function createSubStyle(self, unit)
 	self.RaidTargetIndicator = raidIcon
 
 	-- raid buffs (only used for health color toggle)
-	if (layout.health.colorOnAura) then
+	if (uframe.auras and layout.health.colorOnAura) then
 		local raidBuffs = CreateFrame('Frame', nil, self)
 		raidBuffs.num = 3
 		auras:EnableColorToggle(raidBuffs, self.Health)
