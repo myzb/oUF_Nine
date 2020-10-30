@@ -44,7 +44,7 @@ end
 -- -----------------------------------
 
 -- Class Power Bars (Combo Points...)
-local function ClassPower_PostUpdate(element, cur, max, maxChanged, powerType)
+local function ClassPower_PostUpdate(element, cur, max, maxChanged)
 	if (maxChanged) then
 		local maxWidth = element.__owner:GetWidth()
 		local gap = 6
@@ -61,20 +61,6 @@ local function ClassPower_PostUpdate(element, cur, max, maxChanged, powerType)
 		end
 	end
 
-	-- Colorize the last bar
-	local lastBarColor = {
-		COMBO_POINTS = { 255/255, 26/255, 48/255 },
-		ARCANE_CHARGES = { 238/255, 48/255, 83/255 },
-		CHI = { 0/255, 143/255, 247/255 },
-		HOLY_POWER = { 255/255, 26/255, 48/255 },
-		SOUL_SHARDS = { 255/255, 26/255, 48/255 }
-	}
-
-	if (max) then
-		local lastBar = element[max]
-		lastBar:SetStatusBarColor(unpack(lastBarColor[powerType]))
-	end
-
 	element.isShown = element[1]:IsShown()
 	TotemBar_PositionUpdate(element)
 end
@@ -84,7 +70,7 @@ local function ClassPower_Create(self, width, height, texture)
 	local barWidth = (maxWidth / numBars) - (((numBars-1) * gap) / numBars)
 	local classpower = {}
 
-	for index = 1, 11 do
+	for index = 1, numBars do
 		local bar = CreateFrame('StatusBar', nil, self)
 		bar:SetSize(barWidth, height)
 		bar:SetStatusBarTexture(texture or m.textures.status_texture)
@@ -99,11 +85,6 @@ local function ClassPower_Create(self, width, height, texture)
 		if (index > 1) then
 			bar:SetPoint('LEFT', classpower[index - 1], 'RIGHT', 6, 0)
 		end
-
-		if (index > 5) then
-			bar:SetFrameLevel(bar:GetFrameLevel() + 1)
-		end
-
 		classpower[index] = bar
 	end
 
