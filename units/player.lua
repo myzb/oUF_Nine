@@ -104,7 +104,7 @@ local function RuneBar_Create(self, width, height, texture)
 	local runeWidth = (maxWidth / numRunes) - (((numRunes-1) * gap) / numRunes)
 
 	local runes = {}
-	for index = 1, 6 do
+	for index = 1, numRunes do
 		local rune = CreateFrame('StatusBar', nil, self)
 		rune:SetSize(runeWidth, height)
 		rune:SetStatusBarTexture(texture or m.textures.status_texture)
@@ -250,27 +250,27 @@ end
 -- -----------------------------------
 
 -- Color the Experience Bar
-local function Experience_PostUpdate(self, unit, cur, max, rested, level, isHonor)
-	local rep = self.__owner.Reputation
+local function Experience_PostUpdate(element, unit, cur, max, rested, level, isHonor)
+	local rep = element.__owner.Reputation
 	if (isHonor) then
 		-- Showing Honor
-		self:SetStatusBarColor(255/255, 75/255, 75/255)
-		self.Rested:SetStatusBarColor(255/255, 205/255, 90/255, 0)
+		element:SetStatusBarColor(255/255, 75/255, 75/255)
+		element.Rested:SetStatusBarColor(255/255, 205/255, 90/255, 0)
 	else
 		-- Showing Experience
-		self:SetStatusBarColor(150/255, 40/255, 200/255)
-		self.Rested:SetStatusBarColor(197/255, 202/255, 233/255, 1)
+		element:SetStatusBarColor(150/255, 40/255, 200/255)
+		element.Rested:SetStatusBarColor(197/255, 202/255, 233/255, 1)
 	end
 	rep:ForceUpdate()
 end
 
-local function Reputation_PostUpdate(self, unit)
-	local xp, ap = self.__owner.Experience, self.__owner.ArtifactPower
+local function Reputation_PostUpdate(element, unit)
+	local xp, ap = element.__owner.Experience, element.__owner.ArtifactPower
 	local cfg = config.elements.infobars
 	if (xp and xp:IsShown()) then
-		self:SetPoint('BOTTOM', xp, 'TOP', 0, cfg.sep)
+		element:SetPoint('BOTTOM', xp, 'TOP', 0, cfg.sep)
 	else
-		self:SetPoint(cfg.pos.v.a1, cfg.pos.v.af, cfg.pos.v.a2, cfg.pos.v.x, cfg.pos.v.y)
+		element:SetPoint(cfg.pos.v.a1, cfg.pos.v.af, cfg.pos.v.a2, cfg.pos.v.x, cfg.pos.v.y)
 	end
 	ap:ForceUpdate()
 end
@@ -312,15 +312,15 @@ local function ExperienceBar_Create(self, width, height, texture)
 	return experience
 end
 
-local function ArtifactBar_PostUpdate(self)
-	local xp, rep = self.__owner.Experience, self.__owner.Reputation
+local function ArtifactBar_PostUpdate(element)
+	local xp, rep = element.__owner.Experience, element.__owner.Reputation
 	local cfg = config.elements.infobars
 	if (rep and rep:IsShown()) then
-		self:SetPoint('BOTTOM', rep, 'TOP', 0, cfg.sep)
+		element:SetPoint('BOTTOM', rep, 'TOP', 0, cfg.sep)
 	elseif (xp and xp:IsShown()) then
-		self:SetPoint('BOTTOM', xp, 'TOP', 0, cfg.sep)
+		element:SetPoint('BOTTOM', xp, 'TOP', 0, cfg.sep)
 	else
-		self:SetPoint(cfg.pos.v.a1, cfg.pos.v.af, cfg.pos.v.a2, cfg.pos.v.x, cfg.pos.v.y)
+		element:SetPoint(cfg.pos.v.a1, cfg.pos.v.af, cfg.pos.v.a2, cfg.pos.v.x, cfg.pos.v.y)
 	end
 end
 
