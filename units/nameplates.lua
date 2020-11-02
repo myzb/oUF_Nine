@@ -46,10 +46,6 @@ local cvars = {
 }
 
 local function HealthBorder_Update(self, event, unit)
-	if (not self) then
-		return
-	end
-
 	-- health border target glow / shadows / hide
 	local health = self.Health
 	if (UnitIsUnit('target', self.unit)) then
@@ -357,11 +353,7 @@ end
 -- > NAMEPLATES STYLE
 -- -----------------------------------
 
-local function createStyle(self, unit)
-	if (not unit:match('nameplate')) then
-		return
-	end
-
+local function createStyle(self)
 	local uframe = config.units[frame_name]
 	local layout = uframe.layout
 
