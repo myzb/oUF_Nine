@@ -29,7 +29,7 @@ local Auras_ShouldDisplayDebuff = NameplateBuffContainerMixin.ShouldShowBuff -- 
 -- > NAMEPLATES SPECIFIC
 -- ------------------------------------------------------------------------
 
-local cvars = {
+local NamePlate_CVars = {
 	nameplateGlobalScale = 1,
 	NamePlateHorizontalScale = 1,
 	NamePlateVerticalScale = 1,
@@ -43,6 +43,8 @@ local cvars = {
 	nameplateMaxAlpha = 1,
 	nameplateMaxAlphaDistance = 40,
 	nameplateMaxDistance = 60,
+	nameplateOtherBottomInset = 0.1,
+	nameplateOtherTopInset = 0.08,
 }
 
 local function HealthBorder_Update(self, event, unit)
@@ -483,6 +485,6 @@ end
 if (config.units[frame_name].show) then
 	oUF:RegisterStyle(A.. frame_name:gsub('^%l', string.upper), createStyle)
 	oUF:SetActiveStyle(A.. frame_name:gsub('^%l', string.upper))
-	oUF:SpawnNamePlates(A.. frame_name:gsub('^%l', string.upper), NamePlate_Callback, cvars)
+	oUF:SpawnNamePlates(A.. frame_name:gsub('^%l', string.upper), NamePlate_Callback, NamePlate_CVars)
 	roles:EnableUpdates()
 end
