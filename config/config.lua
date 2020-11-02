@@ -363,7 +363,7 @@ config.units = {
 		pos = { a1 = 'BOTTOM', x = 0, y = 4 },
 		layout = {
 			width = 160, -- of hit-box
-			height = 26, -- of hit-box
+			height = 22, -- of hit-box
 			shadows = true,
 			health = {
 				colorClass = true,
@@ -371,7 +371,7 @@ config.units = {
 				colorReaction = true
 			},
 			spacer = {
-				height = 17 -- empty space, shrinks health height
+				height = 13 -- empty space, shrinks health height
 			}
 		},
 		buffs = {
