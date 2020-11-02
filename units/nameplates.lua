@@ -4,7 +4,7 @@ local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
 local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.frizq
-local font_num = m.fonts.asap
+local font_num = m.fonts.myriad
 local font_size = 16
 
 local frame_name = 'nameplate'
@@ -411,13 +411,24 @@ local function createStyle(self)
 	RaidIcon:SetSize(20, 20)
 	self.RaidTargetIndicator = RaidIcon
 
-	-- name string
-	local name = core:CreateFontstring(self.Health, font, font_size, nil, 'CENTER')
-	name:SetShadowColor(0, 0, 0, 1)
-	name:SetShadowOffset(1, -1)
-	name:SetSize(2 * layout.width, font_size)
-	name:SetPoint('BOTTOM', self.Health, 'TOP', 0, 2)
-	self:Tag(name, '[n:name]')
+	-- text strings
+	local text = CreateFrame('Frame', nil, self.Health)
+	text:SetAllPoints(self.Health)
+	text.unit = core:CreateFontstring(text, font, font_size, nil, 'CENTER')
+	text.unit:SetShadowColor(0, 0, 0, 1)
+	text.unit:SetShadowOffset(1, -1)
+	text.unit:SetSize(2 * layout.width, font_size)
+	text.unit:SetPoint('BOTTOM', text, 'TOP', 0, 2)
+	self:Tag(text.unit, '[n:name]')
+
+	if (uframe.misc and not uframe.misc.hideHPPerc) then
+		text.status = core:CreateFontstring(text, font, font_size, nil, 'CENTER')
+		text.status:SetShadowColor(0, 0, 0, 1)
+		text.status:SetShadowOffset(1, -1)
+		text.status:SetAllPoints()
+		self:Tag(text.status, '[perhp]')
+	end
+	self.Text = text
 
 	-- castbar
 	if (uframe.castbar and uframe.castbar.show) then

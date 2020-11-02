@@ -389,7 +389,10 @@ config.units = {
 			show = true,
 			width = 160,
 			height = 9
-		}
+		},
+		misc = {
+			hideHPPerc = false
+		},
 	}
 }
 
