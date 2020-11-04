@@ -397,7 +397,7 @@ local function createStyle(self)
 	self.Health = health
 
 	-- hp prediction
-	self.HealthPrediction = core:CreateHealthPredict(self.Health, layout.width, self.Health:GetHeight())
+	self.HealthPrediction = core:CreateHealthPredict(self.Health, layout.width)
 
 	-- elite icon
 	local EliteIcon = self:CreateTexture(nil, 'OVERLAY')

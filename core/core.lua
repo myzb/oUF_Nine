@@ -153,7 +153,7 @@ local function HealthPredict_PostUpdate(self, unit, ...)
 	end
 end
 
-function core:CreateHealthPredict(self, width, height, texture)
+function core:CreateHealthPredict(self, width, texture)
 
 	-- clips heal predict frames to avoid overflow on create
 	local clipping = CreateFrame('Frame', nil, self)
@@ -192,7 +192,6 @@ function core:CreateHealthPredict(self, width, height, texture)
 	absorbBar.overlay:SetPoint('TOPLEFT', otherBar:GetStatusBarTexture(), 'TOPRIGHT', 0, 0)
 	absorbBar.overlay:SetPoint('BOTTOMLEFT', otherBar:GetStatusBarTexture(), 'BOTTOMRIGHT', 0, 0)
 	absorbBar.overlay.width = width
-	absorbBar.overlay.height = height
 	absorbBar.overlay.tileSize = 30
 
 	-- heal absorbs (i.e necrotic strike)
@@ -337,9 +336,8 @@ function core:CreateLayout(self, layout)
 	-- hp bottom anchor to fill the remaining frame
 	local vsep = (l.spacer and l.spacer.height) or 0
 	health:SetPoint('BOTTOM', self.Power or self, self.Power and 'TOP' or 'BOTTOM', 0, vsep)
+	self.Health = health
 
 	-- hp prediction
-	self.HealthPrediction = core:CreateHealthPredict(health, self:GetWidth(), health:GetHeight(), l.texture)
-
-	self.Health = health
+	self.HealthPrediction = core:CreateHealthPredict(self.Health, self:GetWidth(), l.texture)
 end
