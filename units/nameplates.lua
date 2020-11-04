@@ -400,16 +400,16 @@ local function createStyle(self)
 	self.HealthPrediction = core:CreateHealthPredict(self.Health, layout.width)
 
 	-- elite icon
-	local EliteIcon = self:CreateTexture(nil, 'OVERLAY')
-	EliteIcon:SetPoint('RIGHT', self.Health, 'LEFT', -1, 0)
-	EliteIcon:SetSize(18, 18)
-	self.EliteIcon = EliteIcon
+	local eliteIcon = self:CreateTexture(nil, 'OVERLAY')
+	eliteIcon:SetPoint('RIGHT', self.Health, 'LEFT', -1, 0)
+	eliteIcon:SetSize(18, 18)
+	self.EliteIcon = eliteIcon
 
 	-- raid icons
-	local RaidIcon = self:CreateTexture(nil, 'OVERLAY')
-	RaidIcon:SetPoint('RIGHT', self.Health, 'LEFT', -20, 0)
-	RaidIcon:SetSize(20, 20)
-	self.RaidTargetIndicator = RaidIcon
+	local raidIcon = self:CreateTexture(nil, 'OVERLAY')
+	raidIcon:SetPoint('RIGHT', self.Health, 'LEFT', -20, 0)
+	raidIcon:SetSize(20, 20)
+	self.RaidTargetIndicator = raidIcon
 
 	-- text strings
 	local text = CreateFrame('Frame', nil, self.Health)
