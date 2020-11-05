@@ -391,7 +391,7 @@ config.units = {
 			height = 9
 		},
 		misc = {
-			hideHPPerc = false
+			hideHPPerc = true
 		},
 	}
 }
