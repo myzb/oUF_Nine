@@ -10,7 +10,7 @@ local font_size = config.fontsize
 local frame_name = 'raid'
 
 -- Import API functions
-local math_floor = math.floor
+local floor, ceil = floor, ceil
 local table_insert = table.insert
 local UnitIsUnit = UnitIsUnit
 local UnitThreatSituation = UnitThreatSituation
@@ -144,7 +144,7 @@ local function RaidAuras_SetGroupPosition(element, group, idx, cur, max, offx, o
 	local posx = sizex * growthx
 	local posy = sizey * growthy
 
-	local cols = math_floor(((element:GetWidth() - growthx * offx) / size) + 0.5)
+	local cols = floor(((element:GetWidth() - growthx * offx) / size) + 0.5)
 	if (cols == 0) then
 		-- no space for a new icon column, max reached
 		return max, offx, 0
@@ -158,7 +158,7 @@ local function RaidAuras_SetGroupPosition(element, group, idx, cur, max, offx, o
 		end
 
 		local col = j % cols
-		local row = math_floor(j / cols)
+		local row = floor(j / cols)
 
 		button:ClearAllPoints()
 		button:SetPoint(anchor, element, anchor, col * posx + offx, row * posy)
@@ -284,8 +284,8 @@ local function createStyle(self, unit, ...)
 	if (uframe.auras) then
 		-- calc dimensions, prevent them from overflowing the frame
 		local cols = uframe.auras.cols or 3
-		local size = uframe.auras.size or math_floor(self:GetWidth() / (2 * (cols + 0.25)))
-		local rows = uframe.auras.rows or math_floor(2 * self:GetHeight() / (3 * size))
+		local size = uframe.auras.size or floor(self:GetWidth() / (2 * (cols + 0.25)))
+		local rows = uframe.auras.rows or floor(2 * self:GetHeight() / (3 * size))
 
 		local raidBuffs = auras:CreateRaidAuras(icons, size, cols, cols + 0.5, rows, size - 6)
 		raidBuffs:SetPoint('BOTTOMRIGHT', self.Health, 'BOTTOMRIGHT', -2, 2)
@@ -431,11 +431,11 @@ local function gen_visibility(role, from, to)
 end
 
 local function element_width(grid)
-	return math_floor((grid.width - ((grid.cols - 1)*grid.sep)) / grid.cols)
+	return floor((grid.width - ((grid.cols - 1)*grid.sep)) / grid.cols)
 end
 
 local function element_height(grid)
-	return math_floor((grid.height - ((grid.rows - 1)*grid.sep)) / grid.rows)
+	return floor((grid.height - ((grid.rows - 1)*grid.sep)) / grid.rows)
 end
 
 local function gen_options(i, grid, sort, grow, width, height)
@@ -483,8 +483,8 @@ end
 
 local function gen_pet_options(i, grid, sort, grow, num)
 	local pet_grow = (grow == 'LEFTDOWN') and 'DOWNLEFT' or 'LEFTDOWN'
-	local rows = (pet_grow == 'LEFTDOWN') and (2 * grid.rows) or num
-	local cols = (pet_grow == 'LEFTDOWN') and (num / rows) or 1
+	local rows = (pet_grow == 'LEFTDOWN') and ceil(num / grid.cols) or grid.rows
+	local cols = (pet_grow == 'LEFTDOWN') and grid.cols or ceil(num / grid.rows)
 	local width, height = element_width(grid), (0.5 * element_height(grid)) - 1
 	local pet_grid = { cols = cols, rows = rows, sep = grid.sep }
 
