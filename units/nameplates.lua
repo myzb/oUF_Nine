@@ -30,21 +30,44 @@ local Auras_ShouldDisplayDebuff = NameplateBuffContainerMixin.ShouldShowBuff -- 
 -- ------------------------------------------------------------------------
 
 local NamePlate_CVars = {
-	nameplateGlobalScale = 1,
-	NamePlateHorizontalScale = 1,
-	NamePlateVerticalScale = 1,
-	nameplateLargerScale = 1.2,
-	nameplateMaxScale = 1,
-	nameplateMinScale = 0.8,
-	nameplateSelectedScale = 1.0,
-	nameplateSelfScale = 1.0,
-	nameplateMinAlpha = 0.6,
-	nameplateMinAlphaDistance = 10,
-	nameplateMaxAlpha = 1,
-	nameplateMaxAlphaDistance = 40,
-	nameplateMaxDistance = 60,
-	nameplateOtherBottomInset = 0.1,
-	nameplateOtherTopInset = 0.08,
+	['nine'] = {
+		nameplateGlobalScale = 1,
+		NamePlateHorizontalScale = 1,
+		NamePlateVerticalScale = 1,
+		nameplateLargerScale = 1.2,
+		nameplateMaxScale = 1,
+		nameplateMinScale = 0.8,
+		nameplateSelectedScale = 1.0,
+		nameplateSelfScale = 1.0,
+		nameplateMinAlpha = 0.6,
+		nameplateMinAlphaDistance = 10,
+		nameplateMaxAlpha = 1,
+		nameplateMaxAlphaDistance = 40,
+		nameplateMaxDistance = 60,
+		nameplateOtherBottomInset = 0.04,
+		nameplateOtherTopInset = 0.04,
+		nameplateOverlapH = 0.7,
+		nameplateOverlapV = 0.8
+	},
+	['default'] = {
+		nameplateGlobalScale = 1,
+		NamePlateHorizontalScale = 1,
+		NamePlateVerticalScale = 1,
+		nameplateLargerScale = 1.2,
+		nameplateMaxScale = 1,
+		nameplateMinScale = 0.8,
+		nameplateSelectedScale = 1.0,
+		nameplateSelfScale = 1.0,
+		nameplateMinAlpha = 0.6,
+		nameplateMinAlphaDistance = 10,
+		nameplateMaxAlpha = 1,
+		nameplateMaxAlphaDistance = 40,
+		nameplateMaxDistance = 60,
+		nameplateOtherBottomInset = 0.1,
+		nameplateOtherTopInset = 0.08,
+		nameplateOverlapH = 0.8,
+		nameplateOverlapV = 1.1
+	}
 }
 
 local function HealthBorder_Update(self, event, unit)
@@ -496,6 +519,6 @@ end
 if (config.units[frame_name].show) then
 	oUF:RegisterStyle(A.. frame_name:gsub('^%l', string.upper), createStyle)
 	oUF:SetActiveStyle(A.. frame_name:gsub('^%l', string.upper))
-	oUF:SpawnNamePlates(A.. frame_name:gsub('^%l', string.upper), NamePlate_Callback, NamePlate_CVars)
+	oUF:SpawnNamePlates(A.. frame_name:gsub('^%l', string.upper), NamePlate_Callback, NamePlate_CVars['nine'])
 	roles:EnableUpdates()
 end
