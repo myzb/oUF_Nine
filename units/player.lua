@@ -246,7 +246,7 @@ local function TotemBar_Create(self, width)
 end
 
 -- -----------------------------------
--- > XP, REP, AP BARS
+-- > INFO BARS - XP, REP ...
 -- -----------------------------------
 
 -- Color the Experience Bar
@@ -265,14 +265,13 @@ local function Experience_PostUpdate(element, unit, cur, max, rested, level, isH
 end
 
 local function Reputation_PostUpdate(element, unit)
-	local xp, ap = element.__owner.Experience, element.__owner.ArtifactPower
+	local xp = element.__owner.Experience
 	local cfg = config.elements.infobars
 	if (xp and xp:IsShown()) then
 		element:SetPoint('BOTTOM', xp, 'TOP', 0, cfg.sep)
 	else
 		element:SetPoint(cfg.pos.v.a1, cfg.pos.v.af, cfg.pos.v.a2, cfg.pos.v.x, cfg.pos.v.y)
 	end
-	ap:ForceUpdate()
 end
 
 local function ReputationBar_Create(self, width, height, texture)
@@ -310,35 +309,6 @@ local function ExperienceBar_Create(self, width, height, texture)
 	experience.PostUpdate = Experience_PostUpdate
 
 	return experience
-end
-
-local function ArtifactBar_PostUpdate(element)
-	local xp, rep = element.__owner.Experience, element.__owner.Reputation
-	local cfg = config.elements.infobars
-	if (rep and rep:IsShown()) then
-		element:SetPoint('BOTTOM', rep, 'TOP', 0, cfg.sep)
-	elseif (xp and xp:IsShown()) then
-		element:SetPoint('BOTTOM', xp, 'TOP', 0, cfg.sep)
-	else
-		element:SetPoint(cfg.pos.v.a1, cfg.pos.v.af, cfg.pos.v.a2, cfg.pos.v.x, cfg.pos.v.y)
-	end
-end
-
-local function ArtifactPowerBar_Create(self, width, height, texture)
-	local artifactpower = CreateFrame('StatusBar', nil, self)
-	artifactpower:SetStatusBarTexture(texture or m.textures.status_texture)
-	artifactpower:SetStatusBarColor(217/255, 205/255, 145/255)
-	artifactpower:SetSize(width, height)
-
-	local background = artifactpower:CreateTexture(nil, 'BACKGROUND')
-	background:SetAllPoints()
-	background:SetTexture(m.textures.bg_texture)
-	background:SetVertexColor(unpack(config.frame.colors.bg))
-
-	artifactpower:EnableMouse(true)
-	artifactpower.PostUpdate = ArtifactBar_PostUpdate
-
-	return artifactpower
 end
 
 -- -----------------------------------
@@ -540,7 +510,7 @@ local function createStyle(self)
 		self.Debuffs = debuffs
 	end
 
-	-- oUF experience, reputation, artifact power
+	-- oUF experience, reputation
 	if (config.elements.infobars.show) then
 		local cfg = config.elements.infobars
 		local vpt, hpt = cfg.pos.v, cfg.pos.h
@@ -552,10 +522,6 @@ local function createStyle(self)
 		local reputation = ReputationBar_Create(self, cfg.width, cfg.height, cfg.texture)
 		reputation:SetPoint(hpt.a1, hpt.af, hpt.a2, hpt.x, hpt.y)
 		self.Reputation = reputation
-
-		local artifactpower = ArtifactPowerBar_Create(self, cfg.width, cfg.height, cfg.texture)
-		artifactpower:SetPoint(hpt.a1, hpt.af, hpt.a2, hpt.x, hpt.y)
-		self.ArtifactPower = artifactpower
 	end
 end
 

@@ -397,7 +397,7 @@ config.units = {
 }
 
 config.elements = {
-	-- xp, rep, artifact power, ... dynamically stacked on-top of each other
+	-- xp, rep, ... dynamically stacked on-top of each other
 	infobars = {
 		show = true,
 		height = 10,

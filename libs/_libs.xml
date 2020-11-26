@@ -2,7 +2,6 @@
 	<Include file="oUF\oUF.xml"/>
 	<Script file="oUF_Experience\oUF_Experience.lua"/>
 	<Script file="oUF_Reputation\oUF_Reputation.lua"/>
-	<Script file="oUF_ArtifactPower\oUF_ArtifactPower.lua"/>
 	<Script file="oUF_WidgetXPBar\oUF_WidgetXPBar.lua"/>
 	<Script file="oUF_RaidAuras\oUF_RaidAuras.lua"/>
 	<Script file="LibPlayerSpells-1.0\LibStub.lua"/>
