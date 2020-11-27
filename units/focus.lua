@@ -100,6 +100,7 @@ local function createStyle(self)
 	text.unit:SetShadowColor(0, 0, 0, 1)
 	text.unit:SetShadowOffset(1, -1)
 	text.unit:SetPoint('TOPLEFT', 1, -2)
+	text.unit:SetSize(0.8 * layout.width, config.fontsize + 2)
 	if (layout.health.colorCustom) then
 		self:Tag(text.unit, '[n:difficultycolor][level]|r [n:unitcolor][n:name]')
 	else
