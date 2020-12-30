@@ -152,7 +152,7 @@ config.units = {
 		},
 		castbar = {
 			show = true,
-			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -179 },
+			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -184 },
 			width = 196,
 			height = 17,
 			latency = {
@@ -162,7 +162,7 @@ config.units = {
 		},
 		altpower = { -- boss encounter resources i.e sanity (n'zoth)
 			show = true,
-			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -163 },
+			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -168 },
 			width = 196,
 			height = 9
 		},
