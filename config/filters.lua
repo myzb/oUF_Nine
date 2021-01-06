@@ -37,15 +37,7 @@ filters.nameplate = {
 }
 
 filters.raid = {
-	blacklist = {
-		-- DEBUFFS
-		-- Ny'alotha: Carapace of N'zoth
-		[306973] = true,  -- Madness Bomb
-		[306984] = true,  -- Insanity Bomb
-
-		-- Ny'alotha: N'zoth the Corruptor
-		[315624] = true,  -- Fettered Mind
-	},
+	blacklist = {},
 	whitelist = {}
 }
 
