@@ -303,7 +303,7 @@ config.units = {
 			grow = 'LEFTDOWN',
 			layout = config.layout['raid'],
 			auras = { rows = 1 },
-			misc = { hideHPPerc = false }
+			misc = { hideHPPerc = true }
 		},
 		{ -- Raid 11-25man healer
 			visibility = { role = 'HEALER', from = 11, to = 25 },
@@ -313,7 +313,7 @@ config.units = {
 			grow = 'LEFTDOWN',
 			layout = config.layout['raid'],
 			auras = { rows = 1 },
-			misc = { hideHPPerc = false }
+			misc = { hideHPPerc = true }
 		},
 		{ -- Raid 26-40man healer
 			visibility = { role = 'HEALER', from = 26, to = 40 },
@@ -323,7 +323,7 @@ config.units = {
 			grow = 'LEFTDOWN',
 			layout = config.layout['raid'],
 			auras = { cols = 2, rows = 1 },
-			misc = { hideHPPerc = false }
+			misc = { hideHPPerc = true }
 		},
 		{ -- Raid 6-20man tank/dps
 			visibility = { role = 'TANK,DAMAGER', from = 6, to = 20 },
@@ -333,7 +333,7 @@ config.units = {
 			grow = 'DOWNLEFT',
 			layout = config.layout['raid'],
 			auras = { rows = 1 },
-			misc = { hideHPPerc = false }
+			misc = { hideHPPerc = true }
 		},
 		{ -- Raid 21-40man tank/dps
 			visibility = { role = 'TANK,DAMAGER', from = 21, to = 40 },
@@ -343,7 +343,7 @@ config.units = {
 			grow = 'DOWNLEFT',
 			layout = config.layout['raid'],
 			auras = { cols = 2, rows = 1 },
-			misc = { hideHPPerc = false }
+			misc = { hideHPPerc = true }
 		},
 		{ -- Debug
 			--visibility = { role = 'HEALER,TANK,DAMAGER', from = 0, to = 40 },
