@@ -42,7 +42,7 @@ function core:CreateCastbar(self, width, height, texture, latency)
 	castbar.Background = castbar:CreateTexture(nil, 'BACKGROUND')
 	castbar.Background:SetAllPoints()
 	castbar.Background:SetTexture(m.textures.bg_texture)
-	castbar.Background:SetVertexColor(1/3, 1/3, 1/3, 0.7)
+	castbar.Background:SetVertexColor(1/7, 1/7, 1/7, 0.9)
 
 	castbar.Text = core:CreateFontstring(castbar, font, config.fontsize -2, nil, 'LEFT')
 	castbar.Text:SetTextColor(1, 1, 1)
