@@ -206,6 +206,9 @@ local function Auras_PostCreateIcon(self, button)
 	button.count:GetParent():SetFrameLevel(button.cd:GetFrameLevel() - 1)
 	button.cd:SetHideCountdownNumbers(true)
 	button.cd:SetReverse(true)
+	button.overlay:SetTexture(m.textures.border_button)
+	button.overlay:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+	button.icon:SetTexCoord(0.09, 0.91, 0.09, 0.91)
 end
 
 function auras:CreateAuras(self, num, cols, rows, size, spacing)
@@ -357,6 +360,12 @@ local function RaidAuras_PreSetPosition(element, groups)
 	end
 end
 
+local function RaidAuras_PostCreateIcon(self, button)
+	button.overlay:SetTexture(m.textures.border_button)
+	button.overlay:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+	button.icon:SetTexCoord(0.09, 0.91, 0.09, 0.91)
+end
+
 -- Hide Cooldown Numbers by Default
 local function RaidAuras_PostUpdateIcon(element, unit, button, index, position, prio)
 	button.cd:SetHideCountdownNumbers(true)
@@ -377,6 +386,7 @@ function auras:CreateRaidAuras(self, size, num, cols, rows, othersize)
 		auras.numMax = num + 1
 	end
 
+	auras.PostCreateIcon = RaidAuras_PostCreateIcon
 	auras.PostUpdateIcon = RaidAuras_PostUpdateIcon
 	auras.PreSetPosition = RaidAuras_PreSetPosition
 

@@ -295,9 +295,8 @@ local function Auras_PostCreateIcon(element, button)
 	button.count:SetJustifyH('RIGHT')
 
 	if (element.showDebuffType) then
-		button.overlay:SetTexture(m.textures.border)
-		button.overlay:SetTexCoord(0, 1, 0, 1)
-		button.overlay.Hide = function(self) self:SetVertexColor(0.3, 0.3, 0.3) end
+		button.overlay:SetTexture(m.textures.border_button)
+		button.overlay:SetTexCoord(0.05, 0.95, 0.05, 0.95)
 	end
 end
 

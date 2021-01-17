@@ -20,8 +20,8 @@ m.textures = {
 	status_texture = [[Interface\AddOns\oUF_nine\media\textures\minimalist]],
 	flat = [[Interface\AddOns\oUF_nine\media\textures\flat]],
 	bg_texture = [[Interface\AddOns\oUF_nine\media\textures\texture_bg]],
-	border = [[Interface\AddOns\oUF_nine\media\textures\border]],
-	border_dark = [[Interface\AddOns\oUF_nine\media\textures\border-dark]],
+	border_button = [[Interface\AddOns\oUF_nine\media\textures\button_border]],
+	border_button_plain = [[Interface\AddOns\oUF_nine\media\textures\button_border_plain]],
 	white_square = [[Interface\AddOns\oUF_nine\media\textures\white]],
 	glow_texture = [[Interface\AddOns\oUF_nine\media\textures\glow]],
 }
