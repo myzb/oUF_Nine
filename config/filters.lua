@@ -41,6 +41,11 @@ filters.raid = {
 	whitelist = {}
 }
 
+filters.arena = {
+	blacklist = {},
+	whitelist = {}
+}
+
 filters.buffs = {
 	whitelist = {},
 	blacklist = {

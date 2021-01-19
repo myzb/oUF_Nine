@@ -393,6 +393,41 @@ config.units = {
 		misc = {
 			hideHPPerc = true
 		},
+	},
+
+	arena = {
+		show = false,
+		pos = { a1 = 'TOPLEFT', af = 'UIParent', a2 = 'CENTER', x = 462, y = 260 },
+		sep = 40, -- separation between arena frames
+		layout = {
+			width = 150,
+			height = 60,
+			shadows = true,
+			health = {
+				colorCustom = true,
+				colorReaction = true
+			},
+			spacer = {
+				height = 1
+			},
+			power = {
+				height = 10,
+				colorClass = false,
+				frequentUpdates = true
+			},
+		},
+		debuffs = {
+			show = true,
+			cols = 2,
+			rows = 2,
+			size = 30
+		},
+		castbar = {
+			show = true,
+			pos = { a1 = 'TOPRIGHT', a2 = 'BOTTOMRIGHT', x = 0, y = -10 },
+			width = 150,
+			height = 17
+		}
 	}
 }
 
