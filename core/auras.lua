@@ -84,9 +84,9 @@ auras.DEBUFF_BOSS = 11
 auras.DEBUFF_PRIO = 10
 auras.DEBUFF_WHITELIST = 9
 auras.DEBUFF_STUN = 8
-auras.DEBUFF_ROOT = 7
-auras.DEBUFF_INCAPACITATE = 6
-auras.DEBUFF_DISORIENT = 5
+auras.DEBUFF_INCAPACITATE = 7
+auras.DEBUFF_DISORIENT = 6
+auras.DEBUFF_ROOT = 5
 auras.DEBUFF_INTERRUPT = 4
 auras.DEBUFF_PLAYER = 3
 auras.DEBUFF_DISPEL = 2
@@ -158,12 +158,12 @@ function auras:GetDebuffPrio(dispellable, ...)
 	elseif (flags and special and band(special, SC.CROWD_CTRL)) then
 		if (band(flags, SC.STUN) ~= 0) then
 			prio = auras.DEBUFF_STUN
-		elseif (band(flags, SC.ROOT) ~= 0) then
-			prio = auras.DEBUFF_ROOT
 		elseif (band(flags, SC.INCAPACITATE) ~= 0) then
 			prio = auras.DEBUFF_INCAPACITATE
 		elseif (band(flags, SC.DISORIENT) ~= 0) then
 			prio = auras.DEBUFF_DISORIENT
+		elseif (band(flags, SC.ROOT) ~= 0) then
+			prio = auras.DEBUFF_ROOT
 		end
 		warn = true
 	elseif (flags and band(flags, SC.INTERRUPT) ~= 0) then
