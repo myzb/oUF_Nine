@@ -132,12 +132,13 @@ end
 
 -- Additional Power (Mana, ...)
 local function AddPower_PostUpdate(element, cur, max)
-	-- Hide bar if full
-	if (cur == max or UnitPowerType('player') == 0) then
-		element:Hide()
-	else
+	-- Show bar if not full for supported classes only
+	if (AlternatePowerBar_ShouldDisplayPower(element) and cur ~= max) then
 		element:Show()
+	else
+		element:Hide()
 	end
+
 	element.isShown = element:IsShown()
 	TotemBar_PositionUpdate(element.__owner)
 end
