@@ -4,7 +4,7 @@ local config = ns.config
 local extras, events = CreateFrame('Frame'), {}
 
 -- ------------------------------------------------------------------------
--- > BLIZZARD UI ADJUSTMENTS
+-- > OTHER NON ADJUSTMENTS
 -- ------------------------------------------------------------------------
 
 -- Hide Blizzard's Compact Raid Frames
@@ -15,15 +15,9 @@ end
 
 -- Hide Blizzard's Talking Head Frame
 if (config.blizzard.talkinghead and config.blizzard.talkinghead.hide) then
-	local TalkingFrame = CreateFrame('Frame')
-	TalkingFrame:RegisterEvent('TALKINGHEAD_REQUESTED');
-
-	local function TalkingHead_Hide(self, event, ...)
-		if (event == 'TALKINGHEAD_REQUESTED') then
-			TalkingHeadFrame:Hide()
-		end
+	function events:TALKINGHEAD_REQUESTED(...)
+		TalkingHeadFrame:Hide()
 	end
-	TalkingFrame:SetScript('OnEvent', TalkingHead_Hide)
 end
 
 -- Mover for the Default Game Tooltip
@@ -37,7 +31,7 @@ if (config.blizzard.gametooltip and config.blizzard.gametooltip.move) then
 	hooksecurefunc('GameTooltip_SetDefaultAnchor', GameTooltip_Move)
 end
 
--- OmniCD registration
+-- Register oUF_Nine Raid Frame with OmniCD
 function events:ADDON_LOADED(name)
 	if name == addonName or name == 'OmniCD' then
 		local func = OmniCD and OmniCD.AddUnitFrameData
@@ -47,7 +41,7 @@ function events:ADDON_LOADED(name)
 	end
 end
 
--- event registration
+-- Setup Event Handle
 do
 	for k, _ in pairs(events) do
 		extras:RegisterEvent(k)
