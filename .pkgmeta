@@ -10,9 +10,6 @@ externals:
   libs/oUF_Reputation:
     url: git://github.com/p3lim-wow/oUF_Reputation
     tag: latest
-  libs/oUF_ArtifactPower:
-    url: git://github.com/Rainrider/oUF_ArtifactPower
-    tag: latest
   libs/LibPlayerSpells-1.0:
     url: git://github.com/AdiAddons/LibPlayerSpells-1.0
     tag: latest
