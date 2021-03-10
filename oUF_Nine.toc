@@ -9,6 +9,8 @@
 ## X-WoWI-ID: 0
 ## X-Curse-Project-ID: 0
 
+## OptionalDeps: OmniCD
+
 libs\_libs.xml
 media\media.lua
 config\_config.xml
