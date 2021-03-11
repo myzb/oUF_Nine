@@ -43,6 +43,11 @@ Most if not all features found in the default UI have been ported, including a f
   * _big debuffs for pve dispellables or pvp crowd-controls_
   * _frame right-clickthrough option (useful for healers)_
   * _party pets_
+* Arena Frame
+  * _castbar_
+  * _important debuffs (mirrors nameplate debuffs)_
+  * _includes arena preparation frame (class/spec detection)_
+  * _pvp trinket display_
 * Nameplates
   * _castbar_
   * _widget xp bar (i.e. nazjatar followers)_
@@ -53,6 +58,7 @@ Most if not all features found in the default UI have been ported, including a f
 * Miscellaneous
   * _option to hide blizzard talking head frame_
   * _option to move tooltip frame_
+  * _support for omniCD party cd tracking addon_
 
 ## Feedback and Feature Requests
 To report a bug, please use the [issues](https://github.com/myzb/oUF_Nine/issues) section of Github. I want to keep
