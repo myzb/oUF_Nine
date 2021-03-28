@@ -1,29 +1,29 @@
 local addonName, ns = ...
 
 local config = ns.config
-local extras, events = CreateFrame('Frame'), {}
+local misc, events = CreateFrame('Frame'), {}
 
 -- ------------------------------------------------------------------------
--- > OTHER NON ADJUSTMENTS
+-- > OTHER MISCELLANEOUS ADJUSTMENTS
 -- ------------------------------------------------------------------------
 
 -- Hide Blizzard's Compact Raid Frames
-if (config.blizzard.raidframes and config.blizzard.raidframes.hide) then
+if (config.misc.raidframes and config.misc.raidframes.hide) then
 	CompactRaidFrameContainer:UnregisterAllEvents()
 	CompactRaidFrameContainer:Hide()
 end
 
 -- Hide Blizzard's Talking Head Frame
-if (config.blizzard.talkinghead and config.blizzard.talkinghead.hide) then
+if (config.misc.talkinghead and config.misc.talkinghead.hide) then
 	function events:TALKINGHEAD_REQUESTED(...)
 		TalkingHeadFrame:Hide()
 	end
 end
 
 -- Mover for the Default Game Tooltip
-if (config.blizzard.gametooltip and config.blizzard.gametooltip.move) then
+if (config.misc.gametooltip and config.misc.gametooltip.move) then
 	local function GameTooltip_Move (self)
-		local pos = config.blizzard.gametooltip.pos
+		local pos = config.misc.gametooltip.pos
 
 		self:ClearAllPoints(true)
 		self:SetPoint(pos.a1, pos.af, pos.a2, pos.x, pos.y)
@@ -44,9 +44,9 @@ end
 -- Setup Event Handle
 do
 	for k, _ in pairs(events) do
-		extras:RegisterEvent(k)
+		misc:RegisterEvent(k)
 	end
-	extras:SetScript('OnEvent', function(element, event, ...)
+	misc:SetScript('OnEvent', function(element, event, ...)
 		events[event](element, ...)
 	end)
 end

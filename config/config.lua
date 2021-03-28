@@ -41,10 +41,10 @@ config.frame = {
 }
 
 -- -----------------------------------
--- > BLIZZARD
+-- > MISCELLANEOUS
 -- -----------------------------------
 
-config.blizzard = {
+config.misc = {
 	talkinghead = {
 		hide = true
 	},
