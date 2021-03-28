@@ -345,16 +345,18 @@ config.units = {
 			auras = { cols = 2, rows = 1 },
 			misc = { hideHPPerc = true }
 		},
+		--[[
 		{ -- Debug
-			--visibility = { role = 'HEALER,TANK,DAMAGER', from = 0, to = 40 },
+			visibility = { role = 'HEALER,TANK,DAMAGER', from = 0, to = 40 },
 			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -205 },
 			grid = { cols = 5, rows = 5, sep = 2, width = 540, height = 250 },
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
 			layout = config.layout['raid'],
-			auras = true,
+			auras = { cols = 2, rows = 1 },
 			misc = { hideHPPerc = false }
 		},
+		--]]
 	},
 
 	nameplate = {
