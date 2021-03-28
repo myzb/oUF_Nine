@@ -10,10 +10,42 @@ local frame_name = 'boss'
 
 -- Import API functions
 local Auras_ShouldDisplayDebuff = NameplateBuffContainerMixin.ShouldShowBuff -- Blizzard_NamePlates/Blizzard_NamePlates.lua
+local UnitIsConnected, UnitCanAssist, UnitCanAttack = UnitIsConnected, UnitCanAssist, UnitCanAttack
+local UnitIsDead, UnitIsGhost = UnitIsDead, UnitIsGhost
 
 -- ------------------------------------------------------------------------
 -- > BOSS UNIT SPECIFIC FUNCTIONS
 -- ------------------------------------------------------------------------
+
+local function RangeCheck_PostUpdate(element, parent, inRange, checkedRange, connected)
+	if (not connected or checkedRange) then
+		return
+	end
+	-- also treat non-interactive units as in rage
+	if (core:UnitInRange(parent.unit) ~= 0) then
+		parent:SetAlpha(element.insideAlpha)
+	else
+		parent:SetAlpha(element.outsideAlpha)
+	end
+end
+
+local function Health_UpdateColor(self, event, unit)
+	if (not unit or self.unit ~= unit) then return end
+	local element = self.Health
+	local color = config.frame.colors
+
+	if (UnitIsConnected(unit) and (UnitCanAssist('player', unit) or UnitCanAttack('player', unit))) then
+		element:SetStatusBarColor(unpack(color.base.fg))
+	else
+		element:SetStatusBarColor(unpack(color.away.fg))
+	end
+
+	if (UnitIsDead(unit) or UnitIsGhost(unit)) then
+		element.Background:SetVertexColor(unpack(color.dead.bg))
+	else
+		element.Background:SetVertexColor(unpack(color.base.bg))
+	end
+end
 
 -- -----------------------------------
 -- > BOSS AURA SPECIFIC FUNCTIONS
@@ -53,6 +85,10 @@ local function createStyle(self)
 
 	-- mouse events
 	core:RegisterMouse(self)
+
+	if (layout.health.colorCustom) then
+		self.Health.UpdateColor = Health_UpdateColor
+	end
 
 	-- text strings
 	local text = CreateFrame('Frame', nil, self.Health)
@@ -117,6 +153,7 @@ local function createStyle(self)
 	end
 
 	self.Range = config.frame.range
+	self.Range.PostUpdate = RangeCheck_PostUpdate
 end
 
 -- -----------------------------------
