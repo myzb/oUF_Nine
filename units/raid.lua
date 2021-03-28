@@ -495,10 +495,26 @@ end
 -- > SPAWN HEADERS
 -- -----------------------------------
 
-local RaidHeader = CreateFrame('Frame')
+local header = {}
 
-function RaidHeader:SpawnAll()
-	local header = {}
+local function header_onLogin()
+	for i = 1, #header do
+		local v = config.units[frame_name][i].visibility
+
+		-- class specialization info
+		header[i].visibility = v and gen_visibility(v.role, v.from, v.to)
+		RegisterAttributeDriver(header[i], 'state-visibility', header[i].visibility)
+		if (header[i].pets) then
+			RegisterAttributeDriver(header[i].pets, 'state-visibility', header[i].visibility)
+		end
+	end
+end
+
+if (config.units[frame_name].show) then
+	oUF:RegisterStyle(A.. frame_name:gsub('^%l', string.upper), createStyle)
+	oUF:RegisterStyle(A.. frame_name:gsub('^%l', string.upper)..'Pets', createSubStyle)
+
+	-- create the raid headers
 	for i, cfg in ipairs(config.units[frame_name]) do
 		local options = gen_options(i, cfg.grid, cfg.sort, cfg.grow)
 
@@ -506,6 +522,7 @@ function RaidHeader:SpawnAll()
 		header[i] = oUF:SpawnHeader('oUF_NineRaid'..i, nil, nil, unpack(options))
 		header[i]:SetPoint(cfg.pos.a1, cfg.pos.af, cfg.pos.a2, cfg.pos.x, cfg.pos.y)
 
+		-- optional pet-frames
 		if (cfg.pets and cfg.pets.show) then
 			local xoff = (cfg.pets.anchor == 'TOPRIGHT') and cfg.grid.sep or 0
 			local yoff = (cfg.pets.anchor == 'TOPRIGHT') and 0 or -cfg.grid.sep
@@ -516,26 +533,6 @@ function RaidHeader:SpawnAll()
 			header[i].pets:SetPoint('TOPLEFT', 'oUF_NineRaid'..i, cfg.pets.anchor or 'TOPRIGHT', xoff, yoff)
 		end
 	end
-	self.header = header
-end
 
--- add visibility option later, since we use spec information which is not available at header creation
-local function RaidHeader_OnEvent(self, event)
-	for i, header in ipairs(self.header) do
-		local v = config.units[frame_name][i].visibility
-		header.visibility = v and gen_visibility(v.role, v.from, v.to)
-		RegisterAttributeDriver(header, 'state-visibility', header.visibility)
-		if (header.pets) then
-			RegisterAttributeDriver(header.pets, 'state-visibility', header.visibility)
-		end
-	end
-end
-
-if (config.units[frame_name].show) then
-	oUF:RegisterStyle(A.. frame_name:gsub('^%l', string.upper), createStyle)
-	oUF:RegisterStyle(A.. frame_name:gsub('^%l', string.upper)..'Pets', createSubStyle)
-
-	RaidHeader:SpawnAll()
-	RaidHeader:SetScript('OnEvent', RaidHeader_OnEvent)
-	RaidHeader:RegisterEvent('PLAYER_ENTERING_WORLD')
+	oUF:Factory(header_onLogin)
 end
