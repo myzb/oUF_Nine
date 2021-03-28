@@ -5,5 +5,6 @@
 	<Script file='alternativepower.lua' />
 	<Script file='castbar.lua' />
 	<Script file='auras.lua' />
+	<Script file='range.lua' />
 	<Script file='blizzard.lua' />
 </Ui>
