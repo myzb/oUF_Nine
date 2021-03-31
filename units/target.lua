@@ -46,8 +46,6 @@ local function Buffs_CustomFilter(element, unit, button, ...)
 		return false
 	end
 
-	-- get buff priority and warn level
-	button.prio = auras:GetBuffPrio(...)
 	-- show all buffs
 	return true
 end
