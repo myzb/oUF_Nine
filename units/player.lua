@@ -329,7 +329,7 @@ local function Buffs_CustomFilter(element, unit, button, ...)
 	end
 
 	-- get buff priority and warn level
-	local prio = auras:GetBuffPrio(...)
+	local prio = auras:GetBuffPrio(unit, ...)
 
 	return (prio >= auras.BUFF_OWN_HELPFUL)
 end

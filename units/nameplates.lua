@@ -367,7 +367,7 @@ local function Debuffs_CustomFilter(element, unit, button, isDispellable, ...)
 	end
 
 	-- get debuff priority and warn level
-	local prio, warn = auras:GetDebuffPrio(isDispellable, ...)
+	local prio, warn = auras:GetDebuffPrio(unit, isDispellable, ...)
 	button.prio = prio
 
 	return (element.showSpecial and warn and 'S') or prio

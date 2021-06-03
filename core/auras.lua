@@ -92,14 +92,15 @@ auras.DEBUFF_PLAYER = 3
 auras.DEBUFF_DISPEL = 2
 auras.DEBUFF_MISC = 1
 
-auras.cache = {}
+auras.cache = { help = {}, harm = {} }
 
 -- Buff Priority Calculation
-function auras:GetBuffPrio(...)
+function auras:GetBuffPrio(unit, ...)
 	local spellId = select(10, ...)
+	local group = (UnitIsFriend('player', unit)) and 'help' or 'harm'
 
-	if (auras.cache[spellId]) then
-		return unpack(auras.cache[spellId])
+	if (auras.cache[group][spellId]) then
+		return unpack(auras.cache[group][spellId])
 	end
 
 	local prio, warn = auras.BUFF_MISC, false
@@ -107,7 +108,7 @@ function auras:GetBuffPrio(...)
 
 	if (not flags) then
 		-- aura not know by the lib, cache and return
-		auras.cache[spellId] = { prio, warn }
+		auras.cache[group][spellId] = { prio, warn }
 		return prio, warn
 	end
 
@@ -132,16 +133,17 @@ function auras:GetBuffPrio(...)
 	end
 
 	-- cache result
-	auras.cache[spellId] = { prio, warn }
+	auras.cache[group][spellId] = { prio, warn }
 	return prio, warn
 end
 
 -- Debuff Priority Calculation
-function auras:GetDebuffPrio(dispellable, ...)
+function auras:GetDebuffPrio(unit, dispellable, ...)
 	local spellId = select(10, ...)
+	local group = (UnitIsFriend('player', unit)) and 'help' or 'harm'
 
-	if (auras.cache[spellId]) then
-		return unpack(auras.cache[spellId])
+	if (auras.cache[group][spellId]) then
+		return unpack(auras.cache[group][spellId])
 	end
 
 	local casterIsHuman = select(13, ...)
@@ -177,14 +179,15 @@ function auras:GetDebuffPrio(dispellable, ...)
 	end
 
 	-- cache result
-	auras.cache[spellId] = { prio, warn }
+	auras.cache[group][spellId] = { prio, warn }
 	return prio, warn
 end
 
 -- Aura Cache Wiper
 local function Auras_WipeCache(self, event, unit)
 	if (unit == 'player') then
-		wipe(self.data)
+		auras.cache['help'] = {}
+		auras.cache['harm'] = {}
 	end
 end
 
@@ -192,7 +195,6 @@ do
 	local cache = CreateFrame('Frame')
 	cache:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
 	cache:SetScript('OnEvent', Auras_WipeCache)
-	cache.data = auras.cache
 end
 
 -- -----------------------------------
