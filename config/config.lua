@@ -313,7 +313,7 @@ config.units = {
 			grow = 'LEFTDOWN',
 			layout = config.layout['raid'],
 			auras = { rows = 1 },
-			misc = { hideHPPerc = true }
+			misc = { hideHPPerc = true, rightClickthrough = true }
 		},
 		{ -- Raid 26-40man healer
 			visibility = { role = 'HEALER', from = 26, to = 40 },
@@ -323,7 +323,7 @@ config.units = {
 			grow = 'LEFTDOWN',
 			layout = config.layout['raid'],
 			auras = { cols = 2, rows = 1 },
-			misc = { hideHPPerc = true }
+			misc = { hideHPPerc = true, rightClickthrough = true }
 		},
 		{ -- Raid 6-20man tank/dps
 			visibility = { role = 'TANK,DAMAGER', from = 6, to = 20 },
