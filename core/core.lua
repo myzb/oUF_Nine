@@ -127,6 +127,7 @@ function core:RegisterMouse(self, rightClickthrough)
 	else
 		self:RegisterForClicks('LeftButtonDown')
 		self:SetScript('OnMouseDown', Mousebutton_OnDown)
+		self:SetAttribute('type2', 'none')
 	end
 end
 
