@@ -109,7 +109,7 @@ tags['n:addpower'] = function(unit)
 	end
 
 	-- Show bar if not full for supported classes only
-	if (shouldDisplay and cur ~= max) then
+	if (shouldDisplay) then
 		return util:ShortNumber(cur)
 	end
 end

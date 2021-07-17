@@ -152,7 +152,7 @@ config.units = {
 		},
 		castbar = {
 			show = true,
-			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -184 },
+			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -154 },
 			width = 196,
 			height = 17,
 			latency = {
@@ -166,8 +166,9 @@ config.units = {
 			width = 196,
 			height = 9
 		},
-		classpower = { -- i.e combo points, holy power
-			show = true
+		classpower = { -- i.e combo points, holy power, mana
+			show = true,
+			text = false
 		},
 		totems = { -- totems and guardians i.e shadowfiend, gargoyle
 			show = true

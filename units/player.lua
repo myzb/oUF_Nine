@@ -21,9 +21,7 @@ local function TotemBar_PositionUpdate(self)
 	local anchor = self
 
 	-- update anchor based on what is currently being displayed
-	if (self.AdditionalPower and self.AdditionalPower.isShown) then
-		anchor = self.AdditionalPower
-	elseif (self.ClassPower and self.ClassPower.isShown) then
+	if (self.ClassPower and self.ClassPower.isShown) then
 		anchor = self.ClassPower[1]
 	elseif (self.Runes and self.Runes.isShown) then
 		anchor = self.Runes[1]
@@ -132,8 +130,8 @@ end
 
 -- Additional Power (Mana, ...)
 local function AddPower_PostUpdate(element, cur, max)
-	-- Show bar if not full for supported classes only
-	if (AlternatePowerBar_ShouldDisplayPower(element) and cur ~= max) then
+	-- Show bar for supported classes only
+	if (AlternatePowerBar_ShouldDisplayPower(element)) then
 		element:Show()
 	else
 		element:Hide()
@@ -152,19 +150,14 @@ local function AddPower_Create(self, width, height, texture)
 	addpower.colorPower = true
 	addpower.frequentUpdates = true
 
-	local background = addpower:CreateTexture(nil, 'BACKGROUND')
-	background:SetAllPoints()
-	background:SetTexture([[Interface\ChatFrame\ChatFrameBackground]])
-	background:SetVertexColor(0, 0, 0, 0.9)
-
 	-- Value
-	local value = core:CreateFontstring(addpower, font_num, config.fontsize - 1, nil, 'RIGHT')
-	value:SetShadowColor(0, 0, 0, 1)
-	value:SetShadowOffset(1, -1)
-	value:SetPoint('RIGHT', -4, 0)
-	self:Tag(value, '[n:addpower]')
-
-	core:CreateDropShadow(addpower, 5, 5, 0, config.frame.shadows)
+	if (config.units[frame_name].classpower.text) then
+		local value = core:CreateFontstring(addpower, font_num, config.fontsize - 1, nil, 'RIGHT')
+		value:SetShadowColor(0, 0, 0, 1)
+		value:SetShadowOffset(1, -1)
+		value:SetPoint('RIGHT', -4, 0)
+		self:Tag(value, '[n:addpower]')
+	end
 
 	-- Add Power Callbacks
 	addpower.PostUpdate = AddPower_PostUpdate
@@ -423,11 +416,11 @@ local function createStyle(self)
 			self.Runes = runes
 		elseif (PLAYER_CLASS == 'MONK') then
 			local stagger = StaggerBar_Create(self, width, 3, layout.texture)
-			stagger:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
+			stagger:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -8)
 			self.Stagger = stagger
 		else
 			local addpower = AddPower_Create(self, width, 3, layout.texture)
-			addpower:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
+			addpower:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, 0)
 			self.AdditionalPower = addpower
 		end
 	end
@@ -475,14 +468,14 @@ local function createStyle(self)
 
 	-- combined status indicator (resting / combat)
 	do
-		local resting = self.Power:CreateTexture(nil, 'OVERLAY')
-		resting:SetPoint('CENTER', self.Power, 'BOTTOMLEFT', 0 , 0)
+		local resting = icons:CreateTexture(nil, 'OVERLAY')
+		resting:SetPoint('CENTER', self, 'BOTTOMLEFT', 0 , 0)
 		resting:SetSize(22, 22)
 		self.RestingIndicator = resting
 
-		local combat = self.Power:CreateTexture(nil, 'OVERLAY')
+		local combat = icons:CreateTexture(nil, 'OVERLAY')
 		combat:SetSize(22, 22)
-		combat:SetPoint('CENTER', self.Power, 'BOTTOMLEFT', 0 ,0)
+		combat:SetPoint('CENTER', self, 'BOTTOMLEFT', 0 ,0)
 		combat.PostUpdate = function(element, inCombat)
 			element.__owner.RestingIndicator:SetAlpha((inCombat and 0) or 1)
 		end
