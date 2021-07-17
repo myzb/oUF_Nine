@@ -95,11 +95,22 @@ events['n:curpp'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD
 
 -- Additional Power
 tags['n:addpower'] = function(unit)
-	local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
+	local cur = UnitPower(unit, ADDITIONAL_POWER_BAR_INDEX)
+	local max = UnitPowerMax(unit, ADDITIONAL_POWER_BAR_INDEX)
 
-	-- hide if the units main power type is already mana (0) or power is full
-	if (UnitPowerType(unit) ~= 0 and min ~= max) then
-		return util:ShortNumber(min)
+	-- same as AlternatePowerBar_ShouldDisplayPower()
+	local shouldDisplay
+	if (not UnitHasVehicleUI('player') and max ~= 0) then
+		local _, class = UnitClass(unit)
+		if (ALT_MANA_BAR_PAIR_DISPLAY_INFO[class]) then
+			local powerType = UnitPowerType(unit)
+			shouldDisplay = ALT_MANA_BAR_PAIR_DISPLAY_INFO[class][powerType]
+		end
+	end
+
+	-- Show bar if not full for supported classes only
+	if (shouldDisplay and cur ~= max) then
+		return util:ShortNumber(cur)
 	end
 end
 events['n:addpower'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE'
