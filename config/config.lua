@@ -298,7 +298,7 @@ config.units = {
 		},
 		{ -- Raid 6-10man healer
 			visibility = { role = 'HEALER', from = 6, to = 10 },
-			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -205 },
+			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -260 },
 			grid = { cols = 5, rows = 2, sep = 2, width = 540, height = 100 },
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
@@ -308,7 +308,7 @@ config.units = {
 		},
 		{ -- Raid 11-25man healer
 			visibility = { role = 'HEALER', from = 11, to = 25 },
-			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -205 },
+			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -260 },
 			grid = { cols = 5, rows = 5, sep = 2, width = 540, height = 250 },
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
@@ -318,7 +318,7 @@ config.units = {
 		},
 		{ -- Raid 26-40man healer
 			visibility = { role = 'HEALER', from = 26, to = 40 },
-			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -205 },
+			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -260 },
 			grid = { cols = 8, rows = 5, sep = 2, width = 540, height = 250 },
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
@@ -349,7 +349,7 @@ config.units = {
 		--[[
 		{ -- Debug
 			visibility = { role = 'HEALER,TANK,DAMAGER', from = 0, to = 40 },
-			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -205 },
+			pos = { a1 = 'TOP', af = 'UIParent', a2 = 'CENTER', x = 0, y = -260 },
 			grid = { cols = 5, rows = 5, sep = 2, width = 540, height = 250 },
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
