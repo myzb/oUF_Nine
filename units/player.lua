@@ -1,7 +1,7 @@
 local A, ns = ...
 
 local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
-local auras, filters = ns.auras, ns.filters
+local auras, filters, spells = ns.auras, ns.filters, ns.spells
 
 local font = m.fonts.frizq
 local font_num = m.fonts.myriad
@@ -321,10 +321,16 @@ local function Buffs_CustomFilter(element, unit, button, ...)
 		return false
 	end
 
-	-- get buff priority and warn level
-	local prio = auras:GetBuffPrio(unit, ...)
+	-- defensive auras
+	if (spells.personal[spellId] or spells.external[spellId]) then
+		return true
+	end
+	-- powerups auras
+	if (spells.utility[spellId] or spells.powerup[spellId]) then
+		return true
+	end
 
-	return (prio >= auras.BUFF_OWN_HELPFUL)
+	return false
 end
 
 -- Filter Debuffs

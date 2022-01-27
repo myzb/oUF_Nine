@@ -1,7 +1,7 @@
 local A, ns = ...
 
 local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
-local auras, filters = ns.auras, ns.filters
+local auras, filters, spells = ns.auras, ns.filters, ns.spells
 
 local font = m.fonts.frizq
 local font_num = m.fonts.myriad
@@ -77,61 +77,69 @@ end
 -- -----------------------------------
 
 local function RaidAuras_PreUpdate(element, unit)
-	element.hasWarn = false
+	element.prio = auras.AURA_MISC
 end
 
 -- Filter Buffs
-local function Buffs_CustomFilter(element, unit, button, isDispellable, ...)
+local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
 	local spellId = select(10, ...)
 
 	-- auras white-/blacklist
 	if (filters[frame_name]['whitelist'][spellId]) then
-		return auras.BUFF_WHITELIST
+		return auras.AURA_MISC
 	end
 	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
 	end
-
-	-- get buff priority and warn level
-	local prio, warn = auras:GetBuffPrio(unit, ...)
-
-	-- blizzard raid frames filtering function
-	if (not (Auras_ShouldDisplayBuff(...) or warn)) then
+	if (not Auras_ShouldDisplayBuff(...)) then
 		return false
 	end
-	if (warn and element.hasWarn) then
-		return false
-	end
-	if (warn) then
-		element.hasWarn = true
-	end
+
+	-- aura priority
+	local prio = auras:GetBuffPrio(unit, ...)
 	button.prio = prio
 
-	return (warn and 'S') or prio
+	-- promote to 'S' prio
+	if (element.showSpecial) then
+		if (spells.personal[spellId] or spells.external[spellId]) then
+			prio = 'S'
+		end
+	end
+
+	return prio
 end
 
+
 -- Filter Debuffs
-local function Debuffs_CustomFilter(element, unit, button, isDispellable, ...)
+local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
 	local spellId = select(10, ...)
 
 	-- auras white-/blacklist
 	if (filters[frame_name]['whitelist'][spellId]) then
-		return auras.DEBUFF_WHITELIST
+		return auras.AURA_MISC
 	end
 	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
 	end
-
-	-- blizzard raid-frames filtering function
-	if (not Auras_ShouldDisplayDebuff(...)) then
+	if (not (Auras_ShouldDisplayDebuff(...))) then
 		return false
 	end
 
-	-- get debuff priority and warn level
-	local prio, warn = auras:GetDebuffPrio(unit, isDispellable, ...)
+	-- aura priority
+	local prio = auras:GetDebuffPrio(unit, dispellable, ...)
 	button.prio = prio
 
-	return (element.showSpecial and warn and 'S') or prio
+	-- promote to 'S' prio
+	if (element.showSpecial) then
+		local casterIsPlayer = select(13, ...)
+		local specialAura = spells.crowdcontrol[spellId]
+
+		if (specialAura or (dispellable and not casterIsPlayer)) then
+			prio = 'S'
+		end
+	end
+
+	return prio
 end
 
 local function RaidAuras_SetGroupPosition(element, group, idx, cur, max, offx, offy)
@@ -317,9 +325,10 @@ local function createStyle(self, unit, ...)
 		raidDebuffs.dispelIcon:SetPoint('TOPRIGHT', self.Health)
 		raidDebuffs.dispelIcon:SetSize(14, 14)
 
+		raidDebuffs.PreUpdate = RaidAuras_PreUpdate
 		raidDebuffs.CustomFilter = Debuffs_CustomFilter
 		raidDebuffs.SetGroupPosition = RaidAuras_SetGroupPosition
-		raidDebuffs.group = { [auras.DEBUFF_BOSS] = { size = size + 8 } } -- boss aura group
+		raidDebuffs.group = { [auras.AURA_BOSS] = { size = size + 8 } } -- boss aura group
 
 		self.RaidDebuffs = raidDebuffs
 	end

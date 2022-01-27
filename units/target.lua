@@ -46,7 +46,6 @@ local function Buffs_CustomFilter(element, unit, button, ...)
 		return false
 	end
 
-	-- show all buffs
 	return true
 end
 

@@ -4,11 +4,11 @@ local filters = {}
 ns.filters = filters
 
 -- ------------------------------------------------------------------------
--- > AURAS LIST
+-- > FILTERS
 -- ------------------------------------------------------------------------
 
 -- -----------------------------------
--- > BLACKLISTS / WHITELISTS
+-- > UNIT BLACKLISTS / WHITELISTS
 -- -----------------------------------
 
 filters.player = {
@@ -44,30 +44,6 @@ filters.raid = {
 filters.arena = {
 	blacklist = {},
 	whitelist = {}
-}
-
-filters.buffs = {
-	whitelist = {},
-	blacklist = {
-		[206150] = true,  -- bfa: Challenger's Might  (m+ scaling)
-		[297871] = true,  -- bfa: Anglers' Water Striders (mount equipment)
-		[17619] = true,   -- bfa: Alchemist Stone (trinket)
-		[186401] = true,  -- bfa: Sign of the Skirmisher (arena bonus honor)
-		[186403] = true,  -- bfa: Sign of Battle (bg bonus honor)
-		[225787] = true,  -- bfa: Sign of the Warrior (extra end of dungeon reward)
-		[225788] = true,  -- bfa: Sign of the Emissary (bonus reputation)
-		[328136] = true,  -- bfa: Impressive Influence (bonus reputation)
-		[264408] = true,  -- bfa: Soldier of the Horde (warmode)
-		[269083] = true,  -- bfa: Enlisted (warmode)
-		[308212] = true,  -- bfa: WoW's 15th Anniversary
-	}
-}
-
-filters.debuffs = {
-	whitelist = {},
-	blacklist = {
-		[206151] = true,  -- bfa: Challenger's Burden (m+ scaling)
-	}
 }
 
 -- -----------------------------------

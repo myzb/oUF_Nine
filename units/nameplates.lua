@@ -301,7 +301,7 @@ local function Auras_PostCreateIcon(element, button)
 end
 
 -- Filter Buffs
-local function Buffs_CustomFilter(element, unit, button, isDispellable, ...)
+local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
 	local isStealable = select(8, ...)
 	local duration = select(5, ...)
 	local spellId = select(10, ...)
@@ -309,15 +309,16 @@ local function Buffs_CustomFilter(element, unit, button, isDispellable, ...)
 
 	-- auras white-/blacklist
 	if (filters[frame_name]['whitelist'][spellId]) then
-		return auras.BUFF_WHITELIST
+		return auras.AURA_MISC
 	end
 	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
 	end
 
 	-- only show stealable / purgeable buffs
-	if (isStealable and ((duration > 0 and duration < 30) or not casterIsPlayer)) then
-		return 1
+	local isShortBuff = duration > 0 and duration < 30
+	if (isStealable or (isShortBuff and not casterIsPlayer)) then
+		return auras.AURA_MISC
 	end
 end
 
@@ -345,7 +346,7 @@ local function Debuffs_PreUpdate(element, unit)
 end
 
 -- Filter Debuffs
-local function Debuffs_CustomFilter(element, unit, button, isDispellable, ...)
+local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
 	local name = select(1, ...)
 	local duration = select(5, ...)
 	local caster = select(7, ...)
@@ -355,7 +356,7 @@ local function Debuffs_CustomFilter(element, unit, button, isDispellable, ...)
 
 	-- auras white-/blacklist
 	if (filters[frame_name]['whitelist'][spellId]) then
-		return auras.DEBUFF_WHITELIST
+		return auras.AURA_MISC
 	end
 	if (filters[frame_name]['blacklist'][spellId]) then
 		return false
@@ -366,11 +367,21 @@ local function Debuffs_CustomFilter(element, unit, button, isDispellable, ...)
 		return false
 	end
 
-	-- get debuff priority and warn level
-	local prio, warn = auras:GetDebuffPrio(unit, isDispellable, ...)
+	-- aura priority
+	local prio = auras:GetDebuffPrio(unit, dispellable, ...)
 	button.prio = prio
 
-	return (element.showSpecial and warn and 'S') or prio
+	-- promote to 'S' prio
+	if (element.showSpecial) then
+		local casterIsHuman = select(13, ...)
+		local specialAura = spells.crowcontrol[spellId]
+
+		if (specialAura or (dispellable and not casterIsHuman)) then
+			prio = 'S'
+		end
+	end
+
+	return prio
 end
 
 -- -----------------------------------

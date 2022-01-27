@@ -5,6 +5,7 @@ ns.util = util
 
 -- Import API functions
 local floor = floor
+local table_insert = table.insert
 
 -- ------------------------------------------------------------------------
 -- > UTILITY FUNCTIONS
@@ -46,4 +47,14 @@ end
 
 function util:NumberToPerc(num, den)
 	return floor(num / den * 100 + 0.5)
+end
+
+function util:TableMerge(...)
+	local res = {}
+	for _,tbl in ipairs({...}) do
+		for _,val in ipairs(tbl) do
+			table_insert(res, val)
+		end
+	end
+	return res
 end
