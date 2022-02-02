@@ -308,10 +308,10 @@ local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
 	local casterIsPlayer = select(13, ...)
 
 	-- auras white-/blacklist
-	if (filters[frame_name]['whitelist'][spellId]) then
+	if (filters[frame_name].whitelist[spellId]) then
 		return auras.AURA_MISC
 	end
-	if (filters[frame_name]['blacklist'][spellId]) then
+	if (filters[frame_name].blacklist[spellId]) then
 		return false
 	end
 
@@ -355,10 +355,10 @@ local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
 	local showAll = select(14, ...)
 
 	-- auras white-/blacklist
-	if (filters[frame_name]['whitelist'][spellId]) then
+	if (filters[frame_name].whitelist[spellId]) then
 		return auras.AURA_MISC
 	end
-	if (filters[frame_name]['blacklist'][spellId]) then
+	if (filters[frame_name].blacklist[spellId]) then
 		return false
 	end
 

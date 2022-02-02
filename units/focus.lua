@@ -29,10 +29,10 @@ local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
 	local spellId = select(10, ...)
 
 	-- buffs white-/blacklist
-	if (filters[frame_name]['whitelist'][spellId]) then
+	if (filters[frame_name].whitelist[spellId]) then
 		return auras.AURA_MISC
 	end
-	if (filters[frame_name]['blacklist'][spellId]) then
+	if (filters[frame_name].blacklist[spellId]) then
 		return false
 	end
 	if (not Auras_ShouldDisplayBuff(...)) then
@@ -58,10 +58,10 @@ local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
 	local spellId = select(10, ...)
 
 	-- auras white-/blacklist
-	if (filters.raid['whitelist'][spellId]) then
+	if (filters[frame_name].whitelist[spellId]) then
 		return auras.AURA_MISC
 	end
-	if (filters.raid['blacklist'][spellId]) then
+	if (filters[frame_name].blacklist[spellId]) then
 		return false
 	end
 	if (not (Auras_ShouldDisplayDebuff(...))) then

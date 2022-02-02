@@ -61,10 +61,10 @@ local function Debuffs_CustomFilter(element, unit, button, ...)
 	local showAll = select(14, ...)
 
 	-- auras white-/blacklist
-	if (filters[frame_name]['whitelist'][spellId]) then
+	if (filters[frame_name].whitelist[spellId]) then
 		return true
 	end
-	if (filters[frame_name]['blacklist'][spellId]) then
+	if (filters[frame_name].blacklist[spellId]) then
 		return false
 	end
 
