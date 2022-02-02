@@ -4,6 +4,4 @@
 	<Script file="oUF_Reputation\oUF_Reputation.lua"/>
 	<Script file="oUF_WidgetXPBar\oUF_WidgetXPBar.lua"/>
 	<Script file="oUF_RaidAuras\oUF_RaidAuras.lua"/>
-	<Script file="LibPlayerSpells-1.0\LibStub.lua"/>
-	<Include file="LibPlayerSpells-1.0\lib.xml"/>
 </Ui>
