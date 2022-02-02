@@ -135,7 +135,7 @@ end
 
 local function StatusAura_Check(element, unit, button, dispellable, ...)
 	local spellId = select(10, ...)
-	local auraColor = filters.auracolor[PLAYER_CLASS][spellId]
+	local auraColor = filters.auracolor[spellId]
 
 	-- hp bar color override
 	if (auraColor and button.isPlayer) then
