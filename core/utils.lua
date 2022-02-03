@@ -49,7 +49,7 @@ function util:NumberToPerc(num, den)
 	return floor(num / den * 100 + 0.5)
 end
 
-function util:TableMerge(...)
+function util:TableConcat(...)
 	local res = {}
 	for _,tbl in ipairs({...}) do
 		for _,val in ipairs(tbl) do
@@ -57,4 +57,15 @@ function util:TableMerge(...)
 		end
 	end
 	return res
+end
+
+function util:TableMerge(t1, t2)
+	for k, v in pairs(t2) do
+		if (type(v) == "table") and (type(t1[k] or false) == "table") then
+			self:TableMerge(t1[k], t2[k])
+		else
+			t1[k] = v
+		end
+	end
+	return t1
 end

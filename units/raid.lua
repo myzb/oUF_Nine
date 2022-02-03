@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
+local core, config, m, util, oUF = ns.core, ns.config, ns.m, ns.util, ns.oUF
 local auras, filters, spells = ns.auras, ns.filters, ns.spells
 
 local font = m.fonts.frizq
@@ -11,7 +11,6 @@ local frame_name = 'raid'
 
 -- Import API functions
 local floor, ceil = floor, ceil
-local table_insert = table.insert
 local UnitIsUnit = UnitIsUnit
 local UnitThreatSituation = UnitThreatSituation
 local GetThreatStatusColor = GetThreatStatusColor
@@ -407,16 +406,6 @@ end
 -- > HELPERS TO CONFIG HEADERS
 -- -----------------------------------
 
-local function table_merge(...)
-	local res = {}
-	for _,tbl in ipairs({...}) do
-		for _,val in ipairs(tbl) do
-			table_insert(res, val)
-		end
-	end
-	return res
-end
-
 local function gen_visibility(role, from, to)
 	if (not to) then
 		return 'hide'
@@ -487,7 +476,7 @@ local function gen_options(i, grid, sort, grow, width, height)
 		self:SetAttribute('oUF_NineRaidProfile', num)
 		]]):format(i, width or element_width(grid), height or element_height(grid), core:GetPixelScale())
 	}
-	return table_merge(attr.general, attr.grid[grow], attr.order[sort], attr.frame)
+	return util:TableConcat(attr.general, attr.grid[grow], attr.order[sort], attr.frame)
 end
 
 local function gen_pet_options(i, grid, sort, grow, num)
