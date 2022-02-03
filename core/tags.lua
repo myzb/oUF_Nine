@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local core, util, oUF = ns.core, ns.util, ns.oUF
+local common, util, oUF = ns.common, ns.util, ns.oUF
 local tags, events = oUF.Tags.Methods, oUF.Tags.Events
 
 -- Import API Functions

@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
+local common, config, m, oUF = ns.common, ns.config, ns.m, ns.oUF
 local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.frizq
@@ -33,7 +33,7 @@ end
 
 -- Create Target Border
 local function TargetBorder_Create(self)
-	local border = core:CreateBorder(self, 2, 2, self:GetFrameLevel() + 1, [[Interface\ChatFrame\ChatFrameBackground]])
+	local border = common:CreateBorder(self, 2, 2, self:GetFrameLevel() + 1, [[Interface\ChatFrame\ChatFrameBackground]])
 	border:SetBackdropBorderColor(0.8, 0.8, 0.8, 1)
 	border:Hide()
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateTarget, true)
@@ -194,17 +194,17 @@ local function createStyle(self)
 	local layout = uframe.layout
 
 	self:SetSize(layout.width, layout.height)
-	core:CreateLayout(self, layout)
+	common:CreateLayout(self, layout)
 
 	-- mouse events
-	core:RegisterMouse(self)
+	common:RegisterMouse(self)
 	self:SetAttribute("*type1", "target")
 	self:SetAttribute("*type2", "focus")
 
 	-- text strings
 	local text = CreateFrame('Frame', nil, self.Health)
 	text:SetAllPoints()
-	text.unit = core:CreateFontstring(text, font, config.fontsize - 2, nil, 'LEFT')
+	text.unit = common:CreateFontstring(text, font, config.fontsize - 2, nil, 'LEFT')
 	text.unit:SetPoint('TOPRIGHT', -2, 0)
 	text.unit:SetShadowColor(0, 0, 0, 1)
 	text.unit:SetShadowOffset(1, -1)
@@ -215,7 +215,7 @@ local function createStyle(self)
 		self:Tag(text.unit, '[name]')
 	end
 
-	text.status = core:CreateFontstring(text, font_num, config.fontsize + 2, nil, 'CENTER')
+	text.status = common:CreateFontstring(text, font_num, config.fontsize + 2, nil, 'CENTER')
 	text.status:SetPoint('LEFT')
 	text.status:SetPoint('RIGHT')
 	text.status:SetSize(self:GetWidth(), config.fontsize + 13)
@@ -225,7 +225,7 @@ local function createStyle(self)
 		self:Tag(text.status, '[n:perhp_status]')
 	end
 
-	text.spec = core:CreateFontstring(text, font, config.fontsize - 2, nil, 'RIGHT')
+	text.spec = common:CreateFontstring(text, font, config.fontsize - 2, nil, 'RIGHT')
 	text.spec:SetPoint('BOTTOMRIGHT', -1, 1)
 	text.spec:SetShadowColor(0, 0, 0, 1)
 	text.spec:SetShadowOffset(1, -1)
@@ -236,7 +236,7 @@ local function createStyle(self)
 		self:Tag(text.spec, '[raidcolor]')
 	end
 
-	text.power = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'CENTER')
+	text.power = common:CreateFontstring(text, font_num, config.fontsize +1, nil, 'CENTER')
 	text.power:SetShadowColor(0, 0, 0, 1)
 	text.power:SetShadowOffset(1, -1)
 	text.power:SetPoint('CENTER', self.Power, 'CENTER', 0, 0)
@@ -247,7 +247,7 @@ local function createStyle(self)
 	-- castbar
 	if (uframe.castbar and uframe.castbar.show) then
 		local width, height, pos = uframe.castbar.width, uframe.castbar.height, uframe.castbar.pos
-		local castbar = core:CreateCastbar(self, width, height)
+		local castbar = common:CreateCastbar(self, width, height)
 		castbar:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y)
 		self.Castbar = castbar
 	end

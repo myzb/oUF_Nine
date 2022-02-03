@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
+local common, config, m, oUF = ns.common, ns.config, ns.m, ns.oUF
 local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.frizq
@@ -226,7 +226,7 @@ local function createCastbar(self, width, height, texture, iconSep, iconSize)
 	background:SetVertexColor(0, 0, 0, 0.9)
 
 	-- spell name
-	castbar.Text = core:CreateFontstring(castbar, font, font_size - 1, nil, 'CENTER')
+	castbar.Text = common:CreateFontstring(castbar, font, font_size - 1, nil, 'CENTER')
 	castbar.Text:SetShadowColor(0, 0, 0, 1)
 	castbar.Text:SetShadowOffset(1, -1)
 	castbar.Text:SetPoint('TOP', castbar, 'BOTTOM', 0, -1)
@@ -270,13 +270,13 @@ local function Create_WidgetXPBar(self, width, height, texture)
 	background:SetVertexColor(0, 0, 0, 0.9)
 
 	-- rank text
-	widgetxp.Rank = core:CreateFontstring(widgetxp, font_num, font_size - 1, nil, 'LEFT')
+	widgetxp.Rank = common:CreateFontstring(widgetxp, font_num, font_size - 1, nil, 'LEFT')
 	widgetxp.Rank:SetShadowColor(0, 0, 0, 1)
 	widgetxp.Rank:SetShadowOffset(1, -1)
 	widgetxp.Rank:SetPoint('RIGHT', widgetxp, 'LEFT', -5, 0)
 
 	-- progress text
-	widgetxp.ProgressText = core:CreateFontstring(widgetxp, font_num, font_size - 1, nil, 'CENTER')
+	widgetxp.ProgressText = common:CreateFontstring(widgetxp, font_num, font_size - 1, nil, 'CENTER')
 	widgetxp.ProgressText:SetShadowColor(0, 0, 0, 1)
 	widgetxp.ProgressText:SetShadowOffset(1, -1)
 	widgetxp.ProgressText:SetPoint('CENTER')
@@ -395,7 +395,7 @@ local function createStyle(self)
 	-- size and position
 	self:SetSize(layout.width, layout.height)
 	self:SetPoint(uframe.pos.a1, uframe.pos.x, uframe.pos.y)
-	self:SetScale(core:GetPixelScale(self))
+	self:SetScale(common:GetPixelScale(self))
 
 	-- hp bar
 	local health = CreateFrame('StatusBar', nil, self)
@@ -423,14 +423,14 @@ local function createStyle(self)
 	health.colorTapping = true
 
 	-- health border white glow (targeting) / shadows
-	health.Border = core:CreateDropShadow(health, 4, 4, 0, {1, 1, 1, 1}) -- white glow
+	health.Border = common:CreateDropShadow(health, 4, 4, 0, {1, 1, 1, 1}) -- white glow
 	health.dropShadows = layout.shadows
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', HealthBorder_Update, true)
 
 	self.Health = health
 
 	-- hp prediction
-	self.HealthPrediction = core:CreateHealthPredict(self.Health, layout.width)
+	self.HealthPrediction = common:CreateHealthPredict(self.Health, layout.width)
 
 	-- elite icon
 	local eliteIcon = self:CreateTexture(nil, 'OVERLAY')
@@ -447,7 +447,7 @@ local function createStyle(self)
 	-- text strings
 	local text = CreateFrame('Frame', nil, self.Health)
 	text:SetAllPoints(self.Health)
-	text.unit = core:CreateFontstring(text, font, font_size, nil, 'CENTER')
+	text.unit = common:CreateFontstring(text, font, font_size, nil, 'CENTER')
 	text.unit:SetShadowColor(0, 0, 0, 1)
 	text.unit:SetShadowOffset(1, -1)
 	text.unit:SetSize(2 * layout.width, font_size)
@@ -455,7 +455,7 @@ local function createStyle(self)
 	self:Tag(text.unit, '[n:name]')
 
 	if (uframe.misc and not uframe.misc.hideHPPerc) then
-		text.status = core:CreateFontstring(text, font, font_size, nil, 'CENTER')
+		text.status = common:CreateFontstring(text, font, font_size, nil, 'CENTER')
 		text.status:SetShadowColor(0, 0, 0, 1)
 		text.status:SetShadowOffset(1, -1)
 		text.status:SetAllPoints()

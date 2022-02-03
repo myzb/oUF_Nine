@@ -1,7 +1,7 @@
 local _, ns = ...
 
-local core, config, m, oUF = {}, ns.config, ns.m, ns.oUF
-ns.core = core
+local common, config, m, oUF = {}, ns.config, ns.m, ns.oUF
+ns.common = common
 
 -- Import API functions
 local UnitHealth = UnitHealth
@@ -13,11 +13,11 @@ local GetCVar = GetCVar
 local string_match = string.match
 
 -- ------------------------------------------------------------------------
--- > CORE FUNCTIONS
+-- > COMMON FUNCTIONS
 -- ------------------------------------------------------------------------
 
 -- Virtual Pixel Scaling Factor
-function core:GetPixelScale(self)
+function common:GetPixelScale(self)
 	local scale = string_match(GetCVar('gxWindowedResolution'), '%d+x(%d+)')
 	local parent = (self and self:GetParent()) or UIParent
 	local uiScale = parent:GetEffectiveScale()
@@ -25,7 +25,7 @@ function core:GetPixelScale(self)
 end
 
 -- Fontstring Builder
-function core:CreateFontstring(self, font, size, outline, justify)
+function common:CreateFontstring(self, font, size, outline, justify)
 	local fs = self:CreateFontString(nil, 'ARTWORK')
 	fs:SetFont(font, size, outline)
 	fs:SetJustifyH(justify or 'LEFT')
@@ -38,7 +38,7 @@ end
 -- -----------------------------------
 
 -- Set the Backdrop
-function core:SetBackdrop(self, inset_l, inset_r, inset_t, inset_b, color)
+function common:SetBackdrop(self, inset_l, inset_r, inset_t, inset_b, color)
 	self.backdropInfo = {
 		bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
 		tile = false,
@@ -55,7 +55,7 @@ function core:SetBackdrop(self, inset_l, inset_r, inset_t, inset_b, color)
 end
 
 -- Create Standard Frame Border
-function core:CreateBorder(self, point, e_size, f_level, texture)
+function common:CreateBorder(self, point, e_size, f_level, texture)
 	local parent = (self:IsObjectType('Texture') and self:GetParent()) or self
 	local border = CreateFrame('Frame', nil, parent, 'BackdropTemplate')
 	border:SetPoint('TOPLEFT', self, 'TOPLEFT', -point, point)
@@ -67,7 +67,7 @@ function core:CreateBorder(self, point, e_size, f_level, texture)
 end
 
 -- Create Frame Shadow Border
-function core:CreateDropShadow(self, point, e_size, f_level, color)
+function common:CreateDropShadow(self, point, e_size, f_level, color)
 	local shadow = CreateFrame('Frame', nil, self, 'BackdropTemplate')
 	shadow:SetPoint('TOPLEFT', self, 'TOPLEFT', -point, point)
 	shadow:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', point, -point)
@@ -119,7 +119,7 @@ local function Mousebutton_OnDown(self, button)
 	end
 end
 
-function core:RegisterMouse(self, rightClickthrough)
+function common:RegisterMouse(self, rightClickthrough)
 	self:SetScript('OnEnter', Mouseover_OnEnter)
 	self:SetScript('OnLeave', Mouseover_OnLeave)
 	if (not rightClickthrough) then
@@ -154,7 +154,7 @@ local function HealthPredict_PostUpdate(self, unit, ...)
 	end
 end
 
-function core:CreateHealthPredict(self, width, texture)
+function common:CreateHealthPredict(self, width, texture)
 
 	-- clips heal predict frames to avoid overflow on create
 	local clipping = CreateFrame('Frame', nil, self)
@@ -252,11 +252,11 @@ local function Health_UpdateColor(self, event, unit)
 	end
 end
 
-function core:CreateLayout(self, layout)
+function common:CreateLayout(self, layout)
 	local l = layout
 
 	-- pixel scale
-	self.pixelScale = core:GetPixelScale(self)
+	self.pixelScale = common:GetPixelScale(self)
 
 	-- hp bar
 	local health = CreateFrame('StatusBar', nil, self)
@@ -293,7 +293,7 @@ function core:CreateLayout(self, layout)
 	end
 
 	if (l.shadows) then
-		health.Shadow = core:CreateDropShadow(health, 5, 5, 0, config.frame.shadows)
+		health.Shadow = common:CreateDropShadow(health, 5, 5, 0, config.frame.shadows)
 	end
 
 	-- power bar
@@ -329,7 +329,7 @@ function core:CreateLayout(self, layout)
 		power.displayAltPower = l.power.displayAltPower
 
 		if (l.shadows) then
-			power.Shadow = core:CreateDropShadow(power, 5, 5, 0, config.frame.shadows)
+			power.Shadow = common:CreateDropShadow(power, 5, 5, 0, config.frame.shadows)
 		end
 		self.Power = power
 	end
@@ -340,5 +340,5 @@ function core:CreateLayout(self, layout)
 	self.Health = health
 
 	-- hp prediction
-	self.HealthPrediction = core:CreateHealthPredict(self.Health, self:GetWidth(), l.texture)
+	self.HealthPrediction = common:CreateHealthPredict(self.Health, self:GetWidth(), l.texture)
 end

@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file='utils.lua' />
 	<Script file='tags.lua' />
-	<Script file='core.lua' />
+	<Script file='common.lua' />
 	<Script file='alternativepower.lua' />
 	<Script file='castbar.lua' />
 	<Script file='auras.lua' />

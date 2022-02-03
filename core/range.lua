@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
+local common, config, m, oUF = ns.common, ns.config, ns.m, ns.oUF
 
 local PLAYER_CLASS = select(2, UnitClass('player'))
 local UnitCanAttack, IsSpellInRange, GetSpecialization = UnitCanAttack, IsSpellInRange, GetSpecialization
@@ -61,7 +61,7 @@ local spellRange = {
 	}
 }
 
-function core:UnitInRange(unit)
+function common:UnitInRange(unit)
 	local spells = spellRange[PLAYER_CLASS]
 	local spec, spell = GetSpecialization()
 

@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
+local common, config, m, oUF = ns.common, ns.config, ns.m, ns.oUF
 local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.frizq
@@ -79,15 +79,15 @@ local function createStyle(self)
 
 	self:SetSize(layout.width, layout.height)
 	self:SetPoint(uframe.pos.a1, uframe.pos.af, uframe.pos.a2, uframe.pos.x, uframe.pos.y)
-	core:CreateLayout(self, layout)
+	common:CreateLayout(self, layout)
 
 	-- mouse events
-	core:RegisterMouse(self)
+	common:RegisterMouse(self)
 
 	-- text strings
 	local text = CreateFrame('Frame', nil, self.Health)
 	text:SetAllPoints(self)
-	text.unit = core:CreateFontstring(text, font, config.fontsize -2, nil, 'LEFT')
+	text.unit = common:CreateFontstring(text, font, config.fontsize -2, nil, 'LEFT')
 	text.unit:SetShadowColor(0, 0, 0, 1)
 	text.unit:SetShadowOffset(1, -1)
 	text.unit:SetPoint('TOPLEFT', self.Health, 'TOPLEFT', 1, -2)
@@ -98,13 +98,13 @@ local function createStyle(self)
 		self:Tag(text.unit, '[n:difficultycolor][level]|r [n:name]')
 	end
 
-	text.health = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'RIGHT')
+	text.health = common:CreateFontstring(text, font_num, config.fontsize +1, nil, 'RIGHT')
 	text.health:SetShadowColor(0, 0, 0, 1)
 	text.health:SetShadowOffset(1, -1)
 	text.health:SetPoint('RIGHT', self.Health, 'RIGHT', -4, 0)
 	self:Tag(text.health, '[n:curhp]')
 
-	text.status = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'CENTER')
+	text.status = common:CreateFontstring(text, font_num, config.fontsize +1, nil, 'CENTER')
 	text.status:SetPoint('CENTER', self.Health, 'CENTER', 0, 0)
 	if (layout.health.colorCustom) then
 		self:Tag(text.status, '[n:reactioncolor][n:perhp_status]')
@@ -112,7 +112,7 @@ local function createStyle(self)
 		self:Tag(text.status, '[n:perhp_status]')
 	end
 
-	text.power = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'RIGHT')
+	text.power = common:CreateFontstring(text, font_num, config.fontsize +1, nil, 'RIGHT')
 	text.power:SetShadowColor(0, 0, 0, 1)
 	text.power:SetShadowOffset(1, -1)
 	text.power:SetPoint('RIGHT', self.Power, 'RIGHT', -4, 0)
@@ -122,7 +122,7 @@ local function createStyle(self)
 	-- castbar
 	if (uframe.castbar and uframe.castbar.show) then
 		local cfg = uframe.castbar
-		local castbar = core:CreateCastbar(self, cfg.width, cfg.height)
+		local castbar = common:CreateCastbar(self, cfg.width, cfg.height)
 		castbar:SetPoint(cfg.pos.a1, cfg.pos.af, cfg.pos.a2, cfg.pos.x, cfg.pos.y)
 		self.Castbar = castbar
 	end
@@ -130,7 +130,7 @@ local function createStyle(self)
 	-- alternative power (quest or boss special power)
 	if (uframe.altpower and uframe.altpower.show) then
 		local cfg = uframe.altpower
-		local altpower = core:CreateAltPower(self, cfg.width, cfg.height, layout.texture)
+		local altpower = common:CreateAltPower(self, cfg.width, cfg.height, layout.texture)
 		altpower:SetPoint(cfg.pos.a1, cfg.pos.af, cfg.pos.a2, cfg.pos.x, cfg.pos.y)
 		altpower.PreUpdate = AltPower_PreUpdate
 		self.AlternativePower = altpower
@@ -161,7 +161,7 @@ local function createStyle(self)
 	self.ThreatIndicator = threat
 
 	-- quest icon
-	local QuestIcon = core:CreateFontstring(self, font, 26, 'THINOUTLINE', 'CENTER')
+	local QuestIcon = common:CreateFontstring(self, font, 26, 'THINOUTLINE', 'CENTER')
 	QuestIcon:SetPoint('LEFT', self.Health, 'RIGHT', 0, -2)
 	QuestIcon:SetText('!')
 	QuestIcon:SetTextColor(238/255, 217/255, 43/255)

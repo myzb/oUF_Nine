@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
+local common, config, m, oUF = ns.common, ns.config, ns.m, ns.oUF
 
 local font = m.fonts.frizq
 
@@ -20,15 +20,15 @@ local function createStyle(self)
 
 	self:SetSize(layout.width, layout.height)
 	self:SetPoint(uframe.pos.a1, uframe.pos.af, uframe.pos.a2, uframe.pos.x, uframe.pos.y)
-	core:CreateLayout(self, layout)
+	common:CreateLayout(self, layout)
 
 	-- Mouse Events
-	core:RegisterMouse(self)
+	common:RegisterMouse(self)
 
 	-- Text Strings
 	local text = CreateFrame('Frame', nil, self.Health)
 	text:SetAllPoints()
-	text.name = core:CreateFontstring(text, font, config.fontsize - 2, nil, 'CENTER')
+	text.name = common:CreateFontstring(text, font, config.fontsize - 2, nil, 'CENTER')
 	text.name:SetShadowColor(0, 0, 0, 1)
 	text.name:SetShadowOffset(1, -1)
 	text.name:SetPoint('CENTER', 0 , 0)

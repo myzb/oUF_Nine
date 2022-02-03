@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
+local common, config, m, oUF = ns.common, ns.config, ns.m, ns.oUF
 
 local font = m.fonts.frizq
 local font_num = m.fonts.myriad
@@ -32,7 +32,7 @@ local function PostCast_Failed(self, unit)
 end
 
 -- Castbar generator
-function core:CreateCastbar(self, width, height, texture, latency)
+function common:CreateCastbar(self, width, height, texture, latency)
 	local castbar = CreateFrame('StatusBar', nil, self)
 	castbar:SetStatusBarTexture(texture or m.textures.status_texture)
 	castbar:GetStatusBarTexture():SetHorizTile(false)
@@ -44,7 +44,7 @@ function core:CreateCastbar(self, width, height, texture, latency)
 	castbar.Background:SetTexture(m.textures.bg_texture)
 	castbar.Background:SetVertexColor(1/7, 1/7, 1/7, 0.9)
 
-	castbar.Text = core:CreateFontstring(castbar, font, config.fontsize -2, nil, 'LEFT')
+	castbar.Text = common:CreateFontstring(castbar, font, config.fontsize -2, nil, 'LEFT')
 	castbar.Text:SetTextColor(1, 1, 1)
 	castbar.Text:SetShadowColor(0, 0, 0, 1)
 	castbar.Text:SetShadowOffset(1, -1)
@@ -54,7 +54,7 @@ function core:CreateCastbar(self, width, height, texture, latency)
 	castbar.Text:SetWidth(width - 45)
 	castbar.Text:SetPoint('LEFT', castbar, 2, 0)
 
-	castbar.Time = core:CreateFontstring(castbar, font_num, config.fontsize -1, nil, 'RIGHT')
+	castbar.Time = common:CreateFontstring(castbar, font_num, config.fontsize -1, nil, 'RIGHT')
 	castbar.Time:SetTextColor(1, 1, 1)
 	castbar.Time:SetShadowColor(0, 0, 0, 1)
 	castbar.Time:SetShadowOffset(1, -1)

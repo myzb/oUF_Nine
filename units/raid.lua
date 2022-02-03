@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local core, config, m, util, oUF = ns.core, ns.config, ns.m, ns.util, ns.oUF
+local common, config, m, util, oUF = ns.common, ns.config, ns.m, ns.util, ns.oUF
 local auras, filters, spells = ns.auras, ns.filters, ns.spells
 
 local font = m.fonts.frizq
@@ -32,7 +32,7 @@ end
 
 -- Create Target Border
 local function TargetBorder_Create(self)
-	local border = core:CreateBorder(self, 2, 2, self:GetFrameLevel() + 1, [[Interface\ChatFrame\ChatFrameBackground]])
+	local border = common:CreateBorder(self, 2, 2, self:GetFrameLevel() + 1, [[Interface\ChatFrame\ChatFrameBackground]])
 	border:SetBackdropBorderColor(0.8, 0.8, 0.8, 1)
 	border:Hide()
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateTarget, true)
@@ -57,7 +57,7 @@ end
 
 -- Create Party / Raid Threat Status Border
 local function ThreatBorder_Create(self)
-	local border = core:CreateDropShadow(self, 6, 6, 0)
+	local border = common:CreateDropShadow(self, 6, 6, 0)
 	border:Hide()
 	self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
 	self:RegisterEvent('GROUP_ROSTER_UPDATE', UpdateThreat, true)
@@ -202,11 +202,11 @@ local function createStyle(self, unit, ...)
 	local uframe = config.units[frame_name][num]
 	local layout = uframe.layout
 
-	core:CreateLayout(self, layout)
+	common:CreateLayout(self, layout)
 
 	-- mouse events
 	local clickthrough = uframe.misc and uframe.misc.rightClickthrough
-	core:RegisterMouse(self, clickthrough)
+	common:RegisterMouse(self, clickthrough)
 
 	-- power show/hide for non-healers
 	if (self.Power and uframe.misc and uframe.misc.hidePower == 'NON_HEALER') then
@@ -217,7 +217,7 @@ local function createStyle(self, unit, ...)
 	-- text strings (on top of health)
 	local text = CreateFrame('Frame', nil, self.Health)
 	text:SetAllPoints()
-	text.unit = core:CreateFontstring(text, font, font_size - 2, nil, 'LEFT')
+	text.unit = common:CreateFontstring(text, font, font_size - 2, nil, 'LEFT')
 	text.unit:SetPoint('TOPRIGHT', -2, 0)
 	text.unit:SetShadowColor(0, 0, 0, 1)
 	text.unit:SetShadowOffset(1, -1)
@@ -228,7 +228,7 @@ local function createStyle(self, unit, ...)
 		self:Tag(text.unit, '[n:name]')
 	end
 
-	text.status = core:CreateFontstring(text, font_num, font_size + 2, nil, 'CENTER')
+	text.status = common:CreateFontstring(text, font_num, font_size + 2, nil, 'CENTER')
 	text.status:SetPoint('LEFT')
 	text.status:SetPoint('RIGHT')
 	text.status:SetSize(self:GetWidth(), font_size + 13)
@@ -350,11 +350,11 @@ local function createSubStyle(self, unit)
 	local uframe = config.units[frame_name][num] -- inherited from 'num' profile style
 	local layout = uframe.layout
 
-	core:CreateLayout(self, layout)
+	common:CreateLayout(self, layout)
 
 	-- mouse events
 	local clickthrough = uframe.misc and uframe.misc.rightClickthrough
-	core:RegisterMouse(self, clickthrough)
+	common:RegisterMouse(self, clickthrough)
 
 	-- disable power
 	self.Power:Hide()
@@ -364,7 +364,7 @@ local function createSubStyle(self, unit)
 	-- text strings (on top of health)
 	local text = CreateFrame('Frame', nil, self.Health)
 	text:SetAllPoints()
-	text.unit = core:CreateFontstring(text, font, font_size - 2, nil, 'LEFT')
+	text.unit = common:CreateFontstring(text, font, font_size - 2, nil, 'LEFT')
 	text.unit:SetPoint('LEFT', 6, 0)
 	text.unit:SetShadowColor(0, 0, 0, 1)
 	text.unit:SetShadowOffset(1, -1)
@@ -474,7 +474,7 @@ local function gen_options(i, grid, sort, grow, width, height)
 		self:SetHeight(h)
 		self:SetScale(s)
 		self:SetAttribute('oUF_NineRaidProfile', num)
-		]]):format(i, width or element_width(grid), height or element_height(grid), core:GetPixelScale())
+		]]):format(i, width or element_width(grid), height or element_height(grid), common:GetPixelScale())
 	}
 	return util:TableConcat(attr.general, attr.grid[grow], attr.order[sort], attr.frame)
 end

@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local core, config, m, oUF = ns.core, ns.config, ns.m, ns.oUF
+local common, config, m, oUF = ns.common, ns.config, ns.m, ns.oUF
 local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.frizq
@@ -22,7 +22,7 @@ local function RangeCheck_PostUpdate(element, parent, inRange, checkedRange, con
 		return
 	end
 	-- also treat non-interactive units as in rage
-	if (core:UnitInRange(parent.unit) ~= 0) then
+	if (common:UnitInRange(parent.unit) ~= 0) then
 		parent:SetAlpha(element.insideAlpha)
 	else
 		parent:SetAlpha(element.outsideAlpha)
@@ -81,10 +81,10 @@ local function createStyle(self)
 	local layout = uframe.layout
 
 	self:SetSize(layout.width, layout.height)
-	core:CreateLayout(self, layout)
+	common:CreateLayout(self, layout)
 
 	-- mouse events
-	core:RegisterMouse(self)
+	common:RegisterMouse(self)
 
 	if (layout.health.colorCustom) then
 		self.Health.UpdateColor = Health_UpdateColor
@@ -93,7 +93,7 @@ local function createStyle(self)
 	-- text strings
 	local text = CreateFrame('Frame', nil, self.Health)
 	text:SetAllPoints(self)
-	text.unit = core:CreateFontstring(text, font, config.fontsize -1, nil, 'CENTER')
+	text.unit = common:CreateFontstring(text, font, config.fontsize -1, nil, 'CENTER')
 	text.unit:SetShadowColor(0, 0, 0, 1)
 	text.unit:SetShadowOffset(1, -1)
 	text.unit:SetPoint('TOPLEFT', self.Health, 'TOPLEFT', 2, -2)
@@ -104,7 +104,7 @@ local function createStyle(self)
 		self:Tag(text.unit, '[n:name]')
 	end
 
-	text.status = core:CreateFontstring(text, font_num, config.fontsize + 6, nil, 'CENTER')
+	text.status = common:CreateFontstring(text, font_num, config.fontsize + 6, nil, 'CENTER')
 	text.status:SetPoint('CENTER', self.Health, 'CENTER', 0, -2)
 	text.status:SetSize(layout.width - 10, config.fontsize + 1)
 	if (layout.health.colorCustom) then
@@ -113,7 +113,7 @@ local function createStyle(self)
 		self:Tag(text.status, '[n:perhp_status]')
 	end
 
-	text.power = core:CreateFontstring(text, font_num, config.fontsize +1, nil, 'CENTER')
+	text.power = common:CreateFontstring(text, font_num, config.fontsize +1, nil, 'CENTER')
 	text.power:SetShadowColor(0, 0, 0, 1)
 	text.power:SetShadowOffset(1, -1)
 	text.power:SetPoint('CENTER', self.Power, 'CENTER', 0, 0)
@@ -124,7 +124,7 @@ local function createStyle(self)
 	-- castbar
 	if (uframe.castbar and uframe.castbar.show) then
 		local width, height, pos = uframe.castbar.width, uframe.castbar.height, uframe.castbar.pos
-		local castbar = core:CreateCastbar(self, width, height)
+		local castbar = common:CreateCastbar(self, width, height)
 		castbar:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y)
 		self.Castbar = castbar
 	end

@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local core, util, config, m, oUF = ns.core, ns.util, ns.config, ns.m, ns.oUF
+local common, util, config, m, oUF = ns.common, ns.util, ns.config, ns.m, ns.oUF
 
 local font_num = m.fonts.asap
 
@@ -60,12 +60,12 @@ local function AltPowerOnLeave(self)
 end
 
 -- AltPower (quest or boss special power)
-function core:CreateAltPower(self, width, height, texture)
+function common:CreateAltPower(self, width, height, texture)
 	local altpower = CreateFrame('StatusBar', nil, self)
 	altpower:SetStatusBarTexture(texture or m.textures.status_texture)
 	altpower:SetSize(width, height)
 
-	altpower.Text = core:CreateFontstring(altpower, font_num, config.fontsize - 1, nil, 'CENTER')
+	altpower.Text = common:CreateFontstring(altpower, font_num, config.fontsize - 1, nil, 'CENTER')
 	altpower.Text:SetShadowColor(0, 0, 0, 1)
 	altpower.Text:SetShadowOffset(1, -1)
 	altpower.Text:SetAllPoints()
