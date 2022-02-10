@@ -115,3 +115,27 @@ spells.crowdcontrol = {
 	-- Warlock
 	-- Other
 }
+
+-- -----------------------------------
+-- > AURA COLORS
+-- -----------------------------------
+
+local teal = { 0/255, 121/255 , 107/255, 0.85 }
+
+spells.auracolor = {
+	-- Death Knight
+	-- Demon Hunter
+	-- Druid
+	-- Hunter
+	-- Mage
+	-- Monk
+	-- Paladin
+	[287268] = teal,	-- Glimmer of Light (Holy)
+	-- Priest
+	[194384] = teal,	-- Atonement (Discipline)
+	-- Rogue
+	-- Shaman
+	-- Warrior
+	-- Warlock
+	-- Other
+}

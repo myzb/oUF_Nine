@@ -72,6 +72,14 @@ local function RaidFrame_PostUpdate(self, event)
 end
 
 -- -----------------------------------
+-- > STATUSBAR AURA COLOR
+-- -----------------------------------
+
+local function BuffColor_GetColor(element, unit, spellId, casterIsUs)
+	return casterIsUs and spells.auracolor[spellId]
+end
+
+-- -----------------------------------
 -- > RAID AURAS
 -- -----------------------------------
 
@@ -305,8 +313,9 @@ local function createStyle(self, unit, ...)
 		raidBuffs.PreUpdate = RaidAuras_PreUpdate
 		raidBuffs.CustomFilter = Buffs_CustomFilter
 		raidBuffs.SetGroupPosition = RaidAuras_SetGroupPosition
-		if (layout.health.colorOnAura) then
-			auras:EnableColorToggle(raidBuffs, self.Health)
+		if (layout.health.colorOnBuff) then
+			self.BuffColor = auras:CreateAuraColor(raidBuffs, self.Health)
+			self.BuffColor.GetColor = BuffColor_GetColor
 		end
 
 		self.RaidBuffs = raidBuffs
@@ -389,7 +398,11 @@ local function createSubStyle(self, unit)
 	if (uframe.auras and layout.health.colorOnAura) then
 		local raidBuffs = CreateFrame('Frame', nil, self)
 		raidBuffs.num = 3
-		auras:EnableColorToggle(raidBuffs, self.Health)
+
+		local buffColor = auras:CreateAuraColor(raidBuffs, self.Health)
+		buffColor.GetColor = BuffColor_GetColor
+
+		self.BuffColor = buffColor
 		self.RaidBuffs = raidBuffs
 	end
 

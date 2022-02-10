@@ -111,7 +111,7 @@ config.layout = {
 			colorCustom = true,
 			colorClass = true,
 			colorReaction = false,
-			colorOnAura = true
+			colorOnBuff = true
 		},
 		spacer = {
 			height = 0,
@@ -132,7 +132,7 @@ config.layout = {
 			colorCustom = true,
 			colorClass = true,
 			colorReaction = false,
-			colorOnAura = true
+			colorOnBuff = true
 		}
 	}
 }

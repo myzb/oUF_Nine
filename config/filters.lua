@@ -45,27 +45,3 @@ filters.arena = {
 	blacklist = {},
 	whitelist = {}
 }
-
--- -----------------------------------
--- > CLASS AURA COLORING
--- -----------------------------------
-
-local teal = { 0/255, 121/255 , 107/255, 0.85 }
-
-filters.auracolor = {
-	-- Demon Hunter
-	-- Death Knight
-	-- Druid
-	-- Hunter
-	-- Mage
-	-- Monk
-	-- Paladin
-	[287268] = teal,	-- Glimmer of Light (Holy)
-	-- Priest
-	[194384] = teal,	-- Atonement (Discipline)
-	-- Rogue
-	-- Shaman
-	-- Warrior
-	-- Warlock
-	-- Other
-}

@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local auras, m, filters, oUF = {}, ns.m, ns.filters, ns.oUF
+local auras, m, oUF = {}, ns.m, ns.oUF
 ns.auras = auras
 
 local font_num = m.fonts.arial
@@ -118,33 +118,42 @@ end
 -- -----------------------------------
 
 local function StatusAura_Reset(element)
-	element.auraColor = false
+	element.AuraColor.rgba = nil
 end
 
 --- Colorize Registered StatusBar Based on Aura Event
 local function StatusAura_Colorize(element, unit)
-	local bar = element.StatusBar
-	if (element.auraColor and not bar:IsIgnoringColor()) then
-		bar:DisableColorUpdate()
-		bar:SetStatusBarColor(unpack(element.auraColor))
-	elseif (not element.auraColor and bar:IsIgnoringColor()) then
-		bar:EnableColorUpdate()
-		bar:ForceUpdate()
+	local auracolor = element.AuraColor.rgba
+	local statusbar = element.AuraColor.StatusBar
+
+	if (auracolor and not statusbar:IsIgnoringColor()) then
+		statusbar:DisableColorUpdate()
+		statusbar:SetStatusBarColor(unpack(auracolor))
+	elseif (not auracolor and statusbar:IsIgnoringColor()) then
+		statusbar:EnableColorUpdate()
+		statusbar:ForceUpdate()
 	end
 end
 
 local function StatusAura_Check(element, unit, button, dispellable, ...)
+	local debuffType = select(4, ...)
 	local spellId = select(10, ...)
-	local auraColor = filters.auracolor[spellId]
+	local auracolor = element.AuraColor
 
-	-- hp bar color override
-	if (auraColor and button.isPlayer) then
-		element.auraColor = auraColor
+	local color = auracolor:GetColor(unit, spellId, button.isPlayer, dispellable, debuffType)
+
+	-- bar color override
+	if (color) then
+		auracolor.rgba = color
 	end
 end
 
-function auras:EnableColorToggle(self, statusbar)
-	self.StatusBar = statusbar
+function auras:CreateAuraColor(self, statusbar)
+	local auracolor = {}
+	auracolor.StatusBar = statusbar
+	auracolor.Auras = self
+	auracolor.GetColor = function() end
+	self.AuraColor = auracolor
 
 	-- statusbar hooks
 	statusbar.ignoreColor = false
@@ -177,6 +186,8 @@ function auras:EnableColorToggle(self, statusbar)
 	else
 		self.PostUpdate = StatusAura_Colorize
 	end
+
+	return auracolor
 end
 
 -- -----------------------------------
