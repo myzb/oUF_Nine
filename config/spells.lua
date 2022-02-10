@@ -8,8 +8,8 @@ ns.spells = spells
 -- ------------------------------------------------------------------------
 
 spells.personal = {
-	-- Demon Hunter
 	-- Death Knight
+	-- Demon Hunter
 	-- Druid
 	-- Hunter
 	-- Mage
@@ -26,8 +26,8 @@ spells.personal = {
 }
 
 spells.external = {
-	-- Demon Hunter
 	-- Death Knight
+	-- Demon Hunter
 	-- Druid
 	-- Hunter
 	-- Mage
@@ -44,8 +44,8 @@ spells.external = {
 }
 
 spells.selfcast = {
-	-- Demon Hunter
 	-- Death Knight
+	-- Demon Hunter
 	-- Druid
 	-- Hunter
 	-- Mage
@@ -65,8 +65,8 @@ spells.selfcast = {
 }
 
 spells.utility = {
-	-- Demon Hunter
 	-- Death Knight
+	-- Demon Hunter
 	-- Druid
 	-- Hunter
 	-- Mage
@@ -84,8 +84,8 @@ spells.utility = {
 }
 
 spells.powerup = {
-	-- Demon Hunter
 	-- Death Knight
+	-- Demon Hunter
 	-- Druid
 	-- Hunter
 	-- Mage
@@ -101,8 +101,8 @@ spells.powerup = {
 }
 
 spells.crowdcontrol = {
-	-- Demon Hunter
 	-- Death Knight
+	-- Demon Hunter
 	-- Druid
 	-- Hunter
 	-- Mage
