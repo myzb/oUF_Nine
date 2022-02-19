@@ -57,6 +57,7 @@ spells.selfcast = {
 	[193223] = true,	-- Surrender to Madness (Shadow talent)
 	[47536] = true,		-- Rapture (Discipline)
 	[200183] = true,	-- Apotheosis (Holy talent)
+	[337661] = true,	-- Translucent Image (Conduit)
 	-- Rogue
 	-- Shaman
 	-- Warrior

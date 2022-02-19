@@ -329,6 +329,10 @@ local function Buffs_CustomFilter(element, unit, button, ...)
 	if (spells.utility[spellId] or spells.powerup[spellId]) then
 		return true
 	end
+	-- player selfcast auras
+	if (spells.selfcast[spellId] and button.isPlayer) then
+		return true
+	end
 
 	return false
 end
