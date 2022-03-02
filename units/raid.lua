@@ -395,7 +395,7 @@ local function createSubStyle(self, unit)
 	self.RaidTargetIndicator = raidIcon
 
 	-- raid buffs (only used for health color toggle)
-	if (uframe.auras and layout.health.colorOnAura) then
+	if (uframe.auras and layout.health.colorOnBuff) then
 		local raidBuffs = CreateFrame('Frame', nil, self)
 		raidBuffs.num = 3
 
