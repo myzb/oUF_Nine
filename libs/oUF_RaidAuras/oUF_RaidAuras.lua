@@ -62,7 +62,6 @@ local math_floor =  math.floor
 local table_sort = table.sort
 local table_insert = table.insert
 local Auras_IsPriorityDebuff = CompactUnitFrame_Util_IsPriorityDebuff   -- FrameXML/CompactUnitFrame.lua
-local Auras_IsBossAura = CompactUnitFrame_Util_IsBossAura               -- FrameXML/CompactUnitFrame.lua
 local AuraUtil_ForEachAura = AuraUtil.ForEachAura
 
 local PLAYER_CLASS = select(2, UnitClass('player'))
@@ -183,15 +182,17 @@ local function createAuraIcon(element, index)
 end
 
 local function customFilter(element, unit, button, dispellable, ...)
+	local  _, _, _, _, _, _, _, _, _, spellId, _, isBossAura = ...
+
 	if (element.onlyShowPlayer) then
 		return button.isPlayer and 1
 	end
 
 	-- filter and sort boss first, then prio debuff, then other auras
-	if (Auras_IsBossAura(...)) then
+	if (isBossAura) then
 		return 1
 	end
-	if (Auras_IsPriorityDebuff(...)) then
+	if (Auras_IsPriorityDebuff(spellId)) then
 		return 2
 	end
 	-- other auras
