@@ -26,7 +26,7 @@ end
 
 -- Filter Buffs
 local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
-	local spellId = select(10, ...)
+	local _, _, _, _, _, _, unitCaster, _, _, spellId, canApplyAura = ...
 
 	-- buffs white-/blacklist
 	if (filters[frame_name].whitelist[spellId]) then
@@ -35,7 +35,7 @@ local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
 	if (filters[frame_name].blacklist[spellId]) then
 		return false
 	end
-	if (not Auras_ShouldDisplayBuff(...)) then
+	if (not Auras_ShouldDisplayBuff(unitCaster, spellId, canApplyAura)) then
 		return false
 	end
 
@@ -55,7 +55,7 @@ end
 
 -- Filter Debuffs
 local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
-	local spellId = select(10, ...)
+	local _, _, _, _, _, _, unitCaster, _, _, spellId = ...
 
 	-- auras white-/blacklist
 	if (filters[frame_name].whitelist[spellId]) then
@@ -64,7 +64,7 @@ local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
 	if (filters[frame_name].blacklist[spellId]) then
 		return false
 	end
-	if (not (Auras_ShouldDisplayDebuff(...))) then
+	if (not (Auras_ShouldDisplayDebuff(unitCaster, spellId))) then
 		return false
 	end
 

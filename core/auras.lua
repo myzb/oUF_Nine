@@ -75,14 +75,25 @@ end
 
 -- Debuff Priority Calculation
 function auras:GetDebuffPrio(unit, dispellable, ...)
+	local  _, _, _, _, _, _, _, _, _, spellId, _, isBossAura = ...
 
-	if (Auras_IsBossAura(...)) then
+	if (isBossAura) then
 		return auras.AURA_BOSS
-	elseif (Auras_IsPrioDebuff(...)) then
+	elseif (Auras_IsPrioDebuff(spellId)) then
 		return auras.AURA_PRIO
 	else
 		return auras.AURA_MISC
 	end
+end
+
+-- Blizzards Nameplate Aura Filtering Logic
+function auras:ShowNameplateAura(name, caster, nameplateShowPersonal, nameplateShowAll)
+	if (not name) then
+		return false
+	end
+	return nameplateShowAll or
+		(nameplateShowPersonal and (caster == "player" or caster == "pet" or caster == "vehicle"))
+
 end
 
 -- -----------------------------------

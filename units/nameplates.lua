@@ -1,7 +1,7 @@
 local A, ns = ...
 
 local common, config, m, oUF = ns.common, ns.config, ns.m, ns.oUF
-local auras, filters = ns.auras, ns.filters
+local auras, filters, spells = ns.auras, ns.filters, ns.spells
 
 local font = m.fonts.frizq
 local font_num = m.fonts.myriad
@@ -22,8 +22,6 @@ local UnitClassification = UnitClassification
 local GetNumGroupMembers = GetNumGroupMembers
 local GetNumSubgroupMembers = GetNumSubgroupMembers
 local IsInRaid, IsInGroup = IsInRaid, IsInGroup
-
-local Auras_ShouldDisplayDebuff = NameplateBuffContainerMixin.ShouldShowBuff -- Blizzard_NamePlates/Blizzard_NamePlates.lua
 
 -- ------------------------------------------------------------------------
 -- > NAMEPLATES SPECIFIC
@@ -363,7 +361,7 @@ local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
 	end
 
 	-- blizzard's nameplate filtering function
-	if (not Auras_ShouldDisplayDebuff(nil, name, caster, showSelf, showAll, duration)) then
+	if (not auras:ShowNameplateAura(name, caster, showSelf, showAll)) then
 		return false
 	end
 

@@ -8,9 +8,6 @@ local font_num = m.fonts.myriad
 
 local frame_name = 'arena'
 
--- Import API functions
-local Auras_ShouldDisplayDebuff = NameplateBuffContainerMixin.ShouldShowBuff -- Blizzard_NamePlates/Blizzard_NamePlates.lua
-
 -- ------------------------------------------------------------------------
 -- > ARENA UNIT SPECIFIC FUNCTIONS
 -- ------------------------------------------------------------------------
@@ -148,7 +145,7 @@ local function Debuffs_CustomFilter(element, unit, button, ...)
 	end
 
 	-- blizzard's nameplate filtering function
-	return button.isPlayer and Auras_ShouldDisplayDebuff(nil, name, caster, showSelf, showAll, duration)
+	return button.isPlayer and auras:ShowNameplateAura(name, caster, showSelf, showAll)
 end
 
 -- -----------------------------------

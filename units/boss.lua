@@ -9,7 +9,6 @@ local font_num = m.fonts.myriad
 local frame_name = 'boss'
 
 -- Import API functions
-local Auras_ShouldDisplayDebuff = NameplateBuffContainerMixin.ShouldShowBuff -- Blizzard_NamePlates/Blizzard_NamePlates.lua
 local UnitIsConnected, UnitCanAssist, UnitCanAttack = UnitIsConnected, UnitCanAssist, UnitCanAttack
 local UnitIsDead, UnitIsGhost = UnitIsDead, UnitIsGhost
 
@@ -54,7 +53,6 @@ end
 -- Filter Debuffs
 local function Debuffs_CustomFilter(element, unit, button, ...)
 	local name = select(1, ...)
-	local duration = select(5, ...)
 	local caster = select(7, ...)
 	local showSelf = select(9, ...)
 	local spellId = select(10, ...)
@@ -69,7 +67,7 @@ local function Debuffs_CustomFilter(element, unit, button, ...)
 	end
 
 	-- blizzard's nameplate filtering function
-	return button.isPlayer and Auras_ShouldDisplayDebuff(nil, name, caster, showSelf, showAll, duration)
+	return button.isPlayer and auras:ShowNameplateAura(name, caster, showSelf, showAll)
 end
 
 -- -----------------------------------
