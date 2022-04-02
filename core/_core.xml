@@ -6,5 +6,6 @@
 	<Script file='castbar.lua' />
 	<Script file='auras.lua' />
 	<Script file='range.lua' />
+	<Script file='execute.lua' />
 	<Script file='misc.lua' />
 </Ui>

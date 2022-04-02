@@ -371,7 +371,8 @@ config.units = {
 			health = {
 				colorClass = true,
 				colorThreat = true,
-				colorReaction = true
+				colorReaction = true,
+				executeRange = true
 			},
 			spacer = {
 				height = 13 -- empty space, shrinks health height

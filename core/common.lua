@@ -34,10 +34,10 @@ end
 
 
 -- -----------------------------------
--- > BORDER / BACKDROP UTILITIES
+-- > FRAME DECORATIONS
 -- -----------------------------------
 
--- Set the Backdrop
+-- Backdrop
 function common:SetBackdrop(self, inset_l, inset_r, inset_t, inset_b, color)
 	self.backdropInfo = {
 		bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
@@ -54,7 +54,7 @@ function common:SetBackdrop(self, inset_l, inset_r, inset_t, inset_b, color)
 	self:SetBackdropColor(unpack(color or { 0, 0, 0, 1 }))
 end
 
--- Create Standard Frame Border
+-- Frame Border
 function common:CreateBorder(self, point, e_size, f_level, texture)
 	local parent = (self:IsObjectType('Texture') and self:GetParent()) or self
 	local border = CreateFrame('Frame', nil, parent, 'BackdropTemplate')
@@ -66,7 +66,7 @@ function common:CreateBorder(self, point, e_size, f_level, texture)
 	return border
 end
 
--- Create Frame Shadow Border
+-- Frame Shadow Border
 function common:CreateDropShadow(self, point, e_size, f_level, color)
 	local shadow = CreateFrame('Frame', nil, self, 'BackdropTemplate')
 	shadow:SetPoint('TOPLEFT', self, 'TOPLEFT', -point, point)
@@ -89,6 +89,17 @@ function common:CreateDropShadow(self, point, e_size, f_level, color)
 	shadow:SetBackdropBorderColor(unpack(color or { 0, 0, 0, 1 }))
 	shadow:SetFrameLevel(f_level)
 	return shadow
+end
+
+-- Vertical Separator
+function common:CreateSeparator(self, percent, width, color)
+	local sep = self:CreateTexture(nil, 'OVERLAY')
+	sep:SetSize(width, self:GetHeight())
+	--sep:SetBlendMode('ADD')
+	sep:SetPoint('CENTER', self, 'LEFT', self:GetWidth() * percent/100, 0)
+	sep:SetColorTexture(unpack(color or { 1, 1, 1, 1 }))
+
+	return sep
 end
 
 -- -----------------------------------
@@ -228,6 +239,7 @@ function common:CreateHealthPredict(self, width, texture)
 	}
 	return healthPredict
 end
+
 
 -- -----------------------------------
 -- > SHARED STYLE FUNCTION

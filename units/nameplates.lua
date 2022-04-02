@@ -80,12 +80,27 @@ local function HealthBorder_Update(self, event, unit)
 	end
 end
 
+local function ExecuteRange_Update(self, event)
+	local perc = common:GetExecutePerc()
+	if (perc == self.Execute.percent) then
+		return
+	end
+	if (perc and perc ~= 0) then
+		self.Execute:SetPoint('CENTER', self.Health, 'LEFT', self.Health:GetWidth() * perc/100, 0)
+		self.Execute:Show()
+	else
+		self.Execute:Hide()
+	end
+	self.Execute.percent = perc
+end
+
 local function NamePlate_Callback(self, event, unit)
 	if (not self or event ~= 'NAME_PLATE_UNIT_ADDED') then
 		return
 	end
 
 	HealthBorder_Update(self)
+	ExecuteRange_Update(self)
 
 	--elite icon
 	local class = UnitClassification(self.unit)
@@ -429,6 +444,12 @@ local function createStyle(self)
 
 	-- hp prediction
 	self.HealthPrediction = common:CreateHealthPredict(self.Health, layout.width)
+
+	-- execute range
+	if (layout.health.executeRange) then
+		self.Execute = common:CreateSeparator(self.Health, 0, 2, { 1, 1, 1, 0.7 })
+		self:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED', ExecuteRange_Update, true)
+	end
 
 	-- elite icon
 	local eliteIcon = self:CreateTexture(nil, 'OVERLAY')
