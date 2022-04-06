@@ -55,7 +55,7 @@ config.misc = {
 	},
 
 	raidframes = {
-		hide = false
+		hide = true
 	}
 }
 
