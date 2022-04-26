@@ -13,6 +13,12 @@ spells.personal = {
 	-- Druid
 	-- Hunter
 	-- Mage
+	[110909] = true,	-- Alter Time
+	[235313] = true,	-- Blazing Barrier (Fire)
+	[11426] = true,		-- Ice Barrier (Frost)
+	[45438] = true,		-- Ice Block
+	[32612] = true,		-- Invisibility
+	[55342] = true,		-- Mirror Images
 	-- Monk
 	-- Paladin
 	-- Priest
@@ -49,6 +55,10 @@ spells.selfcast = {
 	-- Druid
 	-- Hunter
 	-- Mage
+	[190319] = true,	-- Combustion (Fire)
+	[12472] = true,		-- Icy Veins (Frost)
+	[116014] = true,	-- Rune of Power
+	[337299] = true,	-- Tempest Barrier (Conduit)
 	-- Monk
 	-- Paladin
 	-- Priest
