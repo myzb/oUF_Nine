@@ -20,6 +20,10 @@ local PLAYER_CLASS = select(2, UnitClass('player'))
 local function TotemBar_PositionUpdate(self)
 	local anchor = self
 
+	if (not self.Totems) then
+		return
+	end
+
 	-- update anchor based on what is currently being displayed
 	if (self.ClassPower and self.ClassPower.isShown) then
 		anchor = self.ClassPower[1]

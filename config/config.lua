@@ -171,7 +171,7 @@ config.units = {
 			text = false
 		},
 		totems = { -- totems and guardians i.e shadowfiend, gargoyle
-			show = true
+			show = false
 		}
 	},
 
