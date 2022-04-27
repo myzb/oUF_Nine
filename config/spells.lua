@@ -29,6 +29,7 @@ spells.personal = {
 	-- Warrior
 	-- Warlock
 	-- Other
+	[324867] = true,	-- Fleshcraft (Necrolord)
 }
 
 spells.external = {
@@ -73,6 +74,7 @@ spells.selfcast = {
 	-- Warrior
 	-- Warlock
 	-- Other
+	[310143] = true,	-- Soulshape (Nightfae)
 }
 
 spells.utility = {
