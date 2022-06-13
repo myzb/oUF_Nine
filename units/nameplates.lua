@@ -44,8 +44,8 @@ local NamePlate_CVars = {
 		nameplateMaxDistance = 60,
 		nameplateOtherBottomInset = 0.04,
 		nameplateOtherTopInset = 0.04,
-		nameplateOverlapH = 0.7,
-		nameplateOverlapV = 0.8
+		nameplateOverlapH = 0.6,
+		nameplateOverlapV = 0.6
 	},
 	['default'] = {
 		nameplateGlobalScale = 1,
@@ -68,11 +68,38 @@ local NamePlate_CVars = {
 	}
 }
 
+local function FocusOverlay_Update(self, event)
+	local health = self.Health
+	if (not health.stripes) then
+		return
+	end
+	if (UnitIsUnit(self.unit, 'focus')) then
+		health.stripes:Show()
+	else
+		health.stripes:Hide()
+	end
+end
+
+local function TargetIndicator_Update(self, event, unit)
+	local health = self.Health
+	if not (health.IndicatorLeft) then
+		return
+	end
+	if (UnitIsUnit('target', self.unit)) then
+		health.IndicatorLeft:Show()
+		health.IndicatorRight:Show()
+	else
+		health.IndicatorLeft:Hide()
+		health.IndicatorRight:Hide()
+	end
+end
+
 local function HealthBorder_Update(self, event, unit)
 	-- health border target glow / shadows / hide
 	local health = self.Health
 	if (UnitIsUnit('target', self.unit)) then
 		health.Border:SetBackdropBorderColor(1, 1, 1, 1)
+
 	elseif (health.dropShadows) then
 		health.Border:SetBackdropBorderColor(unpack(config.frame.shadows))
 	else
@@ -80,18 +107,22 @@ local function HealthBorder_Update(self, event, unit)
 	end
 end
 
-local function ExecuteRange_Update(self, event)
-	local perc = common:GetExecutePerc()
-	if (perc == self.Execute.percent) then
-		return
-	end
-	if (perc and perc ~= 0) then
-		self.Execute:SetPoint('CENTER', self.Health, 'LEFT', self.Health:GetWidth() * perc/100, 0)
-		self.Execute:Show()
+local function EliteIcon_Update(self, event, unit)
+	local class = UnitClassification(self.unit)
+	if (class == 'elite' or class == 'worldboss') then
+		self.EliteIcon:SetTexture(m.icons.star)
+		self.EliteIcon:SetTexCoord(0.75, 1, 0, 1)
+		self.EliteIcon:SetVertexColor(1, 0.8, 0)
+		self.EliteIcon:Show()
+	elseif (class == 'rareelite' or class == 'rare') then
+		self.EliteIcon:SetTexture(m.icons.star)
+		self.EliteIcon:SetTexCoord (0.75, 1, 0, 1)
+		self.EliteIcon:SetVertexColor(0, 0.57, 0.97)
+		self.EliteIcon:SetDesaturated(true)
+		self.EliteIcon:Show()
 	else
-		self.Execute:Hide()
+		self.EliteIcon:Hide()
 	end
-	self.Execute.percent = perc
 end
 
 local function NamePlate_Callback(self, event, unit)
@@ -99,20 +130,10 @@ local function NamePlate_Callback(self, event, unit)
 		return
 	end
 
+	FocusOverlay_Update(self)
 	HealthBorder_Update(self)
-	ExecuteRange_Update(self)
-
-	--elite icon
-	local class = UnitClassification(self.unit)
-	if (class == 'elite' or class == 'worldboss') then
-		self.EliteIcon:SetAtlas('nameplates-icon-elite-gold')
-		self.EliteIcon:Show()
-	elseif (class == 'rareelite' or  class == 'rare') then
-		self.EliteIcon:SetAtlas('nameplates-icon-elite-silver')
-		self.EliteIcon:Show()
-	else
-		self.EliteIcon:Hide()
-	end
+	TargetIndicator_Update(self)
+	EliteIcon_Update(self)
 end
 
 -- -----------------------------------
@@ -153,7 +174,7 @@ function roles:EnableUpdates()
 end
 
 -- -----------------------------------
--- > NAMEPLATE THREAT COLOR
+-- > NAMEPLATE CUSTOM COLOR
 -- -----------------------------------
 
 local function GroupThreatSituation(group, unit)
@@ -172,31 +193,56 @@ local function GroupThreatSituation(group, unit)
 end
 
 -- Threat Based Nameplate Coloring
+local function ThreadColor(group_member, unit)
+	local group = roles.Group['TANK']
+	local status, num = UnitThreatSituation(group_member, unit), nil
+	if (status == 2) then
+		num = 2 -- low/lossing thread
+	elseif (status == 3) then
+		num = 3 -- have thread
+	elseif (UnitGroupRolesAssigned('player') == 'TANK' and GroupThreatSituation(group, unit)) then
+		num = 4 -- off-tank has thread
+	end
+
+	return num and oUF.colors.threat[num]
+end
+
+-- Color Override for Special Units
+function UnitColor(unit)
+	local guid = UnitGUID(unit)
+	local _, _, _, _, _, npcId = strsplit("-", guid)
+	return filters.color.unit[npc_id]
+end
+
+local function Health_ExecuteIndicator(element, unit)
+	local execPerc = common:GetExecutePerc()
+	local cur, max = UnitHealth(unit), UnitHealthMax(unit)
+	if (execPerc and (cur/max * 100) < execPerc) then
+		element.Execute:SetPoint('CENTER', element, 'LEFT', element:GetWidth() * execPerc/100, 0)
+		element.Execute:Show()
+	else
+		element.Execute:Hide()
+	end
+end
+
 local function Health_PostUpdateColor(element, unit)
+	Health_ExecuteIndicator(element, unit)
+
+	-- do not colorize players and tapped units
 	if (UnitPlayerControlled(unit) or UnitIsTapDenied(unit)) then
 		return
 	end
 
-	local group = roles.Group['TANK']
-	local status, num = UnitThreatSituation('player', unit), nil
-	if (status == 2) then
-		num = 2 -- insecure tanking
-	elseif (status == 3) then
-		num = 3 -- secure tanking
-	elseif (GroupThreatSituation(group, unit)) then
-		num = 4 -- off-tank tanking
+	local rgb, r, g, b
+
+	rgb = UnitColor(unit) or ThreadColor('player', unit)
+
+	if (rgb) then
+		r, g, b = rgb[1], rgb[2], rgb[3]
 	end
 
-	if (num) then
-		local t, r, g, b
-		t = oUF.colors.threat[num]
-
-		if (t) then
-			r, g, b = t[1], t[2], t[3]
-		end
-		if (b) then
-			element:SetStatusBarColor(r, g, b)
-		end
+	if (b) then
+		element:SetStatusBarColor(r, g, b)
 	end
 end
 
@@ -231,7 +277,7 @@ local function createCastbar(self, width, height, texture, iconSep, iconSize)
 	local castbar = CreateFrame('StatusBar', nil, self)
 	castbar:SetStatusBarTexture(texture or m.textures.status_texture)
 	castbar:GetStatusBarTexture():SetHorizTile(false)
-	castbar:SetSize(width, height)
+	castbar:SetSize(width - 1 - height, height)
 
 	local background = castbar:CreateTexture(nil, 'BACKGROUND')
 	background:SetAllPoints()
@@ -239,10 +285,10 @@ local function createCastbar(self, width, height, texture, iconSep, iconSize)
 	background:SetVertexColor(0, 0, 0, 0.9)
 
 	-- spell name
-	castbar.Text = common:CreateFontstring(castbar, font, font_size - 1, nil, 'CENTER')
+	castbar.Text = common:CreateFontstring(castbar, font, font_size - 2, nil, 'CENTER')
 	castbar.Text:SetShadowColor(0, 0, 0, 1)
 	castbar.Text:SetShadowOffset(1, -1)
-	castbar.Text:SetPoint('TOP', castbar, 'BOTTOM', 0, -1)
+	castbar.Text:SetPoint('CENTER')
 	castbar.Text:SetSize(width - 4, font_size - 1)
 
 	-- castbar spark
@@ -253,9 +299,9 @@ local function createCastbar(self, width, height, texture, iconSep, iconSize)
 
 	-- spell icon
 	castbar.Icon = castbar:CreateTexture(nil, 'ARTWORK')
-	castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	castbar.Icon:SetSize(iconSize, iconSize)
-	castbar.Icon:SetPoint('BOTTOMLEFT', castbar, 'BOTTOMRIGHT', iconSep + 2, 0)
+	castbar.Icon:SetTexCoord(0.2, 0.8, 0.2, 0.8)
+	castbar.Icon:SetSize(height, height)
+	castbar.Icon:SetPoint('RIGHT', castbar, 'LEFT', -1, 0)
 
 	-- castbar interrupt / status display
 	castbar.timeToHold = 0.5
@@ -407,16 +453,27 @@ local function createStyle(self)
 
 	-- size and position
 	self:SetSize(layout.width, layout.height)
+	--self:SetAllPoints()
 	self:SetPoint(uframe.pos.a1, uframe.pos.x, uframe.pos.y)
 	self:SetScale(common:GetPixelScale(self))
 
 	-- hp bar
 	local health = CreateFrame('StatusBar', nil, self)
-	health:SetPoint('TOPLEFT', self)
-	health:SetPoint('TOPRIGHT', self)
-	health:SetPoint('BOTTOM', self, 'BOTTOM', 0, layout.spacer.height)
+	health:SetAllPoints()
 	health:SetStatusBarTexture(layout.texture or m.textures.status_texture)
 	health:GetStatusBarTexture():SetHorizTile(false)
+
+	-- hp bar focus overlay stripes
+	if (layout.health.focusHighlight) then
+		health.stripes = health:CreateTexture(nil, 'OVERLAY')
+		health.stripes:SetTexture(m.textures.stripes_texture, true, true)
+		health.stripes:SetTexCoord(0, 0.5, 0.5, 1)
+		health.stripes:SetBlendMode("ADD")
+		health.stripes:SetHorizTile(true)
+		health.stripes:SetAlpha(0.3)
+		health.stripes:SetAllPoints(health:GetStatusBarTexture())
+		self:RegisterEvent('PLAYER_FOCUS_CHANGED', FocusOverlay_Update, true)
+	end
 
 	-- background (under our own control, not to be confused with oUFs bg)
 	local background = health:CreateTexture(nil, 'BACKGROUND')
@@ -440,21 +497,35 @@ local function createStyle(self)
 	health.dropShadows = layout.shadows
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', HealthBorder_Update, true)
 
-	self.Health = health
+	if (uframe.targetIndicator and uframe.targetIndicator.show) then
+		local w, h = uframe.targetIndicator.width, uframe.targetIndicator.height
+		local ofs = uframe.targetIndicator.offset
+		health.IndicatorLeft = health:CreateTexture(nil, 'OVERLAY')
+		health.IndicatorLeft:SetTexture(m.icons.arrow_comp_right, true, true)
+		health.IndicatorLeft:SetPoint('RIGHT', health, 'LEFT', -1 * ofs, 0)
+		health.IndicatorLeft:SetSize(w, h)
+		health.IndicatorRight = health:CreateTexture(nil, 'OVERLAY')
+		health.IndicatorRight:SetTexture(m.icons.arrow_comp_left, true, true)
+		health.IndicatorRight:SetPoint('LEFT', health, 'RIGHT', ofs, 0)
+		health.IndicatorRight:SetSize(w, h)
+		self:RegisterEvent('PLAYER_TARGET_CHANGED', TargetIndicator_Update, true)
+	end
 
 	-- hp prediction
-	self.HealthPrediction = common:CreateHealthPredict(self.Health, layout.width)
+	self.HealthPrediction = common:CreateHealthPredict(health, layout.width)
+
+	self.Health = health
 
 	-- execute range
 	if (layout.health.executeRange) then
-		self.Execute = common:CreateSeparator(self.Health, 0, 2, { 1, 1, 1, 0.7 })
-		self:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED', ExecuteRange_Update, true)
+		health.Execute = common:CreateSeparator(health, 0, 10, true)
+		health.Execute:Hide()
 	end
 
 	-- elite icon
 	local eliteIcon = self:CreateTexture(nil, 'OVERLAY')
-	eliteIcon:SetPoint('RIGHT', self.Health, 'LEFT', -1, 0)
-	eliteIcon:SetSize(18, 18)
+	eliteIcon:SetPoint('LEFT', self.Health, 'RIGHT', 2, 0)
+	eliteIcon:SetSize(16, 16)
 	self.EliteIcon = eliteIcon
 
 	-- raid icons
@@ -486,7 +557,7 @@ local function createStyle(self)
 	if (uframe.castbar and uframe.castbar.show) then
 		local iconSize = self.Health:GetHeight() + uframe.castbar.height + uframe.sep
 		local castbar = createCastbar(self.Health, layout.width, uframe.castbar.height, layout.texture, uframe.sep, iconSize)
-		castbar:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -uframe.sep)
+		castbar:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', uframe.castbar.height+1, -uframe.sep)
 		self.Castbar = castbar
 	end
 

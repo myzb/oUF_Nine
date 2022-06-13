@@ -24,4 +24,11 @@ m.textures = {
 	border_button_plain = [[Interface\AddOns\oUF_nine\media\textures\button_border_plain]],
 	white_square = [[Interface\AddOns\oUF_nine\media\textures\white]],
 	glow_texture = [[Interface\AddOns\oUF_nine\media\textures\glow]],
+	stripes_texture = [[Interface\AddOns\oUF_nine\media\textures\stripes_texture]],
+	border_shadows = [[Interface\AddOns\oUF_nine\media\textures\border_shadows]],
+}
+m.icons = {
+	star = [[Interface\GLUES\CharacterSelect\Glues-AddOn-Icons]],
+	arrow_comp_left = [[Interface\AddOns\oUF_nine\media\textures\ArrowCompositeLeft]],
+	arrow_comp_right = [[Interface\AddOns\oUF_nine\media\textures\ArrowCompositeRight]]
 }

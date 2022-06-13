@@ -363,19 +363,17 @@ config.units = {
 	nameplate = {
 		show = true,
 		sep = 4,
-		pos = { a1 = 'BOTTOM', x = 0, y = 4 },
+		pos = { a1 = 'CENTER', x = 0, y = 0 },
 		layout = {
 			width = 160, -- of hit-box
-			height = 22, -- of hit-box
+			height = 10, -- of hit-box
 			shadows = true,
 			health = {
 				colorClass = true,
 				colorThreat = true,
 				colorReaction = true,
-				executeRange = true
-			},
-			spacer = {
-				height = 13 -- empty space, shrinks health height
+				executeRange = true,
+				focusHighlight = true
 			}
 		},
 		buffs = {
@@ -392,10 +390,16 @@ config.units = {
 		castbar = {
 			show = true,
 			width = 160,
-			height = 9
+			height = 15
+		},
+		targetIndicator = {
+			show = false,
+			offset = 15,
+			width = 16,
+			height = 32
 		},
 		misc = {
-			hideHPPerc = true
+			hideHPPerc = true,
 		},
 	},
 

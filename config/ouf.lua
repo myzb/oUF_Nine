@@ -64,7 +64,7 @@ oUF.colors.reaction = {
 -- partially modify/extend oUF threat colors
 oUF.colors.threat[2] = oUF:CreateColor(255/255, 153/255, 153/255) -- insecurely tanking (light-red)
 oUF.colors.threat[3] = oUF:CreateColor(0/255, 255/255, 255/255)   -- securely tanking (cyan)
-oUF.colors.threat[4] = oUF:CreateColor(179/255, 136/255, 255/255) -- off-tank tanking (purple)
+oUF.colors.threat[4] = oUF:CreateColor(0/255, 121/255 , 107/255)  -- off-tank tanking (teal)
 
 oUF.colors.castbar = {
 	['CAST'] = oUF:CreateColor(209/255, 157/255, 21/255),   -- orange/brown

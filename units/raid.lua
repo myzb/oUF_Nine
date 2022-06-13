@@ -76,7 +76,7 @@ end
 -- -----------------------------------
 
 local function BuffColor_GetColor(element, unit, spellId, casterIsUs)
-	return casterIsUs and spells.auracolor[spellId]
+	return casterIsUs and filters.color.aura[spellId]
 end
 
 -- -----------------------------------

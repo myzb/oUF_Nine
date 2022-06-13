@@ -92,12 +92,18 @@ function common:CreateDropShadow(self, point, e_size, f_level, color)
 end
 
 -- Vertical Separator
-function common:CreateSeparator(self, percent, width, color)
+function common:CreateSeparator(self, percent, width, glow, color)
 	local sep = self:CreateTexture(nil, 'OVERLAY')
 	sep:SetSize(width, self:GetHeight())
-	--sep:SetBlendMode('ADD')
+	sep:SetBlendMode('ADD')
 	sep:SetPoint('CENTER', self, 'LEFT', self:GetWidth() * percent/100, 0)
-	sep:SetColorTexture(unpack(color or { 1, 1, 1, 1 }))
+	if (glow) then
+		sep:SetTexture(m.textures.glow_texture)
+		sep:SetTexCoord(0.25, 0.5, 0, 1) -- glow_texture has 4 sub-textures
+		sep:SetVertexColor(unpack(color or {1, 1, 1, 1}))
+	else
+		sep:SetColorTexture(unpack(color or { 1, 1, 1, 1 }))
+	end
 
 	return sep
 end
