@@ -33,7 +33,11 @@ filters.boss = {
 
 filters.nameplate = {
 	blacklist = {},
-	whitelist = {}
+	whitelist = {
+		-- Mage
+		[12654] = true,		-- Ignite
+		[2120] = true,		-- Flamestrike
+	}
 }
 
 filters.raid = {
