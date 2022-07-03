@@ -224,6 +224,35 @@ local function SetGroupPosition(element, group, num, cur, max, offx, offy)
 	return cur
 end
 
+local function ShouldUpdate(element, unit, isFullUpdate, updatedAuras)
+	if (isFullUpdate ~= false or not updatedAuras) then
+		return true
+	end
+	if (element.filter == 'NONE' or not element.ShouldUpdate) then
+		return true
+	end
+	
+	for _, auraInfo in ipairs(updatedAuras) do
+		if (not auraInfo.shouldNeverShow) then
+			--[[ Callback: Auras:ShouldUpdate(unit, auraInfo)
+			Called to check whether an aura is to be updated
+
+			* self     - the widget holding the aura buttons
+			* unit     - the unit on which the aura is cast (string)
+			* auraInfo - the informations about the current aura (table)
+
+			## Returns
+
+			* boolean - indicates whether this aura should be updated
+			--]]
+			if (element:ShouldUpdate(unit, auraInfo)) then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 local function filterIcons(element, unit, filter, numAuras, isDebuff)
 	local index = 1
 	local usedAuras = 0
@@ -365,11 +394,11 @@ local function filterIcons(element, unit, filter, numAuras, isDebuff)
 	return groups, dispelType
 end
 
-local function UpdateAuras(self, event, unit)
+local function UpdateAuras(self, event, unit, ...)
 	if (self.unit ~= unit) then return end
 
 	local buffs = self.RaidBuffs
-	if (buffs) then
+	if (buffs and ShouldUpdate(buffs, unit, ...)) then
 		if (buffs.PreUpdate) then buffs:PreUpdate(unit) end
 
 		local numBuffs = buffs.numMax
@@ -388,7 +417,7 @@ local function UpdateAuras(self, event, unit)
 	end
 
 	local debuffs = self.RaidDebuffs
-	if (debuffs) then
+	if (debuffs and ShouldUpdate(debuffs, unit, ...)) then
 		if (debuffs.PreUpdate) then debuffs:PreUpdate(unit) end
 
 		local numDebuffs = debuffs.numMax
@@ -416,14 +445,14 @@ local function UpdateAuras(self, event, unit)
 	end
 end
 
-local function Update(self, event, unit)
+local function Update(self, event, unit, ...)
 	if (self.unit ~= unit) then return end
 
-	UpdateAuras(self, event, unit)
+	UpdateAuras(self, event, unit, ...)
 end
 
 local function ForceUpdate(element)
-	return Update(element.__owner, 'ForceUpdate', element.__owner.unit)
+	return Update(element.__owner, 'ForceUpdate', element.__owner.unit, true)
 end
 
 local function Enable(self)
