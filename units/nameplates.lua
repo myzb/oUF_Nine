@@ -424,23 +424,19 @@ local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
 		return false
 	end
 
-	-- blizzard's nameplate filtering function
-	if (not auras:ShowNameplateAura(name, caster, showSelf, showAll)) then
-		return false
-	end
-
 	-- aura priority
 	local prio = auras:GetDebuffPrio(unit, dispellable, ...)
 	button.prio = prio
 
-	-- promote to 'S' prio
 	if (element.showSpecial) then
-		local casterIsHuman = select(13, ...)
-		local specialAura = spells.crowcontrol[spellId]
-
-		if (specialAura or (dispellable and not casterIsHuman)) then
+		if (spells.crowdcontrol[spellId]) then
 			prio = 'S'
 		end
+	end
+	
+	-- blizzard's nameplate filtering function
+	if (not (prio == 'S' or auras:ShowNameplateAura(name, caster, showSelf, showAll))) then
+		return false
 	end
 
 	return prio

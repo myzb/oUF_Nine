@@ -38,19 +38,20 @@ local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
 	if (filters[frame_name].blacklist[spellId]) then
 		return false
 	end
-	if (not Auras_ShouldDisplayBuff(unitCaster, spellId, canApplyAura)) then
-		return false
-	end
 
 	-- aura priority
 	local prio = auras:GetBuffPrio(unit, ...)
 	button.prio = prio
 
-	-- promote to 'S' prio
 	if (element.showSpecial) then
 		if (spells.personal[spellId] or spells.external[spellId]) then
 			prio = 'S'
 		end
+	end
+
+	-- always show special auras
+	if (not (prio == 'S' or Auras_ShouldDisplayBuff(unitCaster, spellId, canApplyAura))) then
+		return false
 	end
 
 	return prio
@@ -67,15 +68,11 @@ local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
 	if (filters[frame_name].blacklist[spellId]) then
 		return false
 	end
-	if (not (Auras_ShouldDisplayDebuff(unitCaster, spellId))) then
-		return false
-	end
 
 	-- aura priority
 	local prio = auras:GetDebuffPrio(unit, dispellable, ...)
 	button.prio = prio
 
-	-- promote to 'S' prio
 	if (element.showSpecial) then
 		local casterIsPlayer = select(13, ...)
 		local specialAura = spells.crowdcontrol[spellId]
@@ -83,6 +80,11 @@ local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
 		if (specialAura or (dispellable and not casterIsPlayer)) then
 			prio = 'S'
 		end
+	end
+
+	-- always show special auras
+	if (not (prio == 'S' or Auras_ShouldDisplayDebuff(unitCaster, spellId))) then
+		return false
 	end
 
 	return prio
@@ -163,6 +165,7 @@ local function createStyle(self)
 		raidBuffs['growth-y'] = 'UP'
 		raidBuffs.showStealableBuffs = true
 		raidBuffs.special:SetPoint('TOPRIGHT', self.Health, 'TOPRIGHT', -2, -2)
+		raidBuffs.showSpecial = true
 		raidBuffs.PreUpdate = RaidAuras_PreUpdate
 		raidBuffs.CustomFilter = Buffs_CustomFilter
 
