@@ -63,7 +63,7 @@ config.misc = {
 -- > FRAME LAYOUTS
 -- -----------------------------------
 
-config.layout = {
+local layout = {
 	main = {
 		width = 180,
 		height = 51,
@@ -145,7 +145,7 @@ config.units = {
 	player = {
 		show = true,
 		pos = { a1 = 'TOPRIGHT', af = 'UIParent', a2 = 'CENTER', x = -272, y = -205 },
-		layout = config.layout['main'],
+		layout = layout['main'],
 		auras = {
 			show = true,
 			cols = 4
@@ -172,13 +172,23 @@ config.units = {
 		},
 		totems = { -- totems and guardians i.e shadowfiend, gargoyle
 			show = false
+		},
+		infobars = { -- xp, rep, etc.: dynamically stacked on-top of each other
+			show = true,
+			height = 10,
+			width = 465,
+			sep = 1,
+			pos = {
+				h = { a1 = 'LEFT', af = 'UIParent', a2 = 'LEFT', x = 6, y = 0 },
+				v = { a1 = 'BOTTOM', af = 'UIParent', a2 = 'BOTTOM', x = 0, y = 6 }
+			}
 		}
 	},
 
 	target = {
 		show = true,
 		pos = { a1 = 'TOPLEFT', af = 'UIParent', a2 = 'CENTER', x = 272, y = -205 },
-		layout = config.layout['main'],
+		layout = layout['main'],
 		auras = {
 			show = true,
 			cols = 4
@@ -200,13 +210,13 @@ config.units = {
 	targettarget = {
 		show = true,
 		pos = { a1 = 'TOPLEFT', af = 'oUF_NineTarget', a2 = 'TOPRIGHT', x = 10, y = 0 },
-		layout = config.layout['secondary'],
+		layout = layout['secondary'],
 	},
 
 	focus = {
 		show = true,
 		pos = { a1 = 'TOPRIGHT', af = 'oUF_NinePlayer', a2 = 'BOTTOMRIGHT', x = 0, y = -50 },
-		layout = config.layout['main'],
+		layout = layout['main'],
 		auras = {
 			show = true,
 			warn = true,
@@ -239,7 +249,7 @@ config.units = {
 	pet = {
 		show = true,
 		pos = { a1 = 'TOPRIGHT', af = 'oUF_NinePlayer', a2 = 'TOPLEFT', x = -10, y = 0 },
-		layout = config.layout['secondary'],
+		layout = layout['secondary'],
 		castbar = {
 			show = true,
 			pos = { a1 = 'TOPRIGHT', af = 'oUF_NinePet', a2 = 'BOTTOMRIGHT', x = 0, y = -8 },
@@ -291,7 +301,7 @@ config.units = {
 			grid = { cols = 1, rows = 5, sep = 2, width = 140, height = 350 },
 			sort = 'GROUP',
 			grow = 'DOWNLEFT',
-			layout = config.layout['group'],
+			layout = layout['group'],
 			auras = { warn = true, rows = 1 },
 			misc = { hideHPPerc = false },
 			pets = { show = true, anchor = 'BOTTOMLEFT', num = 4 }
@@ -302,7 +312,7 @@ config.units = {
 			grid = { cols = 5, rows = 2, sep = 2, width = 540, height = 100 },
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
-			layout = config.layout['raid'],
+			layout = layout['raid'],
 			auras = { rows = 1 },
 			misc = { hideHPPerc = true }
 		},
@@ -312,7 +322,7 @@ config.units = {
 			grid = { cols = 5, rows = 5, sep = 2, width = 540, height = 250 },
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
-			layout = config.layout['raid'],
+			layout = layout['raid'],
 			auras = { rows = 1 },
 			misc = { hideHPPerc = true, rightClickthrough = true }
 		},
@@ -322,7 +332,7 @@ config.units = {
 			grid = { cols = 8, rows = 5, sep = 2, width = 540, height = 250 },
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
-			layout = config.layout['raid'],
+			layout = layout['raid'],
 			auras = { cols = 2, rows = 1 },
 			misc = { hideHPPerc = true, rightClickthrough = true }
 		},
@@ -332,7 +342,7 @@ config.units = {
 			grid = { cols = 2, rows = 10, sep = 2, width = 200, height = 500 },
 			sort = 'GROUP',
 			grow = 'DOWNLEFT',
-			layout = config.layout['raid'],
+			layout = layout['raid'],
 			auras = { rows = 1 },
 			misc = { hideHPPerc = true }
 		},
@@ -342,7 +352,7 @@ config.units = {
 			grid = { cols = 3, rows = 15, sep = 2, width = 300, height = 750 },
 			sort = 'GROUP',
 			grow = 'DOWNLEFT',
-			layout = config.layout['raid'],
+			layout = layout['raid'],
 			auras = { cols = 2, rows = 1 },
 			misc = { hideHPPerc = true }
 		},
@@ -353,7 +363,7 @@ config.units = {
 			grid = { cols = 5, rows = 5, sep = 2, width = 540, height = 250 },
 			sort = 'GROUP',
 			grow = 'LEFTDOWN',
-			layout = config.layout['raid'],
+			layout = layout['raid'],
 			auras = { cols = 2, rows = 1 },
 			misc = { hideHPPerc = false }
 		},
@@ -435,20 +445,6 @@ config.units = {
 			pos = { a1 = 'TOPRIGHT', a2 = 'BOTTOMRIGHT', x = 0, y = -10 },
 			width = 150,
 			height = 17
-		}
-	}
-}
-
-config.elements = {
-	-- xp, rep, ... dynamically stacked on-top of each other
-	infobars = {
-		show = true,
-		height = 10,
-		width = 465,
-		sep = 1,
-		pos = {
-			h = { a1 = 'LEFT', af = 'UIParent', a2 = 'LEFT', x = 6, y = 0 },
-			v = { a1 = 'BOTTOM', af = 'UIParent', a2 = 'BOTTOM', x = 0, y = 6 }
 		}
 	}
 }

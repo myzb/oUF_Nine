@@ -1,7 +1,7 @@
 local _, ns = ...
 
-local filters = {}
-ns.filters = filters
+local filters, config = {}, ns.config
+config.filters = filters
 
 -- ------------------------------------------------------------------------
 -- > FILTERS

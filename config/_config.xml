@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file='ouf.lua' />
+	<Script file='nine.lua' />
 	<Script file='filters.lua' />
 	<Script file='spells.lua' />
-	<Script file='config.lua' />
 </Ui>

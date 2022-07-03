@@ -1,7 +1,9 @@
 local A, ns = ...
 
 local common, config, m, oUF = ns.common, ns.config, ns.m, ns.oUF
-local auras, filters = ns.auras, ns.filters
+local auras = ns.auras
+
+local filters = config.filters
 
 local font = m.fonts.frizq
 local font_num = m.fonts.myriad

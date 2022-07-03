@@ -1,7 +1,10 @@
 local A, ns = ...
 
 local common, config, m, oUF = ns.common, ns.config, ns.m, ns.oUF
-local auras, filters, spells = ns.auras, ns.filters, ns.spells
+local auras = ns.auras
+
+local filters = config.filters
+local spells = config.spells
 
 local font = m.fonts.frizq
 local font_num = m.fonts.myriad
@@ -264,7 +267,7 @@ end
 
 local function Reputation_PostUpdate(element, unit)
 	local xp = element.__owner.Experience
-	local cfg = config.elements.infobars
+	local cfg = config.units[frame_name].infobars
 	if (xp and xp:IsShown()) then
 		element:SetPoint('BOTTOM', xp, 'TOP', 0, cfg.sep)
 	else
@@ -520,8 +523,8 @@ local function createStyle(self)
 	end
 
 	-- oUF experience, reputation
-	if (config.elements.infobars.show) then
-		local cfg = config.elements.infobars
+	if (uframe.infobars.show) then
+		local cfg = uframe.infobars
 		local vpt, hpt = cfg.pos.v, cfg.pos.h
 		local experience = ExperienceBar_Create(self, cfg.width, cfg.height, cfg.texture)
 		experience:SetPoint(hpt.a1, hpt.af, hpt.a2, hpt.x, hpt.y)

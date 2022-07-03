@@ -1,7 +1,7 @@
 local _, ns = ...
 
-local spells = {}
-ns.spells = spells
+local spells, config = {}, ns.config
+config.spells = spells
 
 -- ------------------------------------------------------------------------
 -- > SPELL LISTS
