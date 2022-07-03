@@ -14,5 +14,5 @@
 libs\_libs.xml
 media\media.lua
 config\_config.xml
-core\_core.xml
+common\_common.xml
 units\_units.xml
