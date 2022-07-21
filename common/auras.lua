@@ -13,8 +13,9 @@ local table_insert = table.insert
 local GetSpecializationRole = GetSpecializationRole
 local GetSpecialization = GetSpecialization
 local UnitIsFriend = UnitIsFriend
-local Auras_IsPrioDebuff = CompactUnitFrame_Util_IsPriorityDebuff  -- FrameXML/CompactUnitFrame.lua
-local Auras_IsBossAura = CompactUnitFrame_Util_IsBossAura          -- FrameXML/CompactUnitFrame.lua
+local Auras_IsPrioDebuff = CompactUnitFrame_Util_IsPriorityDebuff    -- FrameXML/CompactUnitFrame.lua
+local Auras_IsBossAura = CompactUnitFrame_Util_IsBossAura            -- FrameXML/CompactUnitFrame.lua
+auras.NameplateShowAura = NameplateBuffContainerMixin.ShouldShowBuff -- AddOns/Blizzard_NamePlates/Blizzard_NamePlates.lua
 
 local PLAYER_CLASS = select(2, UnitClass('player'))
 
@@ -59,6 +60,10 @@ function auras:CanDispel(type, unit)
 	return (dispelBy == 'ALL') or (dispelBy == role)
 end
 
+function auras:CasterIsPlayer(caster)
+	return caster == 'player' or caster == 'pet' or caster == 'vehicle'
+end
+
 -- -----------------------------------
 -- > BUFF/DEBUFF PRIORITY
 -- -----------------------------------
@@ -86,16 +91,6 @@ function auras:GetDebuffPrio(unit, dispellable, ...)
 	end
 end
 
--- Blizzards Nameplate Aura Filtering Logic
-function auras:ShowNameplateAura(name, caster, nameplateShowPersonal, nameplateShowAll)
-	if (not name) then
-		return false
-	end
-	return nameplateShowAll or
-		(nameplateShowPersonal and (caster == "player" or caster == "pet" or caster == "vehicle"))
-
-end
-
 -- -----------------------------------
 -- > AURA FUNCTIONS
 -- -----------------------------------
@@ -112,12 +107,13 @@ local function Auras_PostCreateIcon(self, button)
 	button.icon:SetTexCoord(0.09, 0.91, 0.09, 0.91)
 end
 
-function auras:CreateAuras(self, num, cols, rows, size, spacing)
+function auras:CreateAuras(self, size, num, cols, rows, sep)
+	local tsize = size + sep
 	local auras = CreateFrame('Frame', nil, self)
-	auras:SetSize((cols * (size + spacing or 0)), rows * (size + spacing or 0)) -- container size
-	auras.num = num or (cols * rows)
+	auras:SetSize(tsize * cols, tsize * rows) -- container size
+	auras.num = num
 	auras.size = size
-	auras.spacing = spacing or 0
+	auras.spacing = sep
 	auras.disableCooldown = false
 	auras.PostCreateIcon = Auras_PostCreateIcon
 
@@ -283,13 +279,16 @@ local function RaidAuras_PostUpdateIcon(element, unit, button, index, position, 
 	button.cd:SetHideCountdownNumbers(true)
 end
 
-function auras:CreateRaidAuras(self, size, num, cols, rows, othersize)
+function auras:CreateRaidAuras(self, size, num, cols, rows, sep, ...)
+	local tsize = size + sep
 	local auras = CreateFrame('Frame', nil, self)
-	auras:SetSize(size * cols, size * rows)
+	auras:SetSize(tsize * cols, tsize * rows)
 	auras.size = size
 	auras.num = num
+	auras.spacing = sep
 	auras.showStealableBuffs = true
 
+	local othersize = ...
 	if (othersize) then
 		auras.special = CreateFrame('Frame', nil, auras)
 		auras.special:SetSize(othersize, othersize)
