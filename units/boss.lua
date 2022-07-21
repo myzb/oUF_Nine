@@ -53,12 +53,16 @@ end
 -- -----------------------------------
 
 -- Filter Debuffs
-local function Debuffs_CustomFilter(element, unit, button, ...)
-	local name = select(1, ...)
-	local caster = select(7, ...)
-	local showSelf = select(9, ...)
-	local spellId = select(10, ...)
-	local showAll = select(14, ...)
+local function Debuffs_ShouldUpdate(element, unit, auraInfo)
+	if (not auraInfo.isHarmful) then
+		return false
+	end
+
+	local caster = auraInfo.sourceUnit
+	local name = auraInfo.name
+	local showAll = auraInfo.nameplateShowAll
+	local showSelf = auraInfo.nameplateShowPersonal
+	local spellId = auraInfo.spellId
 
 	-- auras white-/blacklist
 	if (filters[frame_name].whitelist[spellId]) then
@@ -68,8 +72,33 @@ local function Debuffs_CustomFilter(element, unit, button, ...)
 		return false
 	end
 
-	-- blizzard's nameplate filtering function
-	return button.isPlayer and auras:ShowNameplateAura(name, caster, showSelf, showAll)
+	-- adaptation of blizzard's nameplate filtering logic
+	if (auras:NameplateShowAura(name, caster, showSelf, showAll)) then
+		return true
+	else
+		return false
+	end
+end
+
+local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
+	local name, _, _, _, _, _, caster, _, showSelf, spellId, _, _, _, showAll = ...
+
+	-- auras white-/blacklist
+	if (filters[frame_name].whitelist[spellId]) then
+		return auras.AURA_MISC
+	end
+	if (filters[frame_name].blacklist[spellId]) then
+		return auras.PRIO_HIDE
+	end
+
+	-- adaptation of blizzard's nameplate filtering logic
+	if (auras:NameplateShowAura(name, caster, showSelf, showAll)) then
+		button.prio = auras.AURA_MISC
+	else
+		button.prio = auras.PRIO_HIDE
+	end
+
+	return button.prio
 end
 
 -- -----------------------------------
@@ -141,7 +170,7 @@ local function createStyle(self)
 		local size = uframe.debuffs.size or math.floor(self:GetWidth() / (2 * (cols + 0.25)))
 		local rows = uframe.debuffs.rows or math.floor(2 * self:GetHeight() / (3 * size))
 
-		local debuffs = auras:CreateAuras(self, 15, cols, rows, size, 1)
+		local debuffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0)
 		debuffs:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', 0, 0)
 		debuffs.initialAnchor = 'BOTTOMRIGHT'
 		debuffs['growth-x'] = 'LEFT'
@@ -149,7 +178,8 @@ local function createStyle(self)
 		debuffs.showDebuffType = true
 		debuffs.filter = 'HARMFUL|INCLUDE_NAME_PLATE_ONLY'
 		debuffs.CustomFilter = Debuffs_CustomFilter
-		self.Debuffs = debuffs
+		debuffs.ShouldUpdate = Debuffs_ShouldUpdate
+		self.RaidDebuffs = debuffs
 	end
 
 	self.Range = config.frame.range

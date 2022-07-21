@@ -148,7 +148,8 @@ config.units = {
 		layout = layout['main'],
 		auras = {
 			show = true,
-			cols = 4
+			cols = 4,
+			rows = 4
 		},
 		castbar = {
 			show = true,
@@ -191,7 +192,8 @@ config.units = {
 		layout = layout['main'],
 		auras = {
 			show = true,
-			cols = 4
+			cols = 4,
+			rows = 4,
 		},
 		castbar = {
 			show = true,
@@ -222,6 +224,7 @@ config.units = {
 			warn = true,
 			size = 18,
 			cols = 3,
+			rows = 1
 		},
 		castbar = {
 			show = true,

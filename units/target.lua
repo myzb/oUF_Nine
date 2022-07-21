@@ -37,27 +37,29 @@ end
 -- -----------------------------------
 
 -- Filter Buffs
-local function Buffs_CustomFilter(element, unit, button, ...)
-	local spellId = select(10, ...)
+local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
+	local _, _, _, _, _, _, _, _, _, spellId = ...
 
 	-- auras white-/blacklist
 	if (filters[frame_name].whitelist[spellId]) then
-		return true
+		return auras.AURA_MISC
 	end
 	if (filters[frame_name].blacklist[spellId]) then
-		return false
+		return auras.PRIO_HIDE
 	end
 
-	return true
+	return auras.AURA_MISC
 end
 
 -- Filter Debuffs
-local function Debuffs_CustomFilter(element, unit, button, ...)
-	local name = select(1, ...)
-	local caster = select(7, ...)
-	local spellId = select(10, ...)
-	local casterIsPlayer = select(13, ...)
-	local nameplateShowAll = select(14, ...)
+local function Debuffs_ShouldUpdate(element, unit, auraInfo)
+	if (not auraInfo.isHarmful) then
+		return false
+	end
+
+	local caster = auraInfo.sourceUnit
+	local showAll = auraInfo.nameplateShowAll
+	local spellId = auraInfo.spellId
 
 	-- auras white-/blacklist
 	if (filters[frame_name].whitelist[spellId]) then
@@ -68,7 +70,32 @@ local function Debuffs_CustomFilter(element, unit, button, ...)
 	end
 
 	-- blizzard target-/focus frame filtering function
-	return Auras_ShouldDisplayDebuff(unit, caster, nameplateShowAll, casterIsPlayer)
+	if (Auras_ShouldDisplayDebuff(unit, caster, showAll, auras:CasterIsPlayer(caster))) then
+		return true
+	else
+		return false
+	end
+end
+
+local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
+	local _, _, _, _, _, _, caster, _, _, spellId, _, _, casterIsPlayer, showAll = ...
+
+	-- auras white-/blacklist
+	if (filters[frame_name].whitelist[spellId]) then
+		return auras.AURA_MISC
+	end
+	if (filters[frame_name].blacklist[spellId]) then
+		return auras.PRIO_HIDE
+	end
+
+	-- blizzard target-/focus frame filtering function
+	if (Auras_ShouldDisplayDebuff(unit, caster, showAll, casterIsPlayer)) then
+		button.prio = auras.AURA_MISC
+	else
+		button.prio = auras.PRIO_HIDE
+	end
+
+	return button.prio
 end
 
 -- -----------------------------------
@@ -171,25 +198,28 @@ local function createStyle(self)
 
 	-- Auras
 	if (uframe.auras.show) then
-		local cols = (uframe.auras.cols) or 4
-		local size = (uframe.auras.size) or floor(self:GetWidth() / (2 * (cols + 0.25)))
-		local buffs = auras:CreateAuras(self, 15, cols, 4, size, 1)
+		local cols = uframe.auras.cols or 4
+		local rows = uframe.auras.rows or 4
+		local size = uframe.auras.size or floor(self:GetWidth() / (2 * (cols + 0.25)))
+
+		local buffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0)
 		buffs:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, 4)
 		buffs.initialAnchor = 'BOTTOMRIGHT'
 		buffs['growth-x'] = 'LEFT'
 		buffs['growth-y'] = 'UP'
 		buffs.showStealableBuffs = true
 		buffs.CustomFilter = Buffs_CustomFilter
-		self.Buffs = buffs
+		self.RaidBuffs = buffs
 
-		local debuffs = auras:CreateAuras(self, 15, cols, 4, size, 1)
+		local debuffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0)
 		debuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 4)
 		debuffs.initialAnchor = 'BOTTOMLEFT'
 		debuffs['growth-x'] = 'RIGHT'
 		debuffs['growth-y'] = 'UP'
 		debuffs.showDebuffType = true
 		debuffs.CustomFilter = Debuffs_CustomFilter
-		self.Debuffs = debuffs
+		debuffs.ShouldUpdate = Debuffs_ShouldUpdate
+		self.RaidDebuffs = debuffs
 	end
 end
 

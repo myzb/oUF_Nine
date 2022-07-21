@@ -23,39 +23,40 @@ local PLAYER_CLASS = select(2, UnitClass('player'))
 -- > AURAS RELATED FUNCTIONS
 -- ------------------------------------------------------------------------
 
+ auras.dispellableDebuff = {
+	['Curse'] = {
+		MAGE   = 'ALL',
+		SHAMAN = 'ALL',
+		DRUID  = 'ALL'
+	},
+	['Disease'] = {
+		PALADIN = 'ALL',
+		PRIEST  = 'ALL',
+		SHAMAN  = 'ALL',
+		MONK    = 'ALL',
+	},
+	['Poison'] = {
+		PALADIN = 'ALL',
+		DRUID   = 'ALL',
+		MONK    = 'ALL'
+	},
+	['Magic'] = {
+		PALADIN = 'HEALER',
+		PRIEST  = 'ALL',
+		SHAMAN  = 'HEALER',
+		DRUID   = 'HEALER',
+		MONK    = 'HEALER'
+	}
+ }
+
 function auras:CanDispel(type, unit)
 	if (not type or (unit and not UnitIsFriend('player', unit))) then
 		return
 	end
 
-	local debuff = {
-		['Curse'] = {
-			MAGE = 'ALL',
-			SHAMAN = 'ALL',
-			DRUID = 'ALL'
-		},
-		['Disease'] = {
-			PALADIN = 'ALL',
-			PRIEST = 'ALL',
-			SHAMAN = 'ALL',
-			MONK = 'ALL',
-		},
-		['Poison'] = {
-			PALADIN = 'ALL',
-			DRUID = 'ALL',
-			MONK = 'ALL'
-		},
-		['Magic'] = {
-			PALADIN = 'HEALER',
-			PRIEST = 'ALL',
-			SHAMAN = 'HEALER',
-			DRUID = 'HEALER',
-			MONK = 'HEALER'
-		}
-	}
 	local spec = GetSpecialization()
 	local role = GetSpecializationRole(spec)
-	local dispelBy = debuff[type] and debuff[type][PLAYER_CLASS]
+	local dispelBy = auras.dispellableDebuff[type] and auras.dispellableDebuff[type][PLAYER_CLASS]
 
 	return (dispelBy == 'ALL') or (dispelBy == role)
 end
@@ -69,9 +70,11 @@ end
 -- -----------------------------------
 
 -- Auras Priorities
+auras.PRIO_SHOW = 100
 auras.AURA_BOSS = 3
 auras.AURA_PRIO = 2
 auras.AURA_MISC = 1
+auras.PRIO_HIDE = false
 
 -- Buff Priority Calculation
 function auras:GetBuffPrio(unit, ...)
@@ -80,7 +83,7 @@ end
 
 -- Debuff Priority Calculation
 function auras:GetDebuffPrio(unit, dispellable, ...)
-	local  _, _, _, _, _, _, _, _, _, spellId, _, isBossAura = ...
+	local _, _, _, _, _, _, _, _, _, spellId, _, isBossAura = ...
 
 	if (isBossAura) then
 		return auras.AURA_BOSS

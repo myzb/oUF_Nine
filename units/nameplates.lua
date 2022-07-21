@@ -213,8 +213,8 @@ end
 -- Color Override for Special Units
 function UnitColor(unit)
 	local guid = UnitGUID(unit)
-	local _, _, _, _, _, npcId = strsplit("-", guid)
-	return filters.color.unit[npc_id]
+	local _, _, _, _, _, npcId = strsplit('-', guid or '')
+	return filters.color.unit[npcId]
 end
 
 local function Health_ExecuteIndicator(element, unit)
@@ -363,37 +363,59 @@ local function Auras_PostCreateIcon(element, button)
 end
 
 -- Filter Buffs
+local function Buffs_ShouldUpdate(element, unit,auraInfo)
+	if (not auraInfo.isHelpful) then
+		return false
+	end
+
+	local spellId = auraInfo.spellId
+
+	-- auras white-/blacklist
+	if (filters[frame_name].whitelist[spellId]) then
+		return true
+	end
+	if (filters[frame_name].blacklist[spellId]) then
+		return false
+	end
+
+	return true
+end
+
 local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
-	local isStealable = select(8, ...)
-	local duration = select(5, ...)
-	local spellId = select(10, ...)
-	local casterIsPlayer = select(13, ...)
+	local _, _, _, _, duration, _, _, isStealable, _, spellId, _, _, casterIsPlayer = ...
 
 	-- auras white-/blacklist
 	if (filters[frame_name].whitelist[spellId]) then
 		return auras.AURA_MISC
 	end
 	if (filters[frame_name].blacklist[spellId]) then
-		return false
+		return auras.PRIO_HIDE
 	end
 
-	-- only show stealable / purgeable buffs
-	local isShortBuff = duration > 0 and duration < 30
-	if (isStealable or (isShortBuff and not casterIsPlayer)) then
-		return auras.AURA_MISC
+	-- show stealable (purgeable) and short non-player buffs
+	if (isStealable) then
+		button.prio = auras.AURA_MISC
+	elseif ((duration > 0 and duration < 30) and not casterIsPlayer) then
+		button.prio = auras.AURA_MISC
+	else
+		button.prio = auras.PRIO_HIDE
 	end
+
+	return button.prio
 end
 
 local function Debuffs_PreUpdate(element, unit)
 	local filter
-	local showAll
-
+	local isHostile = false
 	local reaction = UnitReaction('player', unit)
+	local showAll = false
+	local showDebuffsOnFriendly = GetCVarBool('nameplateShowDebuffsOnFriendly')
+
 	if (reaction and reaction <= 4) then
 		-- reaction 4 is neutral and less than 4 becomes increasingly more hostile
 		filter = 'HARMFUL|INCLUDE_NAME_PLATE_ONLY'
+		isHostile = true
 	else
-		local showDebuffsOnFriendly = GetCVarBool('nameplateShowDebuffsOnFriendly')
 		if (showDebuffsOnFriendly) then
 			-- dispellable debuffs
 			filter = 'HARMFUL|RAID'
@@ -404,42 +426,74 @@ local function Debuffs_PreUpdate(element, unit)
 	end
 
 	element.filter = filter
+	element.isHostile = isHostile
 	element.showAll = showAll
+	element.showDebuffsOnFriendly = showDebuffsOnFriendly
 end
 
 -- Filter Debuffs
+local function Debuffs_ShouldUpdate(element, unit, auraInfo)
+	if (not auraInfo.isHarmful) then
+		return false
+	end
+
+	local caster = auraInfo.sourceUnit
+	local isRaid = auraInfo.isRaid
+	local name = auraInfo.name
+	local showAll = auraInfo.nameplateShowAll
+	local showSelf = auraInfo.nameplateShowPersonal
+	local spellId = auraInfo.spellId
+
+	-- auras white-/blacklist
+	if (filters[frame_name].whitelist[spellId]) then
+		return true
+	end
+	if (filters[frame_name].blacklist[spellId]) then
+		return false
+	end
+
+	-- adaptation of blizzard's nameplate filtering logic
+	if (not auras:NameplateShowAura(name, caster, showSelf, showAll)) then
+		return false
+	elseif (element.isHostile) then
+		return true
+	elseif (element.showDebuffsOnFriendly and isRaid) then
+		return true
+	else
+		return false
+	end
+end
+
 local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
-	local name = select(1, ...)
-	local duration = select(5, ...)
-	local caster = select(7, ...)
-	local showSelf = select(9, ...)
-	local spellId = select(10, ...)
-	local showAll = select(14, ...)
+	local name, _, _, _, _, _, caster, _, showSelf, spellId, _, _, _, showAll = ...
 
 	-- auras white-/blacklist
 	if (filters[frame_name].whitelist[spellId]) then
 		return auras.AURA_MISC
 	end
 	if (filters[frame_name].blacklist[spellId]) then
-		return false
+		return auras.PRIO_HIDE
 	end
 
-	-- aura priority
-	local prio = auras:GetDebuffPrio(unit, dispellable, ...)
-	button.prio = prio
+	-- adaptation of blizzard's nameplate filtering logic
+	if (not auras:NameplateShowAura(name, caster, showSelf, element.showAll or showAll)) then
+		button.prio = auras.PRIO_HIDE
+	elseif (element.isHostile) then
+		button.prio = auras.AURA_MISC
+	elseif (element.showDebuffsOnFriendly) then -- isRaid is implied
+		button.prio = auras.AURA_MISC
+	else
+		button.prio = auras.PRIO_HIDE
+	end
 
+	-- some special auras will go in a separate group 'S'
 	if (element.showSpecial) then
 		if (spells.crowdcontrol[spellId]) then
-			prio = 'S'
+			return 'S'
 		end
+	else
+		return button.prio
 	end
-	
-	-- blizzard's nameplate filtering function
-	if (not (prio == 'S' or auras:ShowNameplateAura(name, caster, showSelf, showAll))) then
-		return false
-	end
-
-	return prio
 end
 
 -- -----------------------------------
@@ -452,7 +506,6 @@ local function createStyle(self)
 
 	-- size and position
 	self:SetSize(layout.width, layout.height)
-	--self:SetAllPoints()
 	self:SetPoint(uframe.pos.a1, uframe.pos.x, uframe.pos.y)
 	self:SetScale(common:GetPixelScale(self))
 
@@ -564,9 +617,10 @@ local function createStyle(self)
 	if (uframe.buffs and uframe.buffs.show) then
 		local cfg = uframe.buffs
 		local cols = cfg.cols or 4
+		local rows = cfg.rows or 2
 		local size = cfg.size or math_floor(self:GetWidth() / (2 * (cols + 0.25)))
 
-		local raidBuffs = auras:CreateRaidAuras(self, size, cols, cols + 0.5, 2)
+		local raidBuffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0)
 		raidBuffs:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, 20)
 		raidBuffs.initialAnchor = 'BOTTOMRIGHT'
 		raidBuffs['growth-x'] = 'LEFT'
@@ -575,6 +629,7 @@ local function createStyle(self)
 		raidBuffs.disableMouse = true
 		raidBuffs.PostCreateIcon = Auras_PostCreateIcon
 		raidBuffs.CustomFilter = Buffs_CustomFilter
+		raidBuffs.ShouldUpdate = Buffs_ShouldUpdate
 
 		self.RaidBuffs = raidBuffs
 	end
@@ -583,8 +638,10 @@ local function createStyle(self)
 	if (uframe.debuffs and uframe.debuffs.show) then
 		local cfg = uframe.debuffs
 		local cols = cfg.cols or 4
+		local rows = cfg.rows or 2
 		local size = cfg.size or math_floor(self:GetWidth() / (2 * (cols + 0.25)))
-		local raidDebuffs = auras:CreateRaidAuras(self, size, cols, cols + 0.5, 2, size + 8)
+
+		local raidDebuffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0, size + 8)
 		raidDebuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 20)
 		raidDebuffs.initialAnchor = 'BOTTOMLEFT'
 		raidDebuffs['growth-x'] = 'RIGHT'
@@ -594,6 +651,7 @@ local function createStyle(self)
 		raidDebuffs.PostCreateIcon = Auras_PostCreateIcon
 		raidDebuffs.PreUpdate = Debuffs_PreUpdate
 		raidDebuffs.CustomFilter = Debuffs_CustomFilter
+		raidDebuffs.ShouldUpdate = Debuffs_ShouldUpdate
 
 		raidDebuffs.special:SetPoint('BOTTOM', self, 'TOP', 0, 20)
 		raidDebuffs.showSpecial = uframe.debuffs and uframe.debuffs.warn
