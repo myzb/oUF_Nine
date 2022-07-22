@@ -55,7 +55,8 @@ button.isPlayer - indicates if the aura caster is the player or their vehicle (b
 --]]
 
 local _, ns = ...
-local oUF = ns.oUF
+local oUF = ns.oUF or oUF
+assert(oUF, 'oUF RaidAuras was unable to locate oUF install')
 
 local ipairs = ipairs
 local math_floor =  math.floor
