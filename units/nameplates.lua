@@ -465,7 +465,7 @@ local function createStyle(self)
 	-- hp bar focus overlay stripes
 	if (layout.health.focusHighlight) then
 		health.stripes = health:CreateTexture(nil, 'OVERLAY')
-		health.stripes:SetTexture(m.textures.stripes_texture, true, true)
+		health.stripes:SetTexture(m.textures.stripes_texture, 'REPEAT')
 		health.stripes:SetTexCoord(0, 0.5, 0.5, 1)
 		health.stripes:SetBlendMode("ADD")
 		health.stripes:SetHorizTile(true)
@@ -500,11 +500,11 @@ local function createStyle(self)
 		local w, h = uframe.targetIndicator.width, uframe.targetIndicator.height
 		local ofs = uframe.targetIndicator.offset
 		health.IndicatorLeft = health:CreateTexture(nil, 'OVERLAY')
-		health.IndicatorLeft:SetTexture(m.icons.arrow_comp_right, true, true)
+		health.IndicatorLeft:SetTexture(m.icons.arrow_comp_right, 'REPEAT')
 		health.IndicatorLeft:SetPoint('RIGHT', health, 'LEFT', -1 * ofs, 0)
 		health.IndicatorLeft:SetSize(w, h)
 		health.IndicatorRight = health:CreateTexture(nil, 'OVERLAY')
-		health.IndicatorRight:SetTexture(m.icons.arrow_comp_left, true, true)
+		health.IndicatorRight:SetTexture(m.icons.arrow_comp_left, 'REPEAT')
 		health.IndicatorRight:SetPoint('LEFT', health, 'RIGHT', ofs, 0)
 		health.IndicatorRight:SetSize(w, h)
 		self:RegisterEvent('PLAYER_TARGET_CHANGED', TargetIndicator_Update, true)
