@@ -74,27 +74,27 @@ local function canDispel(type, unit)
 
 	local debuff = {
 		['Curse'] = {
-			MAGE = 'ALL',
+			MAGE   = 'ALL',
 			SHAMAN = 'ALL',
-			DRUID = 'ALL'
+			DRUID  = 'ALL'
 		},
 		['Disease'] = {
 			PALADIN = 'ALL',
-			PRIEST = 'ALL',
-			SHAMAN = 'ALL',
-			MONK = 'ALL',
+			PRIEST  = 'ALL',
+			SHAMAN  = 'ALL',
+			MONK    = 'ALL',
 		},
 		['Poison'] = {
 			PALADIN = 'ALL',
-			DRUID = 'ALL',
-			MONK = 'ALL'
+			DRUID   = 'ALL',
+			MONK    = 'ALL'
 		},
 		['Magic'] = {
 			PALADIN = 'HEALER',
-			PRIEST = 'ALL',
-			SHAMAN = 'HEALER',
-			DRUID = 'HEALER',
-			MONK = 'HEALER'
+			PRIEST  = 'ALL',
+			SHAMAN  = 'HEALER',
+			DRUID   = 'HEALER',
+			MONK    = 'HEALER'
 		}
 	}
 	local spec = GetSpecialization()
@@ -200,9 +200,10 @@ local function customFilter(element, unit, button, dispellable, ...)
 	return 3
 end
 
-local function SetGroupPosition(element, group, num, cur, max, offx, offy)
-	local sizex = (element.size or 16) + (element['spacing-x'] or element.spacing or 0)
-	local sizey = (element.size or 16) + (element['spacing-y'] or element.spacing or 0)
+local function SetGroupPosition(element, group, cur, max, icon_size, offx, offy)
+	local size = icon_size or element.size or 16
+	local sizex = size + (element['spacing-x'] or element.spacing or 0)
+	local sizey = size + (element['spacing-y'] or element.spacing or 0)
 	local anchor = element.initialAnchor or 'BOTTOMLEFT'
 	local growthx = (element['growth-x'] == 'LEFT' and -1) or 1
 	local growthy = (element['growth-y'] == 'DOWN' and -1) or 1
@@ -222,7 +223,7 @@ local function SetGroupPosition(element, group, num, cur, max, offx, offy)
 		button:Show()
 		cur = cur + 1
 	end
-	return cur
+	return cur, offx, offy
 end
 
 local function ShouldUpdate(element, unit, isFullUpdate, updatedAuras)
@@ -232,7 +233,7 @@ local function ShouldUpdate(element, unit, isFullUpdate, updatedAuras)
 	if (element.filter == 'NONE' or not element.ShouldUpdate) then
 		return true
 	end
-	
+
 	for _, auraInfo in ipairs(updatedAuras) do
 		if (not auraInfo.shouldNeverShow) then
 			--[[ Callback: Auras:ShouldUpdate(unit, auraInfo)
@@ -407,11 +408,13 @@ local function UpdateAuras(self, event, unit, ...)
 
 		if (buffs.PreSetPosition) then buffs:PreSetPosition(groups) end
 
-		local offx, offy = 0, 0, 0
+		local size
+		local offx, offy = 0, 0
 		local cur, max = 0, buffs.num or numBuffs
 		for _, i in ipairs(groups.used) do
 			if (cur >= max) then break end
-			cur, offx, offy = (buffs.SetGroupPosition or SetGroupPosition) (buffs, groups[i], i, cur, max, offx, offy)
+			size = buffs.group[i] and buffs.group[i].size
+			cur, offx, offy = (buffs.SetGroupPosition or SetGroupPosition) (buffs, groups[i], cur, max, size, offx, offy)
 		end
 
 		if (buffs.PostUpdate) then buffs:PostUpdate(unit, groups) end
@@ -426,11 +429,13 @@ local function UpdateAuras(self, event, unit, ...)
 
 		if (debuffs.PreSetPosition) then debuffs:PreSetPosition(groups) end
 
-		local offx, offy = 0, 0, 0
+		local size
+		local offx, offy = 0, 0
 		local cur, max = 0, debuffs.num or numDebuffs
 		for _, i in ipairs(groups.used) do
 			if (cur >= max) then break end
-			cur, offx, offy = (debuffs.SetGroupPosition or SetGroupPosition) (debuffs, groups[i], i, cur, max, offx, offy)
+			size = debuffs.group[i] and debuffs.group[i].size
+			cur, offx, offy = (debuffs.SetGroupPosition or SetGroupPosition) (debuffs, groups[i], cur, max, size, offx, offy)
 		end
 
 		if (debuffs.PostUpdate) then debuffs:PostUpdate(unit, groups) end
@@ -472,6 +477,7 @@ local function Enable(self)
 			buffs.tooltipAnchor = buffs.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
 			buffs.num = buffs.num or 32
 			buffs.numMax = buffs.numMax or buffs.num
+			buffs.group = buffs.group or {}
 
 			buffs:Show()
 		end
@@ -488,6 +494,7 @@ local function Enable(self)
 			debuffs.tooltipAnchor = debuffs.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
 			debuffs.num = debuffs.num or 32
 			debuffs.numMax = debuffs.numMax or debuffs.num
+			debuffs.group = debuffs.group or {}
 
 			if (debuffs.dispelIcon) then
 				local dispelIcon = debuffs.dispelIcon
