@@ -154,8 +154,8 @@ local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
 	return prio
 end
 
-local function RaidAuras_SetGroupPosition(element, group, idx, cur, max, offx, offy)
-	local size = (element.group and element.group[idx] and element.group[idx].size) or element.size or 16
+local function RaidAuras_SetGroupPosition(element, group, cur, max, icon_size, offx, offy)
+	local size = icon_size or element.size or 16
 	local sizex = size + (element['spacing-x'] or element.spacing or 0)
 	local sizey = size + (element['spacing-y'] or element.spacing or 0)
 	local anchor = element.initialAnchor or 'BOTTOMLEFT'
@@ -164,7 +164,7 @@ local function RaidAuras_SetGroupPosition(element, group, idx, cur, max, offx, o
 	local posx = sizex * growthx
 	local posy = sizey * growthy
 
-	local cols = floor(((element:GetWidth() - growthx * offx) / size) + 0.5)
+	local cols = floor(((element:GetWidth() - growthx * offx) / sizex) + 0.5)
 	if (cols == 0) then
 		-- no space for a new icon column, max reached
 		return max, offx, 0
@@ -190,7 +190,7 @@ local function RaidAuras_SetGroupPosition(element, group, idx, cur, max, offx, o
 		end
 		j = j + 1
 	end
-	return (cur + j), (offx + posx*j), 0
+	return (cur + j), (offx + posx*j), offy
 end
 
 -- -----------------------------------
