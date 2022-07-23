@@ -67,39 +67,39 @@ local AuraUtil_ForEachAura = AuraUtil.ForEachAura
 
 local PLAYER_CLASS = select(2, UnitClass('player'))
 
+local dispelDebuff = {
+	['Curse'] = {
+		MAGE   = 'ALL',
+		SHAMAN = 'ALL',
+		DRUID  = 'ALL'
+	},
+	['Disease'] = {
+		PALADIN = 'ALL',
+		PRIEST  = 'ALL',
+		SHAMAN  = 'ALL',
+		MONK    = 'ALL',
+	},
+	['Poison'] = {
+		PALADIN = 'ALL',
+		DRUID   = 'ALL',
+		MONK    = 'ALL'
+	},
+	['Magic'] = {
+		PALADIN = 'HEALER',
+		PRIEST  = 'ALL',
+		SHAMAN  = 'HEALER',
+		DRUID   = 'HEALER',
+		MONK    = 'HEALER'
+	}
+}
+
 local function canDispel(type, unit)
 	if (not type or (unit and not UnitIsFriend('player', unit))) then
 		return
 	end
-
-	local debuff = {
-		['Curse'] = {
-			MAGE   = 'ALL',
-			SHAMAN = 'ALL',
-			DRUID  = 'ALL'
-		},
-		['Disease'] = {
-			PALADIN = 'ALL',
-			PRIEST  = 'ALL',
-			SHAMAN  = 'ALL',
-			MONK    = 'ALL',
-		},
-		['Poison'] = {
-			PALADIN = 'ALL',
-			DRUID   = 'ALL',
-			MONK    = 'ALL'
-		},
-		['Magic'] = {
-			PALADIN = 'HEALER',
-			PRIEST  = 'ALL',
-			SHAMAN  = 'HEALER',
-			DRUID   = 'HEALER',
-			MONK    = 'HEALER'
-		}
-	}
 	local spec = GetSpecialization()
 	local role = GetSpecializationRole(spec)
-	local dispelBy = debuff[type] and debuff[type][PLAYER_CLASS]
+	local dispelBy = dispelDebuff[type] and dispelDebuff[type][PLAYER_CLASS]
 
 	return (dispelBy == 'ALL') or (dispelBy == role)
 end
@@ -183,7 +183,7 @@ local function createAuraIcon(element, index)
 end
 
 local function customFilter(element, unit, button, dispellable, ...)
-	local  _, _, _, _, _, _, _, _, _, spellId, _, isBossAura = ...
+	local _, _, _, _, _, _, _, _, _, spellId, _, isBossAura = ...
 
 	if (element.onlyShowPlayer) then
 		return button.isPlayer and 1
@@ -191,13 +191,13 @@ local function customFilter(element, unit, button, dispellable, ...)
 
 	-- filter and sort boss first, then prio debuff, then other auras
 	if (isBossAura) then
-		return 1
+		return 3
 	end
 	if (Auras_IsPriorityDebuff(spellId)) then
 		return 2
 	end
 	-- other auras
-	return 3
+	return 1
 end
 
 local function SetGroupPosition(element, group, cur, max, icon_size, offx, offy)
@@ -236,6 +236,9 @@ local function ShouldUpdate(element, unit, isFullUpdate, updatedAuras)
 
 	for _, auraInfo in ipairs(updatedAuras) do
 		if (not auraInfo.shouldNeverShow) then
+			-- provide some extra info in auraInfo
+			auraInfo.canDispel = canDispel(auraInfo.debuffType, unit)
+
 			--[[ Callback: Auras:ShouldUpdate(unit, auraInfo)
 			Called to check whether an aura is to be updated
 
@@ -289,25 +292,25 @@ local function filterIcons(element, unit, filter, numAuras, isDebuff)
 		button:Hide()
 		button:ClearAllPoints()
 
-		local isDispellable = isDebuff and canDispel(debuffType, unit)
-		if (isDispellable and not dispelType) then
+		local dispellable = isDebuff and canDispel(debuffType, unit)
+		if (dispellable and not dispelType) then
 			dispelType = debuffType
 		end
 
 		--[[ Override: Auras:CustomFilter(unit, button, ...)
 		Defines a custom filter that controls if the aura button should be shown.
 
-		* self          - the widget holding the aura buttons
-		* unit          - the unit on which the aura is cast (string)
-		* button        - the button displaying the aura (Button)
-		* isDispellable - whether the aura is dispellable by the player (boolean)
-		* ...           - the return values from [UnitAura](http://wowprogramming.com/docs/api/UnitAura.html)
+		* self        - the widget holding the aura buttons
+		* unit        - the unit on which the aura is cast (string)
+		* button      - the button displaying the aura (Button)
+		* dispellable - whether the aura is dispellable by the player (boolean)
+		* ...         - the return values from [UnitAura](http://wowprogramming.com/docs/api/UnitAura.html)
 
 		## Returns
 
 		* prio  - in which group to place the button, use nil for none (number)
 		--]]
-		local prio = (element.CustomFilter or customFilter) (element, unit, button, isDispellable, ...)
+		local prio = (element.CustomFilter or customFilter) (element, unit, button, dispellable, ...)
 		if (not prio) then
 			index = index + 1
 			return usedAuras >= numAuras
