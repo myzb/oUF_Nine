@@ -9,7 +9,7 @@ local UnitHealthMax = UnitHealthMax
 local UnitIsConnected = UnitIsConnected
 local UnitIsDead = UnitIsDead
 local UnitIsGhost = UnitIsGhost
-local GetCVar = GetCVar
+local GetCVar = C_CVar.GetCVar
 local string_match = string.match
 
 -- ------------------------------------------------------------------------
