@@ -17,12 +17,18 @@ filters.player = {
 }
 
 filters.target = {
-	blacklist = {},
+	blacklist = {
+		-- Shadowlands Covenant
+		[353354] = true		-- Dream Delver (Dreamweaver)
+	},
 	whitelist = {}
 }
 
 filters.focus = {
-	blacklist = {},
+	blacklist = {
+		-- Shadowlands Covenant
+		[353354] = true		-- Dream Delver (Dreamweaver)
+	},
 	whitelist = {}
 }
 
@@ -36,12 +42,15 @@ filters.nameplate = {
 	whitelist = {
 		-- Mage
 		[12654] = true,		-- Ignite
-		[2120] = true,		-- Flamestrike
+		[2120]  = true,		-- Flamestrike
 	}
 }
 
 filters.raid = {
-	blacklist = {},
+	blacklist = {
+		-- Shadowlands Covenant
+		[353354] = true		-- Dream Delver (Dreamweaver)
+	},
 	whitelist = {}
 }
 
