@@ -226,6 +226,19 @@ local function SetGroupPosition(element, group, cur, max, icon_size, offx, offy)
 	return cur, offx, offy
 end
 
+local function SetPosition(element, groups)
+	local size
+	local offx, offy = 0, 0
+	local cur, max = 0, element.num or element.numMax
+
+	for _, i in ipairs(groups.used) do
+		if (cur >= max) then break end
+
+		size = element.group[i] and element.group[i].size
+		cur, offx, offy = (element.SetGroupPosition or SetGroupPosition)(element, groups[i], cur, max, size, offx, offy)
+	end
+end
+
 local function ShouldUpdate(element, unit, isFullUpdate, updatedAuras)
 	if (isFullUpdate ~= false or not updatedAuras) then
 		return true
@@ -406,19 +419,11 @@ local function UpdateAuras(self, event, unit, ...)
 	if (buffs and ShouldUpdate(buffs, unit, ...)) then
 		if (buffs.PreUpdate) then buffs:PreUpdate(unit) end
 
-		local numBuffs = buffs.numMax
-		local groups = filterIcons(buffs, unit, buffs.filter or 'HELPFUL', numBuffs)
+		local groups = filterIcons(buffs, unit, buffs.filter or 'HELPFUL', buffs.numMax)
 
 		if (buffs.PreSetPosition) then buffs:PreSetPosition(groups) end
 
-		local size
-		local offx, offy = 0, 0
-		local cur, max = 0, buffs.num or numBuffs
-		for _, i in ipairs(groups.used) do
-			if (cur >= max) then break end
-			size = buffs.group[i] and buffs.group[i].size
-			cur, offx, offy = (buffs.SetGroupPosition or SetGroupPosition) (buffs, groups[i], cur, max, size, offx, offy)
-		end
+		SetPosition(buffs, groups)
 
 		if (buffs.PostUpdate) then buffs:PostUpdate(unit, groups) end
 	end
@@ -427,19 +432,11 @@ local function UpdateAuras(self, event, unit, ...)
 	if (debuffs and ShouldUpdate(debuffs, unit, ...)) then
 		if (debuffs.PreUpdate) then debuffs:PreUpdate(unit) end
 
-		local numDebuffs = debuffs.numMax
-		local groups, dispelType = filterIcons(debuffs, unit, debuffs.filter or 'HARMFUL', numDebuffs, true)
+		local groups, dispelType = filterIcons(debuffs, unit, debuffs.filter or 'HARMFUL', debuffs.numMax, true)
 
 		if (debuffs.PreSetPosition) then debuffs:PreSetPosition(groups) end
 
-		local size
-		local offx, offy = 0, 0
-		local cur, max = 0, debuffs.num or numDebuffs
-		for _, i in ipairs(groups.used) do
-			if (cur >= max) then break end
-			size = debuffs.group[i] and debuffs.group[i].size
-			cur, offx, offy = (debuffs.SetGroupPosition or SetGroupPosition) (debuffs, groups[i], cur, max, size, offx, offy)
-		end
+		SetPosition(debuffs, groups)
 
 		if (debuffs.PostUpdate) then debuffs:PostUpdate(unit, groups) end
 
