@@ -3,5 +3,4 @@
 	<Script file="oUF_Experience\oUF_Experience.lua"/>
 	<Script file="oUF_Reputation\oUF_Reputation.lua"/>
 	<Script file="oUF_WidgetXPBar\oUF_WidgetXPBar.lua"/>
-	<Script file="oUF_RaidAuras\oUF_RaidAuras.lua"/>
 </Ui>
