@@ -138,6 +138,7 @@ end
 -- Additional Power (Mana, ...)
 local function AddPower_PostUpdate(element, cur, max)
 	-- Show bar for supported classes only
+	element.unit = element.__owner.unit
 	if (AlternatePowerBar_ShouldDisplayPower(element)) then
 		element:Show()
 	else
@@ -317,72 +318,40 @@ end
 -- -----------------------------------
 
 -- Filter Buffs
-local function Buffs_ShouldUpdate(element, unit, auraInfo)
-	if (not auraInfo.isHelpful) then
-		return false
-	end
-
-	local caster = auraInfo.sourceUnit
-	local spellId = auraInfo.spellId
+local function Buffs_FilterAura(element, unit, data)
 
 	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
+	if (filters[frame_name].whitelist[data.spellId]) then
 		return true
 	end
-	if (filters[frame_name].blacklist[spellId]) then
+	if (filters[frame_name].blacklist[data.spellId]) then
 		return false
 	end
 
 	-- filter based on configurable spell lists
-	if (spells.personal[spellId] or spells.external[spellId]) then
+	if (spells.personal[data.spellId] or spells.external[data.spellId]) then
 		return true
-	elseif (spells.utility[spellId] or spells.powerup[spellId]) then
+	elseif (spells.utility[data.spellId] or spells.powerup[data.spellId]) then
 		return true
-	elseif (spells.selfcast[spellId] and auras:CasterIsPlayer(caster)) then
+	elseif (spells.selfcast[data.spellId] and data.isPlayer) then
 		return true
-	else
-		return false
-	end
-end
-
-local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
-	local _, _, _, _, _, _, _, _, _, spellId = ...
-
-	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
-		return auras.AURA_MISC
-	end
-	if (filters[frame_name].blacklist[spellId]) then
-		return auras.PRIO_HIDE
 	end
 
-	-- filter based on configurable spell lists
-	if (spells.personal[spellId] or spells.external[spellId]) then
-		button.prio = auras.AURA_MISC
-	elseif (spells.utility[spellId] or spells.powerup[spellId]) then
-		button.prio = auras.AURA_MISC
-	elseif (spells.selfcast[spellId] and button.isPlayer) then
-		button.prio = auras.AURA_MISC
-	else
-		button.prio = auras.PRIO_HIDE
-	end
-
-	return button.prio
+	return false
 end
 
 -- Filter Debuffs
-local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
-	local _, _, _, _, _, _, _, _, _, spellId = ...
+local function Debuffs_FilterAura(element, unit, data)
 
 	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
-		return auras.AURA_MISC
+	if (filters[frame_name].whitelist[data.spellId]) then
+		return true
 	end
-	if (filters[frame_name].blacklist[spellId]) then
-		return auras.PRIO_HIDE
+	if (filters[frame_name].blacklist[data.spellId]) then
+		return false
 	end
 
-	return auras.AURA_MISC
+	return true
 end
 
 -- -----------------------------------
@@ -531,24 +500,23 @@ local function createStyle(self)
 		local rows = uframe.auras.rows or 4
 		local size = uframe.auras.size or floor(self:GetWidth() / (2 * (cols + 0.25)))
 
-		local buffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0)
+		local buffs = auras:CreateAuras(self, size, cols, rows, 0)
 		buffs:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, 4)
 		buffs.initialAnchor = 'BOTTOMRIGHT'
 		buffs['growth-x'] = 'LEFT'
 		buffs['growth-y'] = 'UP'
 		buffs.showStealableBuffs = true
-		buffs.CustomFilter = Buffs_CustomFilter
-		buffs.ShouldUpdate = Buffs_ShouldUpdate
-		self.RaidBuffs = buffs
+		buffs.FilterAura = Buffs_FilterAura
+		self.Buffs = buffs
 
-		local debuffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0)
+		local debuffs = auras:CreateAuras(self, size, cols, rows, 0)
 		debuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 4)
 		debuffs.initialAnchor = 'BOTTOMLEFT'
 		debuffs['growth-x'] = 'RIGHT'
 		debuffs['growth-y'] = 'UP'
 		debuffs.showDebuffType = true
-		debuffs.CustomFilter = Debuffs_CustomFilter
-		self.RaidDebuffs = debuffs
+		debuffs.FilterAura = Debuffs_FilterAura
+		self.Debuffs = debuffs
 	end
 
 	-- oUF experience, reputation

@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 10002
 ## Author: myzb
 ## Version: @project-version@
 ## Title: oUF_Nine

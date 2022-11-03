@@ -12,7 +12,6 @@ local frame_name = 'target'
 
 -- Import API Functions
 local UnitIsUnit = UnitIsUnit
-local Auras_ShouldDisplayDebuff = TargetFrame_ShouldShowDebuffs -- FrameXML/TargetFrame.lua
 
 -- ------------------------------------------------------------------------
 -- > TARGET UNIT SPECIFIC FUNCTIONS
@@ -37,65 +36,31 @@ end
 -- -----------------------------------
 
 -- Filter Buffs
-local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
-	local _, _, _, _, _, _, _, _, _, spellId = ...
+local function Buffs_FilterAura(element, unit, data)
 
 	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
-		return auras.AURA_MISC
+	if (filters[frame_name].whitelist[data.spellId]) then
+		return true
 	end
-	if (filters[frame_name].blacklist[spellId]) then
-		return auras.PRIO_HIDE
+	if (filters[frame_name].blacklist[data.spellId]) then
+		return false
 	end
 
-	return auras.AURA_MISC
+	return auras:TargetShowBuffs(unit, data)
 end
 
 -- Filter Debuffs
-local function Debuffs_ShouldUpdate(element, unit, auraInfo)
-	if (not auraInfo.isHarmful) then
-		return false
-	end
-
-	local caster = auraInfo.sourceUnit
-	local showAll = auraInfo.nameplateShowAll
-	local spellId = auraInfo.spellId
+local function Debuffs_FilterAura(element, unit, data)
 
 	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
+	if (filters[frame_name].whitelist[data.spellId]) then
 		return true
 	end
-	if (filters[frame_name].blacklist[spellId]) then
+	if (filters[frame_name].blacklist[data.spellId]) then
 		return false
 	end
 
-	-- blizzard target-/focus frame filtering function
-	if (Auras_ShouldDisplayDebuff(unit, caster, showAll, auras:CasterIsPlayer(caster))) then
-		return true
-	else
-		return false
-	end
-end
-
-local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
-	local _, _, _, _, _, _, caster, _, _, spellId, _, _, casterIsPlayer, showAll = ...
-
-	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
-		return auras.AURA_MISC
-	end
-	if (filters[frame_name].blacklist[spellId]) then
-		return auras.PRIO_HIDE
-	end
-
-	-- blizzard target-/focus frame filtering function
-	if (Auras_ShouldDisplayDebuff(unit, caster, showAll, casterIsPlayer)) then
-		button.prio = auras.AURA_MISC
-	else
-		button.prio = auras.PRIO_HIDE
-	end
-
-	return button.prio
+	return auras:TargetShowDebuffs(unit, data)
 end
 
 -- -----------------------------------
@@ -202,24 +167,23 @@ local function createStyle(self)
 		local rows = uframe.auras.rows or 4
 		local size = uframe.auras.size or floor(self:GetWidth() / (2 * (cols + 0.25)))
 
-		local buffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0)
+		local buffs = auras:CreateAuras(self, size, cols, rows, 0)
 		buffs:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, 4)
 		buffs.initialAnchor = 'BOTTOMRIGHT'
 		buffs['growth-x'] = 'LEFT'
 		buffs['growth-y'] = 'UP'
 		buffs.showStealableBuffs = true
-		buffs.CustomFilter = Buffs_CustomFilter
-		self.RaidBuffs = buffs
+		buffs.FilterAura = Buffs_FilterAura
+		self.Buffs = buffs
 
-		local debuffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0)
+		local debuffs = auras:CreateAuras(self, size, cols, rows, 0)
 		debuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 4)
 		debuffs.initialAnchor = 'BOTTOMLEFT'
 		debuffs['growth-x'] = 'RIGHT'
 		debuffs['growth-y'] = 'UP'
 		debuffs.showDebuffType = true
-		debuffs.CustomFilter = Debuffs_CustomFilter
-		debuffs.ShouldUpdate = Debuffs_ShouldUpdate
-		self.RaidDebuffs = debuffs
+		debuffs.FilterAura = Debuffs_FilterAura
+		self.Debuffs = debuffs
 	end
 end
 

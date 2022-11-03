@@ -30,6 +30,7 @@ spells.personal = {
 	-- Warlock
 	-- Other
 	[324867] = true,	-- Fleshcraft (Necrolord)
+	--[194384] = true	-- DEBUG: Atonement
 }
 
 spells.external = {
@@ -122,6 +123,7 @@ spells.crowdcontrol = {
 	-- Monk
 	-- Paladin
 	-- Priest
+	[8122] = true,		-- Psychic Scream
 	-- Rogue
 	-- Shaman
 	-- Warrior

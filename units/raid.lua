@@ -17,9 +17,6 @@ local floor, ceil = floor, ceil
 local UnitIsUnit = UnitIsUnit
 local UnitThreatSituation = UnitThreatSituation
 local GetThreatStatusColor = GetThreatStatusColor
-local Auras_ShouldDisplayDebuff = CompactUnitFrame_Util_ShouldDisplayDebuff -- FrameXML/CompactUnitFrame.lua
-local Auras_ShouldDisplayBuff = CompactUnitFrame_UtilShouldDisplayBuff      -- FrameXML/CompactUnitFrame.lua
-local Aura_IsPriorityDebuff = CompactUnitFrame_Util_IsPriorityDebuff        -- FrameXML/CompactUnitFrame.lua
 
 -- ------------------------------------------------------------------------
 -- > RAID UNIT SPECIFIC FUNCTIONS
@@ -79,8 +76,8 @@ end
 -- > STATUSBAR AURA COLOR
 -- -----------------------------------
 
-local function BuffColor_GetColor(element, unit, spellId, casterIsUs)
-	return casterIsUs and filters.color.aura[spellId]
+local function BuffColor_GetColor(element, unit, data)
+	return data.isPlayerAura and filters.color.aura[data.spellId]
 end
 
 -- -----------------------------------
@@ -88,170 +85,87 @@ end
 -- -----------------------------------
 
 -- Filter Buffs
-local function Buffs_ShouldUpdate(element, unit, auraInfo)
-	if (not auraInfo.isHelpful) then
-		return false
-	end
-
-	local canApplyAura = auraInfo.canApplyAura
-	local caster = auraInfo.sourceUnit
-	local spellId = auraInfo.spellId
+local function Buffs_FilterAura(element, unit, data)
 
 	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
+	if (filters[frame_name].whitelist[data.spellId]) then
 		return true
 	end
-	if (filters[frame_name].blacklist[spellId]) then
+	if (filters[frame_name].blacklist[data.spellId]) then
 		return false
 	end
 
-	-- adaptation of blizzard's raid frame filtering logic
-	if (Auras_ShouldDisplayBuff(caster, spellId, canApplyAura)) then
-		return true
-	elseif (spells.external[spellId]) then
-		return true
-	elseif (spells.personal[spellId]) then
-		return true
-	else
-		return false
-	end
-end
-
-local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
-	local _, _, _, _, _, _, caster, _, _, spellId, canApplyAura = ...
-
-	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
-		return auras.AURA_MISC
-	end
-	if (filters[frame_name].blacklist[spellId]) then
-		return auras.PRIO_HIDE
-	end
-
-	-- adaptation of blizzard's raid frame filtering logic
-	if (Auras_ShouldDisplayBuff(caster, spellId, canApplyAura)) then
-		button.prio = auras.AURA_MISC
-	elseif (spells.external[spellId]) then
-		button.prio = auras.PRIO_HIDE
-	elseif (spells.personal[spellId]) then
-		button.prio = auras.PRIO_HIDE
-	else
-		button.prio = auras.PRIO_HIDE
-	end
-
-	-- special auras will go in a separate group 'S'
-	if (element.showSpecial) then
-		if (spells.external[spellId]) then
-			return 'S'
-		elseif (spells.personal[spellId]) then
-			return 'S'
+	-- filter special auras
+	if (element.special) then
+		if (spells.external[data.spellId]) then
+			element.special.active[data.auraInstanceID] = data
+			return true
+		elseif (spells.personal[data.spellId]) then
+			element.special.active[data.auraInstanceID] = data
+			return true
 		end
 	end
 
-	return button.prio
+	return auras:RaidShowBuffs(unit, data)
 end
 
 -- Filter Debuffs
-local function Debuffs_ShouldUpdate(element, unit, auraInfo)
-	if (not auraInfo.isHarmful) then
-		return false
-	end
-
-	local caster = auraInfo.sourceUnit
-	local spellId = auraInfo.spellId
-	local isBossAura = auraInfo.isBossAura
+local function Debuffs_FilterAura(element, unit, data)
 
 	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
+	if (filters[frame_name].whitelist[data.spellId]) then
 		return true
 	end
-	if (filters[frame_name].blacklist[spellId]) then
+	if (filters[frame_name].blacklist[data.spellId]) then
 		return false
 	end
 
-	-- blizzards raid frame filtering logic
-	if (isBossAura) then
-		return true
-	elseif (Aura_IsPriorityDebuff(spellId)) then
-		return true
-	elseif (Auras_ShouldDisplayDebuff(caster, spellId)) then
-		return true
-	else
-		return false
-	end
-end
-
-local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
-	local _, _, _, _, _, _, caster, _, _, spellId, _, isBossAura, casterIsPlayer = ...
-
-	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
-		return auras.AURA_MISC
-	end
-	if (filters[frame_name].blacklist[spellId]) then
-		return auras.PRIO_HIDE
-	end
-
-	-- blizzards raid frame filtering logic
-	if (isBossAura) then
-		button.prio = auras.AURA_BOSS
-	elseif (Aura_IsPriorityDebuff(spellId)) then
-		button.prio = auras.AURA_PRIO
-	elseif (Auras_ShouldDisplayDebuff(caster, spellId)) then
-		button.prio = auras.AURA_MISC
-	else
-		button.prio = auras.PRIO_HIDE
-	end
-
-	-- some special auras will go in a separate group 'S'
-	if (element.showSpecial) then
-		if (dispellable and not casterIsPlayer) then
-			return 'S'
-		elseif (spells.crowdcontrol[spellId]) then
-			return 'S'
+	-- filter dispellable auras
+	if (element.dispel) then
+		if (data.canDispel) then
+			element.dispel.active[data.auraInstanceID] = data
 		end
 	end
 
-	return button.prio
+	-- filter special auras
+	if (element.special) then
+		if (not data.isPlayer and data.canDispel) then
+			element.special.active[data.auraInstanceID] = data
+			return true
+		elseif (spells.crowdcontrol[data.spellId]) then
+			element.special.active[data.auraInstanceID] = data
+			return true
+		end
+	end
+
+	return auras:RaidShowDebuffs(unit, data)
 end
 
-local function RaidAuras_SetGroupPosition(element, group, cur, max, icon_size, offx, offy)
-	local size = icon_size or element.size or 16
-	local sizex = size + (element['spacing-x'] or element.spacing or 0)
-	local sizey = size + (element['spacing-y'] or element.spacing or 0)
+local function PostUpdateButton(element, button, unit, data, position)
+	if (data.isBossAura) then
+		button:SetSize(element.size + 8, element.size + 8)
+	end
+end
+
+local function SetPosition(element, from, to)
+	local ref = {
+		['BOTTOMLEFT']  = 'BOTTOMRIGHT',
+		['BOTTOMRIGHT'] = 'BOTTOMLEFT'
+	}
 	local anchor = element.initialAnchor or 'BOTTOMLEFT'
-	local growthx = (element['growth-x'] == 'LEFT' and -1) or 1
-	local growthy = (element['growth-y'] == 'DOWN' and -1) or 1
-	local posx = sizex * growthx
-	local posy = sizey * growthy
 
-	local cols = floor(((element:GetWidth() - growthx * offx) / sizex) + 0.5)
-	if (cols == 0) then
-		-- no space for a new icon column, max reached
-		return max, offx, 0
+	if (from == 1 and element[1]) then
+		element[1]:SetPoint(anchor, element, anchor)
+		from = from + 1
 	end
 
-	local j = 0 -- new elements placed
-	for i = 1, #group do
-		local button = group[i]
-		if (not button) or ((cur + j) >= max) then
-			break
-		end
-
-		local col = j % cols
-		local row = floor(j / cols)
+	for i = from, to do
+		local button = element[i]
+		if(not button) then break end
 
 		button:ClearAllPoints()
-		button:SetPoint(anchor, element, anchor, col * posx + offx, row * posy)
-		button:Show()
-
-		if (size) then
-			-- override default size
-			button:SetSize(size, size)
-		end
-		j = j + 1
+		button:SetPoint(anchor, element[i - 1], ref[anchor])
 	end
-	return (cur + j), (offx + posx*j), offy
 end
 
 -- -----------------------------------
@@ -368,44 +282,40 @@ local function createStyle(self, unit, ...)
 		local size = uframe.auras.size or floor(self:GetWidth() / (2 * (cols + 0.25)))
 		local rows = uframe.auras.rows or floor(2 * self:GetHeight() / (3 * size))
 
-		local buffs = auras:CreateRaidAuras(icons, size, cols * rows, cols + 0.5, rows, 0, size - 6)
+		local buffs = auras:CreateRaidAuras(icons, size, cols + 0.5, rows, 0, size - 4)
 		buffs:SetPoint('BOTTOMRIGHT', self.Health, 'BOTTOMRIGHT', -2, 2)
 		buffs.initialAnchor = 'BOTTOMRIGHT'
 		buffs['growth-x'] = 'LEFT'
 		buffs['growth-y'] = 'UP'
 		buffs.showStealableBuffs = true
-		buffs.special:SetPoint('TOPRIGHT', self.Health, 'TOPRIGHT', -2, -2)
-		buffs.showSpecial = true
 
-		buffs.CustomFilter = Buffs_CustomFilter
-		buffs.ShouldUpdate = Buffs_ShouldUpdate
-		buffs.SetGroupPosition = RaidAuras_SetGroupPosition
+		buffs.FilterAura = Buffs_FilterAura
+		buffs.SetPosition = SetPosition
+		buffs.SortAuras = AuraUtil.DefaultAuraCompare
+
 		if (layout.health.colorOnBuff) then
 			self.BuffColor = auras:CreateAuraColor(buffs, self.Health)
 			self.BuffColor.GetColor = BuffColor_GetColor
 		end
 
-		self.RaidBuffs = buffs
+		self.Buffs = buffs
 
-		local debuffs = auras:CreateRaidAuras(icons, size, cols * rows, cols + 0.5, rows, 0, size + 8)
+		local debuffs = auras:CreateRaidAuras(icons, size, cols + 0.5, rows, 0, size + 8, true)
 		debuffs:SetPoint('BOTTOMLEFT', self.Health, 'BOTTOMLEFT', 2, 2)
 		debuffs.initialAnchor = 'BOTTOMLEFT'
 		debuffs['growth-x'] = 'RIGHT'
 		debuffs['growth-y'] = 'UP'
 		debuffs.showDebuffType = true
-		debuffs.special:SetPoint('CENTER', self.Health, 'CENTER', 0, 0)
-		debuffs.showSpecial = uframe.auras.warn
+		debuffs.dispel:SetPoint('TOPRIGHT', self.Health)
+		debuffs.special:SetPoint('CENTER', self.Health)
+		debuffs.special.isDebuff = true
 
-		debuffs.dispelIcon = CreateFrame('Button', nil, debuffs)
-		debuffs.dispelIcon:SetPoint('TOPRIGHT', self.Health)
-		debuffs.dispelIcon:SetSize(14, 14)
+		debuffs.FilterAura = Debuffs_FilterAura
+		debuffs.SortAuras = AuraUtil.UnitFrameDebuffComparator
+		debuffs.SetPosition = SetPosition
+		debuffs.PostUpdateButton = PostUpdateButton
 
-		debuffs.CustomFilter = Debuffs_CustomFilter
-		debuffs.ShouldUpdate = Debuffs_ShouldUpdate
-		debuffs.SetGroupPosition = RaidAuras_SetGroupPosition
-		debuffs.group = { [auras.AURA_BOSS] = { size = size + 8 } } -- boss aura group
-
-		self.RaidDebuffs = debuffs
+		self.Debuffs = debuffs
 	end
 
 	self.Range = config.frame.range
@@ -470,7 +380,7 @@ local function createSubStyle(self, unit)
 		buffColor.GetColor = BuffColor_GetColor
 
 		self.BuffColor = buffColor
-		self.Raidbuffs = buffs
+		self.RaidBuffs = buffs
 	end
 
 	self.Range = config.frame.range

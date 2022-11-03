@@ -76,7 +76,7 @@ local function FocusOverlay_Update(self, event)
 	if (not health.stripes) then
 		return
 	end
-	if (UnitIsUnit(self.unit, 'focus')) then
+	if (UnitIsUnit('focus', self.unit)) then
 		health.stripes:Show()
 	else
 		health.stripes:Hide()
@@ -350,150 +350,82 @@ end
 -- > NAMEPLATE AURAS
 -- -----------------------------------
 
-local function Auras_PostCreateIcon(element, button)
-	button.icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
-
-	button.count:SetPoint('BOTTOMRIGHT', 1, 0)
-	button.count:SetJustifyH('RIGHT')
+local function Auras_PostCreateButton(element, button)
+	button.Count:SetFont(font_num, 12, 'OUTLINE,MONOCHROME')
+	button.Count:SetPoint('BOTTOMRIGHT', 1, 0)
+	button.Count:SetJustifyH('RIGHT')
+	button.Count:GetParent():SetFrameLevel(button.Cooldown:GetFrameLevel() - 1)
+	button.Cooldown:SetHideCountdownNumbers(true)
+	button.Cooldown:SetReverse(true)
+	button.Icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
 
 	if (element.showDebuffType) then
-		button.overlay:SetTexture(m.textures.border_button)
-		button.overlay:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+		button.Overlay:SetTexture(m.textures.border_button)
+		button.Overlay:SetTexCoord(0.05, 0.95, 0.05, 0.95)
 	end
 end
 
 -- Filter Buffs
-local function Buffs_ShouldUpdate(element, unit,auraInfo)
-	if (not auraInfo.isHelpful) then
-		return false
-	end
-
-	local spellId = auraInfo.spellId
+local function Buffs_FilterAura(element, unit, data)
 
 	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
+	if (filters[frame_name].whitelist[data.spellId]) then
 		return true
 	end
-	if (filters[frame_name].blacklist[spellId]) then
+	if (filters[frame_name].blacklist[data.spellId]) then
 		return false
-	end
-
-	return true
-end
-
-local function Buffs_CustomFilter(element, unit, button, dispellable, ...)
-	local _, _, _, _, duration, _, _, isStealable, _, spellId, _, _, casterIsPlayer = ...
-
-	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
-		return auras.AURA_MISC
-	end
-	if (filters[frame_name].blacklist[spellId]) then
-		return auras.PRIO_HIDE
 	end
 
 	-- show stealable (purgeable) and short non-player buffs
-	if (isStealable) then
-		button.prio = auras.AURA_MISC
-	elseif ((duration > 0 and duration < 30) and not casterIsPlayer) then
-		button.prio = auras.AURA_MISC
-	else
-		button.prio = auras.PRIO_HIDE
+	if (data.isStealable) then
+		return true
+	elseif ((data.duration > 0 and data.duration < 30) and not data.isPlayerAura) then
+		return true
 	end
 
-	return button.prio
+	return false
 end
 
-local function Debuffs_PreUpdate(element, unit)
-	local filter
-	local isHostile = false
+local function Debuffs_Filter(element, unit)
 	local reaction = UnitReaction('player', unit)
-	local showAll = false
-	local showDebuffsOnFriendly = GetCVarBool('nameplateShowDebuffsOnFriendly')
+	local isHostile = reaction and reaction <= 4
 
-	if (reaction and reaction <= 4) then
+	if (isHostile) then
 		-- reaction 4 is neutral and less than 4 becomes increasingly more hostile
-		filter = 'HARMFUL|INCLUDE_NAME_PLATE_ONLY'
-		isHostile = true
+		element.showAll = false
+		return 'HARMFUL|INCLUDE_NAME_PLATE_ONLY'
 	else
-		if (showDebuffsOnFriendly) then
+		if (GetCVarBool('nameplateShowDebuffsOnFriendly')) then
 			-- dispellable debuffs
-			filter = 'HARMFUL|RAID'
-			showAll = true
+			element.showAll = true
+			return 'HARMFUL|RAID'
 		else
-			filter = 'NONE'
+			element.showAll = false
+			return 'NONE'
 		end
 	end
-
-	element.filter = filter
-	element.isHostile = isHostile
-	element.showAll = showAll
-	element.showDebuffsOnFriendly = showDebuffsOnFriendly
 end
 
 -- Filter Debuffs
-local function Debuffs_ShouldUpdate(element, unit, auraInfo)
-	if (not auraInfo.isHarmful) then
-		return false
-	end
-
-	local caster = auraInfo.sourceUnit
-	local isRaid = auraInfo.isRaid
-	local name = auraInfo.name
-	local showAll = auraInfo.nameplateShowAll
-	local showSelf = auraInfo.nameplateShowPersonal
-	local spellId = auraInfo.spellId
+local function Debuffs_FilterAura(element, unit, data)
 
 	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
+	if (filters[frame_name].whitelist[data.spellId]) then
 		return true
 	end
-	if (filters[frame_name].blacklist[spellId]) then
+	if (filters[frame_name].blacklist[data.spellId]) then
 		return false
 	end
 
-	-- adaptation of blizzard's nameplate filtering logic
-	if (not auras:NameplateShowAura(name, caster, showSelf, showAll)) then
-		return false
-	elseif (element.isHostile) then
-		return true
-	elseif (element.showDebuffsOnFriendly and isRaid) then
-		return true
-	else
-		return false
-	end
-end
-
-local function Debuffs_CustomFilter(element, unit, button, dispellable, ...)
-	local name, _, _, _, _, _, caster, _, showSelf, spellId, _, _, _, showAll = ...
-
-	-- auras white-/blacklist
-	if (filters[frame_name].whitelist[spellId]) then
-		return auras.AURA_MISC
-	end
-	if (filters[frame_name].blacklist[spellId]) then
-		return auras.PRIO_HIDE
-	end
-
-	-- adaptation of blizzard's nameplate filtering logic
-	if (not auras:NameplateShowAura(name, caster, showSelf, element.showAll or showAll)) then
-		button.prio = auras.PRIO_HIDE
-	elseif (element.isHostile) then
-		button.prio = auras.AURA_MISC
-	elseif (element.showDebuffsOnFriendly) then -- isRaid is implied
-		button.prio = auras.AURA_MISC
-	else
-		button.prio = auras.PRIO_HIDE
-	end
-
-	-- some special auras will go in a separate group 'S'
-	if (element.showSpecial) then
-		if (spells.crowdcontrol[spellId]) then
-			return 'S'
+	-- filter special auras
+	if (element.special) then
+		if (spells.crowdcontrol[data.spellId]) then
+			element.special.active[data.auraInstanceID] = data
+			return true
 		end
-	else
-		return button.prio
 	end
+
+	return auras:NameplateShowDebuffs(unit, data, element.showAll)
 end
 
 -- -----------------------------------
@@ -620,18 +552,18 @@ local function createStyle(self)
 		local rows = cfg.rows or 2
 		local size = cfg.size or math_floor(self:GetWidth() / (2 * (cols + 0.25)))
 
-		local raidBuffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0)
-		raidBuffs:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, 20)
-		raidBuffs.initialAnchor = 'BOTTOMRIGHT'
-		raidBuffs['growth-x'] = 'LEFT'
-		raidBuffs['growth-y'] = 'UP'
-		raidBuffs.showStealableBuffs = true
-		raidBuffs.disableMouse = true
-		raidBuffs.PostCreateIcon = Auras_PostCreateIcon
-		raidBuffs.CustomFilter = Buffs_CustomFilter
-		raidBuffs.ShouldUpdate = Buffs_ShouldUpdate
+		local buffs = auras:CreateAuras(self, size, cols + 0.5, rows, 0)
+		buffs:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, 20)
+		buffs.initialAnchor = 'BOTTOMRIGHT'
+		buffs['growth-x'] = 'LEFT'
+		buffs['growth-y'] = 'UP'
+		buffs.showStealableBuffs = true
+		buffs.disableMouse = true
 
-		self.RaidBuffs = raidBuffs
+		buffs.PostCreateButton = Auras_PostCreateButton
+		buffs.FilterAura = Buffs_FilterAura
+
+		self.Buffs = buffs
 	end
 
 	-- debuffs
@@ -640,23 +572,26 @@ local function createStyle(self)
 		local cols = cfg.cols or 4
 		local rows = cfg.rows or 2
 		local size = cfg.size or math_floor(self:GetWidth() / (2 * (cols + 0.25)))
+		local specialSize = uframe.debuffs.warn and (size + 8) or 0
 
-		local raidDebuffs = auras:CreateRaidAuras(self, size, cols * rows, cols + 0.5, rows, 0, size + 8)
-		raidDebuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 20)
-		raidDebuffs.initialAnchor = 'BOTTOMLEFT'
-		raidDebuffs['growth-x'] = 'RIGHT'
-		raidDebuffs['growth-y'] = 'UP'
-		raidDebuffs.disableMouse = true
+		local debuffs = auras:CreateRaidAuras(self, size, cols + 0.5, rows, 0, specialSize)
+		debuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 20)
+		debuffs.initialAnchor = 'BOTTOMLEFT'
+		debuffs['growth-x'] = 'RIGHT'
+		debuffs['growth-y'] = 'UP'
+		debuffs.disableMouse = true
 
-		raidDebuffs.PostCreateIcon = Auras_PostCreateIcon
-		raidDebuffs.PreUpdate = Debuffs_PreUpdate
-		raidDebuffs.CustomFilter = Debuffs_CustomFilter
-		raidDebuffs.ShouldUpdate = Debuffs_ShouldUpdate
+		if (uframe.debuffs.warn) then
+			debuffs.special:SetPoint('BOTTOM', self, 'TOP', 0, 20)
+			debuffs.special.isDebuff = true
+		end
 
-		raidDebuffs.special:SetPoint('BOTTOM', self, 'TOP', 0, 20)
-		raidDebuffs.showSpecial = uframe.debuffs and uframe.debuffs.warn
+		debuffs.Filter = Debuffs_Filter
+		debuffs.PostCreateButton = Auras_PostCreateButton
+		debuffs.FilterAura = Debuffs_FilterAura
+		debuffs.SortAuras = AuraUtil.UnitFrameDebuffComparator
 
-		self.RaidDebuffs = raidDebuffs
+		self.Debuffs = debuffs
 	end
 
 	-- widget xp bar (nazjatar followers, ...)

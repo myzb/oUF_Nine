@@ -38,7 +38,9 @@ filters.boss = {
 }
 
 filters.nameplate = {
-	blacklist = {},
+	blacklist = {
+		[209859] = true,	-- Bolster (M+ Affix)
+	},
 	whitelist = {
 		-- Mage
 		[12654] = true,		-- Ignite
