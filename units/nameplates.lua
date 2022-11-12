@@ -518,6 +518,14 @@ local function createStyle(self)
 	raidIcon:SetSize(20, 20)
 	self.RaidTargetIndicator = raidIcon
 
+	-- castbar
+	if (uframe.castbar and uframe.castbar.show) then
+		local iconSize = self.Health:GetHeight() + uframe.castbar.height + uframe.sep
+		local castbar = createCastbar(self.Health, layout.width, uframe.castbar.height, layout.texture, uframe.sep, iconSize)
+		castbar:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', uframe.castbar.height+1, -uframe.sep)
+		self.Castbar = castbar
+	end
+
 	-- text strings
 	local text = CreateFrame('Frame', nil, self.Health)
 	text:SetAllPoints(self.Health)
@@ -528,22 +536,14 @@ local function createStyle(self)
 	text.unit:SetPoint('BOTTOM', text, 'TOP', 0, 2)
 	self:Tag(text.unit, '[n:name]')
 
-	if (uframe.misc and not uframe.misc.hideHPPerc) then
-		text.status = common:CreateFontstring(text, font, font_size, nil, 'CENTER')
+	if (uframe.misc and uframe.misc.hpText) then
+		text.status = common:CreateFontstring(text, font_num, font_size - 2, 'OUTLINE', 'CENTER')
 		text.status:SetShadowColor(0, 0, 0, 1)
 		text.status:SetShadowOffset(1, -1)
-		text.status:SetAllPoints()
-		self:Tag(text.status, '[perhp]')
+		text.status:SetPoint('RIGHT', text, 'BOTTOMRIGHT', -2, 0)
+		self:Tag(text.status, '[n:curhp]')
 	end
 	self.Text = text
-
-	-- castbar
-	if (uframe.castbar and uframe.castbar.show) then
-		local iconSize = self.Health:GetHeight() + uframe.castbar.height + uframe.sep
-		local castbar = createCastbar(self.Health, layout.width, uframe.castbar.height, layout.texture, uframe.sep, iconSize)
-		castbar:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', uframe.castbar.height+1, -uframe.sep)
-		self.Castbar = castbar
-	end
 
 	-- buffs
 	if (uframe.buffs and uframe.buffs.show) then
