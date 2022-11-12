@@ -175,7 +175,7 @@ config.units = {
 			show = false
 		},
 		infobars = { -- xp, rep, etc.: dynamically stacked on-top of each other
-			show = true,
+			show = false,
 			height = 10,
 			width = 465,
 			sep = 1,
