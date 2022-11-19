@@ -48,7 +48,7 @@ local spellRange = {
 		help = { '' },
 	},
 	WARRIOR = {
-		harm = { 'Charge' }, -- 25 yards
+		harm = { '' },
 		help = { 'Intervene' }, -- 25 yards
 	},
 	MONK = {
