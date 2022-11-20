@@ -20,7 +20,7 @@ local execute = {
 	ROGUE  = { 0, 0, 0 },
 	SHAMAN = { 0, 0, 0 },
 	WARLOCK = { 0, 0, 0 },
-	WARRIOR = { 0, 0, 0 },
+	WARRIOR = { 0, 0, 20 },
 }
 
 function common:GetExecutePerc()
