@@ -72,3 +72,6 @@ oUF.colors.castbar = {
 	['FAILED'] = oUF:CreateColor(233/255, 0/255, 0/255),    -- orange/red
 	['IMMUNE'] = oUF:CreateColor(178/255, 178/255, 178/255) -- gray
 }
+
+--  debuff boder to black for debuffs with no type (also applies to buffs)
+oUF.colors.debuff['none'] = oUF:CreateColor(0, 0, 0)

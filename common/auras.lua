@@ -358,6 +358,7 @@ function auras:CreateAuras(self, size, cols, rows, sep)
 	auras.num = math.floor(cols) * math.floor(rows)
 	auras.size = size
 	auras.spacing = sep
+	auras.showType = true
 
 	auras.PostProcessAuraData = Auras_PostProcessData
 	auras.PostCreateButton = Auras_PostCreateButton
