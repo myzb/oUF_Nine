@@ -589,7 +589,7 @@ local function createStyle(self)
 		debuffs.Filter = Debuffs_Filter
 		debuffs.PostCreateButton = Auras_PostCreateButton
 		debuffs.FilterAura = Debuffs_FilterAura
-		debuffs.SortAuras = AuraUtil.UnitFrameDebuffComparator
+		debuffs.SortAuras = auras.DebuffComparator
 
 		self.Debuffs = debuffs
 	end

@@ -169,7 +169,7 @@ local function createStyle(self)
 		debuffs.special.isDebuff = true
 
 		debuffs.FilterAura = Debuffs_FilterAura
-		debuffs.SortAuras = AuraUtil.UnitFrameDebuffComparator
+		debuffs.SortAuras = auras.DebuffComparator
 
 		self.Debuffs = debuffs
 	end

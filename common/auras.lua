@@ -94,6 +94,23 @@ function auras:RaidShowDebuffs(unit, data)
 	return AuraUtil.ProcessAura(data, true) == AuraUtil.AuraUpdateChangedType.Debuff
 end
 
+-- see AuraUtil.UnitFrameDebuffComparator
+function auras.DebuffComparator(a, b)
+	if (a.debuffType and b.debuffType and a.debuffType ~= b.debuffType) then
+		return a.debuffType < b.debuffType
+	end
+
+	if(a.isPlayerAura ~= b.isPlayerAura) then
+		return a.isPlayerAura
+	end
+
+	if(a.canApplyAura ~= b.canApplyAura) then
+		return a.canApplyAura
+	end
+
+	return a.auraInstanceID < b.auraInstanceID
+end
+
 -- -----------------------------------
 -- > STATUSBAR AURA COLOR
 -- -----------------------------------
@@ -373,7 +390,7 @@ local function Auras_PreUpdate(element, unit, fullupdate)
 	if (special) then
 		local comparator
 		if (special.isDebuff) then
-			comparator = AuraUtil.UnitFrameDebuffComparator
+			comparator = auras.DebuffComparator
 		else
 			comparator = AuraUtil.DefaultAuraCompare
 		end
@@ -382,7 +399,7 @@ local function Auras_PreUpdate(element, unit, fullupdate)
 
 	local dispel = element.dispel
 	if (dispel) then
-		dispel.active = TableUtil.CreatePriorityTable(AuraUtil.UnitFrameDebuffComparator, TableUtil.Constants.AssociativePriorityTable)
+		dispel.active = TableUtil.CreatePriorityTable(auras.DebuffComparator, TableUtil.Constants.AssociativePriorityTable)
 	end
 end
 

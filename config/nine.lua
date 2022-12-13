@@ -168,7 +168,7 @@ config.units = {
 			height = 9
 		},
 		classpower = { -- i.e combo points, holy power, mana
-			show = true,
+			show = false,
 			text = false
 		},
 		totems = { -- totems and guardians i.e shadowfiend, gargoyle
