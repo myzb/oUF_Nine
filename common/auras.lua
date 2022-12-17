@@ -226,18 +226,6 @@ local function onLeave()
 	GameTooltip:Hide()
 end
 
-local function PostCreateButton2(element, button)
-	button.Count:SetFont(font_num, 12, 'OUTLINE,MONOCHROME')
-	button.Count:SetPoint('BOTTOMRIGHT', 1, 0)
-	button.Count:SetJustifyH('RIGHT')
-	button.Count:GetParent():SetFrameLevel(button.Cooldown:GetFrameLevel() - 1)
-	button.Cooldown:SetHideCountdownNumbers(element.hideCooldownNumber)
-	button.Cooldown:SetReverse(true)
-	button.Overlay:SetTexture(m.textures.border_button)
-	button.Overlay:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-	button.Icon:SetTexCoord(0.09, 0.91, 0.09, 0.91)
-end
-
 local function CreateButton(element, index)
 	local button = CreateFrame('Button', element:GetDebugName() .. 'Button' .. index, element)
 
@@ -257,8 +245,6 @@ local function CreateButton(element, index)
 	countFrame:SetFrameLevel(cd:GetFrameLevel() + 1)
 
 	local count = countFrame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
-	--count:SetPoint('BOTTOMRIGHT', countFrame, 'BOTTOMRIGHT', -1, 0)
-	--count:GetParent():SetFrameLevel(button.Cooldown:GetFrameLevel() - 1)
 	count:SetPoint('BOTTOMRIGHT', 1, 0)
 	count:SetFont(font_num, 12, 'OUTLINE,MONOCHROME')
 	count:SetJustifyH('RIGHT')
@@ -509,7 +495,7 @@ function auras:CreateRaidAuras(self, size, cols, rows, sep, ...)
 		auras.special = CreateSpecial(auras, specialSize < size)
 		auras.special:SetSize(specialSize, specialSize)
 		auras.special.size = specialSize
-		auras.special.showDebuffType = true
+		auras.special.showType = true
 	end
 	if (dispelIcon) then
 		auras.dispel = CreateDispel(auras)

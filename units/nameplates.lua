@@ -357,9 +357,9 @@ local function Auras_PostCreateButton(element, button)
 	button.Count:GetParent():SetFrameLevel(button.Cooldown:GetFrameLevel() - 1)
 	button.Cooldown:SetHideCountdownNumbers(true)
 	button.Cooldown:SetReverse(true)
-	button.Icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
+	button.Icon:SetTexCoord(0.09, 0.91, 0.09, 0.91)
 
-	if (element.showDebuffType) then
+	if (element.showType) then
 		button.Overlay:SetTexture(m.textures.border_button)
 		button.Overlay:SetTexCoord(0.05, 0.95, 0.05, 0.95)
 	end

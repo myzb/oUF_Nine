@@ -163,7 +163,6 @@ local function createStyle(self)
 		debuffs.initialAnchor = 'BOTTOMLEFT'
 		debuffs['growth-x'] = 'RIGHT'
 		debuffs['growth-y'] = 'UP'
-		debuffs.showDebuffType = true
 		debuffs.dispel:SetPoint('TOPRIGHT', self.Health)
 		debuffs.special:SetPoint('CENTER', self.Health)
 		debuffs.special.isDebuff = true

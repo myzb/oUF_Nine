@@ -181,7 +181,6 @@ local function createStyle(self)
 		debuffs.initialAnchor = 'BOTTOMLEFT'
 		debuffs['growth-x'] = 'RIGHT'
 		debuffs['growth-y'] = 'UP'
-		debuffs.showDebuffType = true
 		debuffs.FilterAura = Debuffs_FilterAura
 		self.Debuffs = debuffs
 	end

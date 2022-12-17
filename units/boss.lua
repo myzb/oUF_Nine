@@ -140,7 +140,6 @@ local function createStyle(self)
 		debuffs.initialAnchor = 'BOTTOMRIGHT'
 		debuffs['growth-x'] = 'LEFT'
 		debuffs['growth-y'] = 'UP'
-		debuffs.showDebuffType = true
 		debuffs.filter = 'HARMFUL|INCLUDE_NAME_PLATE_ONLY'
 		debuffs.FilterAura = Debuffs_FilterAura
 		self.Debuffs = debuffs
