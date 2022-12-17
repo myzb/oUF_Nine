@@ -347,7 +347,7 @@ local function Auras_PostCreateButton(element, button)
 	button.Cooldown:SetReverse(true)
 	button.Overlay:SetTexture(m.textures.border_button)
 	button.Overlay:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-	button.Icon:SetTexCoord(0.09, 0.91, 0.09, 0.91)
+	button.Icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
 end
 
 local function Auras_PostProcessData(element, unit, data)
