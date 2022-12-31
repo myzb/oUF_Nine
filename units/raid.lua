@@ -129,7 +129,7 @@ local function Debuffs_FilterAura(element, unit, data)
 
 	-- filter special auras
 	if (element.special) then
-		if (not data.isPlayer and data.canDispel) then
+		if (not data.isFromPlayerOrPlayerPet and data.canDispel) then
 			element.special.active[data.auraInstanceID] = data
 			return true
 		elseif (spells.crowdcontrol[data.spellId]) then

@@ -379,7 +379,7 @@ local function Buffs_FilterAura(element, unit, data)
 	-- show stealable (purgeable) and short non-player buffs
 	if (data.isStealable) then
 		return true
-	elseif ((data.duration > 0 and data.duration < 30) and not data.isPlayerAura) then
+	elseif ((data.duration > 0 and data.duration < 30) and not data.isFromPlayerOrPlayerPet) then
 		return true
 	end
 

@@ -333,7 +333,7 @@ local function Buffs_FilterAura(element, unit, data)
 		return true
 	elseif (spells.utility[data.spellId] or spells.powerup[data.spellId]) then
 		return true
-	elseif (spells.selfcast[data.spellId] and data.isPlayer) then
+	elseif (spells.selfcast[data.spellId] and data.isPlayerAura) then
 		return true
 	end
 
