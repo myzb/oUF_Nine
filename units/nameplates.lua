@@ -211,7 +211,7 @@ local function ThreadColor(group_member, unit)
 end
 
 -- Color Override for Special Units
-function UnitColor(unit)
+local function UnitColor(unit)
 	local guid = UnitGUID(unit)
 	local _, _, _, _, _, npcId = strsplit('-', guid or '')
 	return filters.color.unit[npcId]
