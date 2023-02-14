@@ -425,8 +425,8 @@ local function Auras_PostUpdate(element, unit)
 	end
 end
 
-local function PostUpdateInfo(element, unit, updated)
-	if not updated then return end
+local function PostUpdateInfo(element, unit, buffsChanged, debuffsChanged)
+	if not (buffsChanged or debuffsChanged) then return end
 
 	local dispel = element.dispel
 	if (dispel) then
